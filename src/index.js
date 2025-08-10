@@ -873,7 +873,7 @@ class AnalectsSDK {
         if (results.length === 0) {
           statusDiv.innerHTML = '<div class="analects-warning">⚠️ 未找到匹配的条目</div>';
         } else {
-          statusDiv.innerHTML = `<div class="analects-success">✅ 找到 ${results.length} 条结果</div>';
+          statusDiv.innerHTML = `<div class="analects-success">✅ 找到 ${results.length} 条结果</div>`;
         }
       }
       
