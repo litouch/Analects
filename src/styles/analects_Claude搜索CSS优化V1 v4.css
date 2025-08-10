@@ -1,0 +1,998 @@
+/* 论语 SDK 样式文件 - Notion风格设计 */
+
+/* 基础变量 */
+:root {
+  --analects-primary: #2d3748;
+  --analects-blue: #3182ce;
+  --analects-gray: #718096;
+  --analects-light-gray: #a0aec0;
+  --analects-green: #38a169;
+  --analects-orange: #dd6b20;
+  --analects-purple: #805ad5;
+  --analects-red: #e53e3e;
+  --analects-bg: #ffffff;
+  --analects-card-bg: #fafafa;
+  --analects-border: #e2e8f0;
+  --analects-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --analects-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --analects-radius: 8px;
+  --analects-radius-lg: 12px;
+  --analects-spacing: 16px;
+  --analects-spacing-lg: 24px;
+}
+
+/* 响应式断点 */
+@media (max-width: 768px) {
+  :root {
+    --analects-spacing: 12px;
+    --analects-spacing-lg: 16px;
+  }
+}
+
+/* 基础重置 */
+.analects-card *,
+.analects-search *,
+.analects-daily * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 论语卡片样式 */
+.analects-card {
+  background: var(--analects-bg);
+  border: 1px solid var(--analects-border);
+  border-radius: var(--analects-radius-lg);
+  box-shadow: var(--analects-shadow);
+  margin-bottom: var(--analects-spacing-lg);
+  padding: var(--analects-spacing-lg);
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.analects-card:hover {
+  box-shadow: var(--analects-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.analects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--analects-spacing);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--analects-border);
+}
+
+.analects-chapter {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--analects-primary);
+  margin: 0;
+}
+
+.analects-section {
+  font-size: 14px;
+  color: var(--analects-gray);
+  background: var(--analects-card-bg);
+  padding: 4px 8px;
+  border-radius: var(--analects-radius);
+}
+
+.analects-content {
+  margin-bottom: var(--analects-spacing-lg);
+}
+
+.analects-original {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--analects-primary);
+  margin-bottom: var(--analects-spacing);
+  padding: var(--analects-spacing);
+  background: var(--analects-card-bg);
+  border-radius: var(--analects-radius);
+  border-left: 4px solid var(--analects-primary);
+}
+
+.analects-translation {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--analects-blue);
+  margin-bottom: 12px;
+  padding: 12px;
+  background: rgba(49, 130, 206, 0.05);
+  border-radius: var(--analects-radius);
+  border-left: 4px solid var(--analects-blue);
+}
+
+.analects-annotation {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--analects-gray);
+  padding: 12px;
+  background: rgba(113, 128, 150, 0.05);
+  border-radius: var(--analects-radius);
+  border-left: 4px solid var(--analects-gray);
+}
+
+.analects-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--analects-spacing);
+}
+
+.analects-tag {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.analects-tag-character {
+  background: rgba(56, 161, 105, 0.1);
+  color: var(--analects-green);
+  border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.analects-tag-argument {
+  background: rgba(221, 107, 32, 0.1);
+  color: var(--analects-orange);
+  border: 1px solid rgba(221, 107, 32, 0.2);
+}
+
+.analects-tag-proverb {
+  background: rgba(128, 90, 213, 0.1);
+  color: var(--analects-purple);
+  border: 1px solid rgba(128, 90, 213, 0.2);
+}
+
+.analects-insight {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--analects-gray);
+  font-style: italic;
+  padding: var(--analects-spacing);
+  background: var(--analects-card-bg);
+  border-radius: var(--analects-radius);
+  border: 1px dashed var(--analects-border);
+}
+
+/* ================================ */
+/* 全新优化的搜索界面样式 - 参考每日论语设计 */
+/* ================================ */
+
+.analects-search {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* 搜索顶部区域 */
+.analects-search-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px 0;
+}
+
+.analects-search-title {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--analects-primary);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.analects-search-subtitle {
+  font-size: 16px;
+  color: var(--analects-gray);
+  font-weight: 400;
+}
+
+/* 搜索主体区域 */
+.analects-search-form {
+  background: var(--analects-bg);
+  border-radius: var(--analects-radius-lg);
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: var(--analects-shadow);
+  border: 1px solid var(--analects-border);
+}
+
+/* 关键词搜索区域 */
+.analects-keyword-section {
+  margin-bottom: 32px;
+}
+
+.analects-keyword-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--analects-primary);
+  margin-bottom: 12px;
+}
+
+.analects-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid var(--analects-border);
+  border-radius: var(--analects-radius);
+  font-size: 16px;
+  background: var(--analects-bg);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.analects-input:focus {
+  outline: none;
+  border-color: var(--analects-blue);
+  box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+  transform: translateY(-1px);
+}
+
+.analects-input::placeholder {
+  color: var(--analects-light-gray);
+}
+
+/* 高级筛选区域 */
+.analects-advanced-filters {
+  border-top: 1px solid var(--analects-border);
+  padding-top: 32px;
+  margin-top: 32px;
+}
+
+.analects-advanced-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--analects-primary);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analects-advanced-title::before {
+  content: '🔧';
+  font-size: 16px;
+}
+
+/* 筛选器网格布局 */
+.analects-filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.analects-filter-section {
+  background: var(--analects-card-bg);
+  border-radius: var(--analects-radius);
+  padding: 20px;
+  border: 1px solid var(--analects-border);
+}
+
+.analects-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.analects-filter-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--analects-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analects-filter-title.characters::before {
+  content: '👤';
+  font-size: 14px;
+}
+
+.analects-filter-title.arguments::before {
+  content: '💭';
+  font-size: 14px;
+}
+
+.analects-filter-count {
+  font-size: 12px;
+  color: var(--analects-light-gray);
+  background: var(--analects-bg);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* 搜索框 + 标签云模式 */
+.analects-filter-search {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.analects-filter-search input {
+  width: 100%;
+  padding: 8px 32px 8px 12px;
+  border: 1px solid var(--analects-border);
+  border-radius: var(--analects-radius);
+  font-size: 14px;
+  background: var(--analects-bg);
+}
+
+.analects-filter-search::after {
+  content: '🔍';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--analects-light-gray);
+}
+
+/* 选项容器 - 支持滚动和搜索 */
+.analects-filter-options {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: var(--analects-radius);
+  background: var(--analects-bg);
+}
+
+/* 自定义滚动条 */
+.analects-filter-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analects-filter-options::-webkit-scrollbar-track {
+  background: var(--analects-card-bg);
+  border-radius: 3px;
+}
+
+.analects-filter-options::-webkit-scrollbar-thumb {
+  background: var(--analects-border);
+  border-radius: 3px;
+}
+
+.analects-filter-options::-webkit-scrollbar-thumb:hover {
+  background: var(--analects-light-gray);
+}
+
+/* 标签云样式的选项 */
+.analects-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+}
+
+.analects-option-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--analects-border);
+  border-radius: 20px;
+  background: var(--analects-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.analects-option-tag:hover {
+  background: rgba(49, 130, 206, 0.05);
+  border-color: var(--analects-blue);
+  transform: translateY(-1px);
+}
+
+.analects-option-tag.selected {
+  background: var(--analects-blue);
+  color: white;
+  border-color: var(--analects-blue);
+}
+
+.analects-option-tag.selected:hover {
+  background: #2c5aa0;
+}
+
+.analects-option-tag input[type="checkbox"] {
+  display: none;
+}
+
+/* 操作按钮区域 */
+.analects-search-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--analects-border);
+}
+
+.analects-btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: var(--analects-radius);
+  background: var(--analects-blue);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: none;
+  letter-spacing: 0.25px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analects-btn:hover {
+  background: #2c5aa0;
+  transform: translateY(-1px);
+  box-shadow: var(--analects-shadow);
+}
+
+.analects-btn:active {
+  transform: translateY(0);
+}
+
+.analects-btn-secondary {
+  background: var(--analects-gray);
+}
+
+.analects-btn-secondary:hover {
+  background: #5a6c7d;
+}
+
+.analects-btn-clear {
+  background: var(--analects-red);
+}
+
+.analects-btn-clear:hover {
+  background: #c53030;
+}
+
+/* 搜索状态和结果 */
+.analects-search-status {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.analects-search-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 16px;
+  background: var(--analects-card-bg);
+  border-radius: var(--analects-radius);
+  margin-bottom: 24px;
+  border: 1px solid var(--analects-border);
+}
+
+.analects-stat-item {
+  text-align: center;
+}
+
+.analects-stat-number {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--analects-primary);
+  display: block;
+}
+
+.analects-stat-label {
+  font-size: 12px;
+  color: var(--analects-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 结果区域 */
+.analects-results {
+  margin-top: 32px;
+}
+
+.analects-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--analects-border);
+}
+
+.analects-results-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--analects-primary);
+}
+
+.analects-results-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--analects-gray);
+}
+
+.analects-sort-select {
+  padding: 6px 12px;
+  border: 1px solid var(--analects-border);
+  border-radius: var(--analects-radius);
+  background: var(--analects-bg);
+  font-size: 14px;
+}
+
+/* ================================ */
+/* 优化后的每日论语样式 - 参考 Verse of the Day */
+/* ================================ */
+
+.analects-daily {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', serif;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 每日论语标题区域 */
+.analects-daily-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--analects-border);
+}
+
+.analects-daily-title {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--analects-primary);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.analects-daily-subtitle {
+  font-size: 16px;
+  color: var(--analects-gray);
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+/* 日期显示 */
+.analects-daily-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--analects-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.analects-daily-date::before,
+.analects-daily-date::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--analects-border);
+}
+
+/* 论语内容卡片 */
+.analects-daily-card {
+  background: var(--analects-bg);
+  border-radius: var(--analects-radius-lg);
+  padding: 48px 32px;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--analects-shadow);
+  margin-bottom: 32px;
+  transition: all 0.3s ease;
+}
+
+.analects-daily-card:hover {
+  box-shadow: var(--analects-shadow-lg);
+}
+
+/* 论语原文 - 突出显示 */
+.analects-daily-original {
+  font-size: 24px;
+  line-height: 1.6;
+  color: var(--analects-primary);
+  font-weight: 400;
+  margin-bottom: 32px;
+  position: relative;
+  font-family: Georgia, 'Times New Roman', serif;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 添加引号装饰 */
+.analects-daily-original::before {
+  content: '"';
+  font-size: 60px;
+  color: var(--analects-border);
+  position: absolute;
+  top: -20px;
+  left: -30px;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.analects-daily-original::after {
+  content: '"';
+  font-size: 60px;
+  color: var(--analects-border);
+  position: absolute;
+  bottom: -40px;
+  right: -30px;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+/* 翻译文本 */
+.analects-daily-translation {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--analects-gray);
+  margin-bottom: 24px;
+  font-style: italic;
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 章节信息 - 弱化显示 */
+.analects-daily-reference {
+  font-size: 14px;
+  color: var(--analects-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin-bottom: 32px;
+}
+
+/* 分享区域 - 全新设计 */
+.analects-daily-share {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  border-top: 1px solid var(--analects-border);
+}
+
+.analects-daily-share-label {
+  font-size: 14px;
+  color: var(--analects-gray);
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.analects-share-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.analects-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--analects-card-bg);
+  border: 1px solid var(--analects-border);
+  color: var(--analects-gray);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.analects-share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--analects-shadow);
+}
+
+.analects-share-btn.twitter:hover {
+  background: #1da1f2;
+  color: white;
+  border-color: #1da1f2;
+}
+
+.analects-share-btn.facebook:hover {
+  background: #4267b2;
+  color: white;
+  border-color: #4267b2;
+}
+
+.analects-share-btn.email:hover {
+  background: #ea4335;
+  color: white;
+  border-color: #ea4335;
+}
+
+.analects-share-btn.copy:hover {
+  background: var(--analects-primary);
+  color: white;
+  border-color: var(--analects-primary);
+}
+
+/* 状态样式 */
+.analects-loading,
+.analects-no-results,
+.analects-error,
+.analects-daily-empty,
+.analects-daily-error {
+  text-align: center;
+  padding: var(--analects-spacing-lg);
+  color: var(--analects-gray);
+  font-style: italic;
+}
+
+.analects-error,
+.analects-daily-error {
+  color: #e53e3e;
+  background: rgba(229, 62, 62, 0.05);
+  border: 1px solid rgba(229, 62, 62, 0.2);
+  border-radius: var(--analects-radius);
+}
+
+.analects-success {
+  color: var(--analects-green);
+  background: rgba(56, 161, 105, 0.05);
+  border: 1px solid rgba(56, 161, 105, 0.2);
+  border-radius: var(--analects-radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.analects-info {
+  color: var(--analects-blue);
+  background: rgba(49, 130, 206, 0.05);
+  border: 1px solid rgba(49, 130, 206, 0.2);
+  border-radius: var(--analects-radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.analects-warning {
+  color: var(--analects-orange);
+  background: rgba(221, 107, 32, 0.05);
+  border: 1px solid rgba(221, 107, 32, 0.2);
+  border-radius: var(--analects-radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+/* 空状态和提示 */
+.analects-no-results {
+  background: var(--analects-card-bg);
+  border: 1px dashed var(--analects-border);
+  border-radius: var(--analects-radius-lg);
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.analects-no-results::before {
+  content: '🔍';
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.analects-no-options {
+  color: var(--analects-light-gray);
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .analects-card {
+    padding: var(--analects-spacing);
+    margin-bottom: var(--analects-spacing);
+  }
+  
+  .analects-search-form {
+    padding: 20px;
+  }
+  
+  .analects-search-title {
+    font-size: 24px;
+  }
+  
+  .analects-filters-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .analects-filter-section {
+    padding: 16px;
+  }
+  
+  .analects-search-actions {
+    flex-direction: column;
+  }
+  
+  .analects-btn {
+    width: 100%;
+  }
+  
+  .analects-search-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .analects-results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .analects-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .analects-original {
+    font-size: 15px;
+    padding: 12px;
+  }
+  
+  /* 每日论语响应式 */
+  .analects-daily-title {
+    font-size: 24px;
+  }
+  
+  .analects-daily-card {
+    padding: 32px 20px;
+    margin: 0 16px 24px;
+  }
+  
+  .analects-daily-original {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .analects-daily-original::before,
+  .analects-daily-original::after {
+    display: none; /* 移动端隐藏装饰引号 */
+  }
+  
+  .analects-daily-translation {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .analects-daily-share {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .analects-daily-date::before,
+  .analects-daily-date::after {
+    width: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .analects-tags {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .analects-tag {
+    text-align: center;
+  }
+  
+  .analects-chapter {
+    font-size: 16px;
+  }
+  
+  .analects-daily-original {
+    font-size: 18px;
+  }
+  
+  .analects-daily-translation {
+    font-size: 15px;
+  }
+  
+  .analects-share-buttons {
+    justify-content: center;
+  }
+
+  .analects-tag-cloud {
+    justify-content: center;
+  }
+
+  .analects-option-tag {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.analects-card,
+.analects-daily-card,
+.analects-search-form {
+  animation: fadeIn 0.6s ease;
+}
+
+.analects-daily-original {
+  animation: slideInUp 0.8s ease 0.2s both;
+}
+
+.analects-daily-translation {
+  animation: slideInUp 0.8s ease 0.4s both;
+}
+
+.analects-daily-reference {
+  animation: slideInUp 0.8s ease 0.6s both;
+}
+
+.analects-option-tag {
+  animation: fadeIn 0.3s ease both;
+}
+
+/* 可访问性 */
+.analects-btn:focus,
+.analects-input:focus,
+.analects-option-tag:focus,
+.analects-share-btn:focus,
+.analects-filter-search input:focus {
+  outline: 2px solid var(--analects-blue);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .analects-card,
+  .analects-daily-card,
+  .analects-search-form,
+  .analects-btn,
+  .analects-option-tag,
+  .analects-share-btn,
+  .analects-daily-original,
+  .analects-daily-translation,
+  .analects-daily-reference {
+    transition: none;
+    animation: none;
+  }
+  
+  .analects-card:hover,
+  .analects-daily-card:hover,
+  .analects-btn:hover,
+  .analects-share-btn:hover,
+  .analects-option-tag:hover {
+    transform: none;
+  }
+}
+  

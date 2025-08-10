@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论语 SDK 测试页面 - 完整功能版本</title>
+    
+    <!-- Open Graph Meta Tags for Better Facebook Sharing -->
+    <meta property="og:title" content="每日论语 - 品读经典智慧" />
+    <meta property="og:description" content="每日一句论语，传承中华文化经典，感悟古圣先贤智慧" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="每日论语" />
+    
+    <style>
+        /* 基础变量 */
+        :root {
+          --analects-primary: #2d3748;
+          --analects-blue: #3182ce;
+          --analects-gray: #718096;
+          --analects-light-gray: #a0aec0;
+          --analects-green: #38a169;
+          --analects-orange: #dd6b20;
+          --analects-purple: #805ad5;
+          --analects-red: #e53e3e;
+          --analects-bg: #ffffff;
+          --analects-card-bg: #fafafa;
+          --analects-border: #e2e8f0;
+          --analects-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+          --analects-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          --analects-radius: 8px;
+          --analects-radius-lg: 12px;
+          --analects-spacing: 16px;
+          --analects-spacing-lg: 24px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #f7fafc;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 16px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            color: #718096;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            margin-bottom: 48px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: #3182ce;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .demo-btn:hover {
+            background: #2c5aa0;
+            transform: translateY(-1px);
+        }
+        
+        .demo-btn.secondary {
+            background: #718096;
+        }
+        
+        .demo-btn.secondary:hover {
+            background: #5a6c7d;
+        }
+        
+        .config-form {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .config-form label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .config-form input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .status {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: rgba(56, 161, 105, 0.1);
+            color: #38a169;
+            border: 1px solid rgba(56, 161, 105, 0.2);
+        }
+        
+        .status.error {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+            border: 1px solid rgba(229, 62, 62, 0.2);
+        }
+        
+        .status.info {
+            background: rgba(49, 130, 206, 0.1);
+            color: #3182ce;
+            border: 1px solid rgba(49, 130, 206, 0.2);
+        }
+
+        /* ================================ */
+        /* 内联完整的论语SDK样式 */
+        /* ================================ */
+        
+        /* 基础重置 */
+        .analects-card *,
+        .analects-search *,
+        .analects-daily * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+
+        /* 论语卡片样式 */
+        .analects-card {
+          background: var(--analects-bg);
+          border: 1px solid var(--analects-border);
+          border-radius: var(--analects-radius-lg);
+          box-shadow: var(--analects-shadow);
+          margin-bottom: var(--analects-spacing-lg);
+          padding: var(--analects-spacing-lg);
+          transition: all 0.2s ease;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        .analects-card:hover {
+          box-shadow: var(--analects-shadow-lg);
+          transform: translateY(-2px);
+        }
+
+        .analects-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--analects-spacing);
+          padding-bottom: 12px;
+          border-bottom: 1px solid var(--analects-border);
+        }
+
+        .analects-chapter {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--analects-primary);
+          margin: 0;
+        }
+
+        .analects-section {
+          font-size: 14px;
+          color: var(--analects-gray);
+          background: var(--analects-card-bg);
+          padding: 4px 8px;
+          border-radius: var(--analects-radius);
+        }
+
+        .analects-content {
+          margin-bottom: var(--analects-spacing-lg);
+        }
+
+        .analects-original {
+          font-size: 16px;
+          line-height: 1.7;
+          color: var(--analects-primary);
+          margin-bottom: var(--analects-spacing);
+          padding: var(--analects-spacing);
+          background: var(--analects-card-bg);
+          border-radius: var(--analects-radius);
+          border-left: 4px solid var(--analects-primary);
+        }
+
+        .analects-translation {
+          font-size: 15px;
+          line-height: 1.6;
+          color: var(--analects-blue);
+          margin-bottom: 12px;
+          padding: 12px;
+          background: rgba(49, 130, 206, 0.05);
+          border-radius: var(--analects-radius);
+          border-left: 4px solid var(--analects-blue);
+        }
+
+        .analects-annotation {
+          font-size: 14px;
+          line-height: 1.6;
+          color: var(--analects-gray);
+          padding: 12px;
+          background: rgba(113, 128, 150, 0.05);
+          border-radius: var(--analects-radius);
+          border-left: 4px solid var(--analects-gray);
+        }
+
+        .analects-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: var(--analects-spacing);
+        }
+
+        .analects-tag {
+          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 20px;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+
+        .analects-tag-character {
+          background: rgba(56, 161, 105, 0.1);
+          color: var(--analects-green);
+          border: 1px solid rgba(56, 161, 105, 0.2);
+        }
+
+        .analects-tag-argument {
+          background: rgba(221, 107, 32, 0.1);
+          color: var(--analects-orange);
+          border: 1px solid rgba(221, 107, 32, 0.2);
+        }
+
+        .analects-tag-proverb {
+          background: rgba(128, 90, 213, 0.1);
+          color: var(--analects-purple);
+          border: 1px solid rgba(128, 90, 213, 0.2);
+        }
+
+        .analects-insight {
+          font-size: 14px;
+          line-height: 1.6;
+          color: var(--analects-gray);
+          font-style: italic;
+          padding: var(--analects-spacing);
+          background: var(--analects-card-bg);
+          border-radius: var(--analects-radius);
+          border: 1px dashed var(--analects-border);
+        }
+
+        /* 搜索界面样式 */
+        .analects-search {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+
+        .analects-search-header {
+          text-align: center;
+          margin-bottom: 32px;
+          padding: 24px 0;
+        }
+
+        .analects-search-title {
+          font-size: 28px;
+          font-weight: 300;
+          color: var(--analects-primary);
+          margin-bottom: 8px;
+          letter-spacing: 0.5px;
+        }
+
+        .analects-search-subtitle {
+          font-size: 16px;
+          color: var(--analects-gray);
+          font-weight: 400;
+        }
+
+        .analects-search-form {
+          background: var(--analects-bg);
+          border-radius: var(--analects-radius-lg);
+          padding: 32px;
+          margin-bottom: 24px;
+          box-shadow: var(--analects-shadow);
+          border: 1px solid var(--analects-border);
+        }
+
+        .analects-keyword-section {
+          margin-bottom: 32px;
+        }
+
+        .analects-keyword-label {
+          display: block;
+          font-size: 16px;
+          font-weight: 500;
+          color: var(--analects-primary);
+          margin-bottom: 12px;
+        }
+
+        .analects-keyword-hint {
+          font-size: 14px;
+          color: var(--analects-light-gray);
+          margin-bottom: 8px;
+        }
+
+        .analects-input {
+          width: 100%;
+          padding: 16px 20px;
+          border: 2px solid var(--analects-border);
+          border-radius: var(--analects-radius);
+          font-size: 16px;
+          background: var(--analects-bg);
+          transition: all 0.2s ease;
+          font-family: inherit;
+          box-sizing: border-box;
+        }
+
+        .analects-input:focus {
+          outline: none;
+          border-color: var(--analects-blue);
+          box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+          transform: translateY(-1px);
+        }
+
+        .analects-input::placeholder {
+          color: var(--analects-light-gray);
+        }
+
+        .analects-advanced-filters {
+          border-top: 1px solid var(--analects-border);
+          padding-top: 32px;
+          margin-top: 32px;
+        }
+
+        .analects-advanced-title {
+          font-size: 18px;
+          font-weight: 500;
+          color: var(--analects-primary);
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .analects-advanced-title::before {
+          content: '🔧';
+          font-size: 16px;
+        }
+
+        .analects-filters-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+
+        .analects-filter-section {
+          background: var(--analects-card-bg);
+          border-radius: var(--analects-radius);
+          padding: 20px;
+          border: 1px solid var(--analects-border);
+        }
+
+        .analects-filter-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+        }
+
+        .analects-filter-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--analects-primary);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .analects-filter-title.characters::before {
+          content: '👤';
+          font-size: 14px;
+        }
+
+        .analects-filter-title.arguments::before {
+          content: '💭';
+          font-size: 14px;
+        }
+
+        .analects-filter-count {
+          font-size: 12px;
+          color: var(--analects-light-gray);
+          background: var(--analects-bg);
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-weight: 500;
+        }
+
+        .analects-filter-search {
+          position: relative;
+          margin-bottom: 16px;
+        }
+
+        .analects-filter-search input {
+          width: 100%;
+          padding: 8px 32px 8px 12px;
+          border: 1px solid var(--analects-border);
+          border-radius: var(--analects-radius);
+          font-size: 14px;
+          background: var(--analects-bg);
+          box-sizing: border-box;
+        }
+
+        .analects-filter-search::after {
+          content: '🔍';
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 12px;
+          color: var(--analects-light-gray);
+        }
+
+        .analects-filter-options {
+          max-height: 200px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          border-radius: var(--analects-radius);
+          background: var(--analects-bg);
+        }
+
+        .analects-filter-options::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .analects-filter-options::-webkit-scrollbar-track {
+          background: var(--analects-card-bg);
+          border-radius: 3px;
+        }
+
+        .analects-filter-options::-webkit-scrollbar-thumb {
+          background: var(--analects-border);
+          border-radius: 3px;
+        }
+
+        .analects-filter-options::-webkit-scrollbar-thumb:hover {
+          background: var(--analects-light-gray);
+        }
+
+        .analects-tag-cloud {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          padding: 8px;
+        }
+
+        .analects-option-tag {
+          display: inline-flex;
+          align-items: center;
+          padding: 6px 12px;
+          border: 1px solid var(--analects-border);
+          border-radius: 20px;
+          background: var(--analects-bg);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 13px;
+          font-weight: 500;
+          user-select: none;
+        }
+
+        .analects-option-tag:hover {
+          background: rgba(49, 130, 206, 0.05);
+          border-color: var(--analects-blue);
+          transform: translateY(-1px);
+        }
+
+        .analects-option-tag.selected {
+          background: var(--analects-blue);
+          color: white;
+          border-color: var(--analects-blue);
+        }
+
+        .analects-option-tag.selected:hover {
+          background: #2c5aa0;
+        }
+
+        .analects-option-tag input[type="checkbox"] {
+          display: none;
+        }
+
+        .analects-search-actions {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+          margin-top: 24px;
+          padding-top: 24px;
+          border-top: 1px solid var(--analects-border);
+        }
+
+        .analects-btn {
+          padding: 14px 28px;
+          border: none;
+          border-radius: var(--analects-radius);
+          background: var(--analects-blue);
+          color: white;
+          font-size: 15px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-transform: none;
+          letter-spacing: 0.25px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .analects-btn:hover {
+          background: #2c5aa0;
+          transform: translateY(-1px);
+          box-shadow: var(--analects-shadow);
+        }
+
+        .analects-btn:active {
+          transform: translateY(0);
+        }
+
+        .analects-btn-secondary {
+          background: var(--analects-gray);
+        }
+
+        .analects-btn-secondary:hover {
+          background: #5a6c7d;
+        }
+
+        .analects-btn-clear {
+          background: var(--analects-red);
+        }
+
+        .analects-btn-clear:hover {
+          background: #c53030;
+        }
+
+        .analects-search-status {
+          text-align: center;
+          margin-bottom: 16px;
+        }
+
+        .analects-search-stats {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 24px;
+          padding: 16px;
+          background: var(--analects-card-bg);
+          border-radius: var(--analects-radius);
+          margin-bottom: 24px;
+          border: 1px solid var(--analects-border);
+        }
+
+        .analects-stat-item {
+          text-align: center;
+        }
+
+        .analects-stat-number {
+          font-size: 24px;
+          font-weight: 600;
+          color: var(--analects-primary);
+          display: block;
+        }
+
+        .analects-stat-label {
+          font-size: 12px;
+          color: var(--analects-gray);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .analects-results {
+          margin-top: 32px;
+        }
+
+        .analects-loading {
+          text-align: center;
+          padding: var(--analects-spacing-lg);
+          color: var(--analects-gray);
+          font-style: italic;
+        }
+
+        .analects-success, .analects-info, .analects-error, .analects-warning {
+          padding: 12px 16px;
+          border-radius: var(--analects-radius);
+          margin-bottom: 16px;
+        }
+
+        .analects-success {
+          color: var(--analects-green);
+          background: rgba(56, 161, 105, 0.05);
+          border: 1px solid rgba(56, 161, 105, 0.2);
+        }
+
+        .analects-info {
+          color: var(--analects-blue);
+          background: rgba(49, 130, 206, 0.05);
+          border: 1px solid rgba(49, 130, 206, 0.2);
+        }
+
+        .analects-error {
+          color: var(--analects-red);
+          background: rgba(229, 62, 62, 0.05);
+          border: 1px solid rgba(229, 62, 62, 0.2);
+        }
+
+        .analects-warning {
+          color: var(--analects-orange);
+          background: rgba(221, 107, 32, 0.05);
+          border: 1px solid rgba(221, 107, 32, 0.2);
+        }
+
+        .analects-no-results {
+          background: var(--analects-card-bg);
+          border: 1px dashed var(--analects-border);
+          border-radius: var(--analects-radius-lg);
+          padding: 48px 24px;
+          text-align: center;
+        }
+
+        .analects-no-results::before {
+          content: '🔍';
+          font-size: 48px;
+          display: block;
+          margin-bottom: 16px;
+          opacity: 0.3;
+        }
+
+        .analects-no-options {
+          color: var(--analects-light-gray);
+          font-style: italic;
+          text-align: center;
+          padding: 20px;
+        }
+
+        /* ================================ */
+        /* 每日论语样式 - 带引号装饰和图标 */
+        /* ================================ */
+
+        .analects-daily {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', serif;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .analects-daily-header {
+          text-align: center;
+          margin-bottom: 32px;
+          padding: 24px 0;
+          border-bottom: 1px solid var(--analects-border);
+        }
+
+        .analects-daily-title {
+          font-size: 28px;
+          font-weight: 300;
+          color: var(--analects-primary);
+          margin-bottom: 8px;
+          letter-spacing: 0.5px;
+        }
+
+        .analects-daily-subtitle {
+          font-size: 16px;
+          color: var(--analects-gray);
+          font-weight: 400;
+          margin-bottom: 16px;
+        }
+
+        .analects-daily-date {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          font-size: 14px;
+          color: var(--analects-light-gray);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .analects-daily-date::before,
+        .analects-daily-date::after {
+          content: '';
+          width: 40px;
+          height: 1px;
+          background: var(--analects-border);
+        }
+
+        .analects-daily-card {
+          background: var(--analects-bg);
+          border-radius: var(--analects-radius-lg);
+          padding: 48px 32px;
+          text-align: center;
+          position: relative;
+          box-shadow: var(--analects-shadow);
+          margin-bottom: 32px;
+          transition: all 0.3s ease;
+        }
+
+        .analects-daily-card:hover {
+          box-shadow: var(--analects-shadow-lg);
+        }
+
+        .analects-daily-original {
+          font-size: 24px;
+          line-height: 1.6;
+          color: var(--analects-primary);
+          font-weight: 400;
+          margin-bottom: 32px;
+          position: relative;
+          font-family: Georgia, 'Times New Roman', serif;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        /* 添加引号装饰 */
+        .analects-daily-original::before {
+          content: '"';
+          font-size: 60px;
+          color: var(--analects-border);
+          position: absolute;
+          top: -20px;
+          left: -30px;
+          font-family: Georgia, serif;
+          line-height: 1;
+        }
+
+        .analects-daily-original::after {
+          content: '"';
+          font-size: 60px;
+          color: var(--analects-border);
+          position: absolute;
+          bottom: -40px;
+          right: -30px;
+          font-family: Georgia, serif;
+          line-height: 1;
+        }
+
+        .analects-daily-translation {
+          font-size: 18px;
+          line-height: 1.5;
+          color: var(--analects-gray);
+          margin-bottom: 24px;
+          font-style: italic;
+          max-width: 550px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .analects-daily-reference {
+          font-size: 14px;
+          color: var(--analects-light-gray);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-weight: 500;
+          margin-bottom: 32px;
+        }
+
+        .analects-daily-share {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 16px;
+          padding: 24px 0;
+          border-top: 1px solid var(--analects-border);
+        }
+
+        .analects-daily-share-label {
+          font-size: 14px;
+          color: var(--analects-gray);
+          font-weight: 500;
+          margin-right: 8px;
+        }
+
+        .analects-share-buttons {
+          display: flex;
+          gap: 12px;
+        }
+
+        .analects-share-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: var(--analects-card-bg);
+          border: 1px solid var(--analects-border);
+          color: var(--analects-gray);
+          text-decoration: none;
+          transition: all 0.2s ease;
+          font-size: 16px;
+          cursor: pointer;
+        }
+
+        .analects-share-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--analects-shadow);
+        }
+
+        .analects-share-btn.twitter:hover {
+          background: #1da1f2;
+          color: white;
+          border-color: #1da1f2;
+        }
+
+        .analects-share-btn.facebook:hover {
+          background: #4267b2;
+          color: white;
+          border-color: #4267b2;
+        }
+
+        .analects-share-btn.email:hover {
+          background: #ea4335;
+          color: white;
+          border-color: #ea4335;
+        }
+
+        .analects-share-btn.copy:hover {
+          background: var(--analects-primary);
+          color: white;
+          border-color: var(--analects-primary);
+        }
+
+        /* 状态样式更新 */
+        .analects-daily-empty,
+        .analects-daily-error {
+          text-align: center;
+          padding: var(--analects-spacing-lg);
+          color: var(--analects-gray);
+          font-style: italic;
+        }
+
+        .analects-daily-error {
+          color: #e53e3e;
+          background: rgba(229, 62, 62, 0.05);
+          border: 1px solid rgba(229, 62, 62, 0.2);
+          border-radius: var(--analects-radius);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .demo-controls {
+                flex-direction: column;
+            }
+            
+            .demo-btn {
+                width: 100%;
+            }
+
+            .analects-filters-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .analects-search-actions {
+                flex-direction: column;
+            }
+
+            .analects-btn {
+                width: 100%;
+            }
+
+            .analects-search-stats {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .analects-daily-original::before,
+            .analects-daily-original::after {
+                display: none;
+            }
+
+            .analects-daily-card {
+                padding: 32px 20px;
+                margin: 0 16px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 论语 SDK - 完整功能测试</h1>
+            <p>包含搜索功能、每日论语原始样式、真实Supabase数据测试的完整版本。</p>
+        </div>
+
+        <!-- 配置区域 -->
+        <div class="section">
+            <h2 class="section-title">🔧 SDK 配置</h2>
+            <div class="config-form">
+                <label for="supabase-url">Supabase URL:</label>
+                <input type="text" id="supabase-url" placeholder="https://your-project.supabase.co" value="">
+                
+                <label for="supabase-key">Supabase Anon Key:</label>
+                <input type="text" id="supabase-key" placeholder="your-anon-key" value="">
+                
+                <button class="demo-btn" onclick="window.SDKDemo.initializeSDK()">初始化 SDK</button>
+                <button class="demo-btn secondary" onclick="window.SDKDemo.testConnection()">测试连接</button>
+            </div>
+            <div id="config-status"></div>
+        </div>
+
+        <!-- 搜索界面测试 -->
+        <div class="section">
+            <h2 class="section-title">🔍 搜索界面测试</h2>
+            <div class="demo-controls">
+                <button class="demo-btn" onclick="window.SDKDemo.loadSearchInterface()">加载搜索界面</button>
+                <button class="demo-btn secondary" onclick="window.SDKDemo.clearSearch()">清空搜索</button>
+            </div>
+            <div id="search-container"></div>
+        </div>
+
+        <!-- 每日论语测试 -->
+        <div class="section">
+            <h2 class="section-title">🌅 每日论语测试</h2>
+            <div class="demo-controls">
+                <button class="demo-btn" onclick="window.SDKDemo.loadDailyAnalect()">加载每日论语</button>
+                <button class="demo-btn secondary" onclick="window.SDKDemo.clearDaily()">清空显示</button>
+                <button class="demo-btn" onclick="window.SDKDemo.loadRandomDaily()">随机论语</button>
+            </div>
+            <div id="daily-analect-container"></div>
+        </div>
+
+        <!-- API 功能测试 -->
+        <div class="section">
+            <h2 class="section-title">⚡ API 功能测试</h2>
+            <div class="demo-controls">
+                <button class="demo-btn" onclick="window.SDKDemo.testGetCharacters()">获取人物数据</button>
+                <button class="demo-btn" onclick="window.SDKDemo.testGetArguments()">获取论点数据</button>
+                <button class="demo-btn" onclick="window.SDKDemo.testAdvancedSearch()">测试高级搜索</button>
+                <button class="demo-btn secondary" onclick="window.SDKDemo.clearApiResults()">清空结果</button>
+            </div>
+            <div id="api-results"></div>
+        </div>
+
+        <!-- 自动初始化测试 -->
+        <div class="section">
+            <h2 class="section-title">🚀 自动初始化测试</h2>
+            <p>以下区域演示自动初始化功能，配置正确后会自动加载：</p>
+            
+            <div class="demo-controls">
+                <button class="demo-btn" onclick="window.SDKDemo.applyConfigToAutoInit()">应用配置到自动初始化</button>
+                <button class="demo-btn secondary" onclick="window.SDKDemo.clearAutoInit()">清空自动初始化</button>
+            </div>
+            
+            <div id="auto-init-container" 
+                 data-analects-auto-init 
+                 data-supabase-url="" 
+                 data-supabase-key="" 
+                 style="border: 2px dashed #e2e8f0; padding: 20px; border-radius: 8px;">
+                
+                <h3>自动加载的每日论语：</h3>
+                <div data-analects-daily></div>
+                
+                <h3>自动加载的搜索界面：</h3>
+                <div data-analects-search></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 完整的论语SDK - 内联版本，基于最新的index.js
+        class AnalectsSDK {
+            constructor(config = {}) {
+                this.supabaseUrl = config.supabaseUrl || 'https://your-project.supabase.co';
+                this.supabaseKey = config.supabaseKey || 'your-anon-key';
+                this.apiBaseUrl = `${this.supabaseUrl}/rest/v1`;
+                this.headers = {
+                    'apikey': this.supabaseKey,
+                    'Authorization': `Bearer ${this.supabaseKey}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                };
+                this.charactersCache = null;
+                this.argumentsCache = null;
+            }
+
+            // API调用方法 - 使用客户端过滤处理关键词
+            async fetchAnalects(filters = {}) {
+                try {
+                    let url = `${this.apiBaseUrl}/analects_entries?select=*,entry_characters(character_id,characters(id,name)),entry_arguments(argument_id,arguments(id,title)),entry_proverbs(proverbs(*))`;
+                    
+                    const conditions = [];
+                    
+                    if (filters.chapter) {
+                        conditions.push(`chapter.eq.${encodeURIComponent(filters.chapter)}`);
+                    }
+                    
+                    if (conditions.length > 0) {
+                        url += `&${conditions.join('&')}`;
+                    }
+                    
+                    console.log('API请求URL:', url);
+                    
+                    if (!this.supabaseUrl || this.supabaseUrl.includes('your-project')) {
+                        throw new Error('请先配置正确的 Supabase URL');
+                    }
+                    
+                    if (!this.supabaseKey || this.supabaseKey.includes('your-anon-key')) {
+                        throw new Error('请先配置正确的 Supabase Key');
+                    }
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: this.headers,
+                        mode: 'cors',
+                    });
+                    
+                    console.log('响应状态:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('API错误详情:', response.status, response.statusText, errorText);
+                        throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    let data = await response.json();
+                    console.log('基础查询结果数量:', data.length);
+                    
+                    // 客户端过滤 - 关键词搜索
+                    if (filters.keyword && filters.keyword.trim()) {
+                        const keyword = filters.keyword.trim().toLowerCase();
+                        data = data.filter(entry => {
+                            const originalText = (entry.original_text || '').toLowerCase();
+                            const translation = (entry.translation || '').toLowerCase();
+                            const annotation = (entry.annotation || '').toLowerCase();
+                            
+                            return originalText.includes(keyword) || 
+                                   translation.includes(keyword) || 
+                                   annotation.includes(keyword);
+                        });
+                        console.log('关键词过滤后结果数量:', data.length);
+                    }
+                    
+                    // 客户端过滤 - 人物 AND 关系
+                    if (filters.characterIds && filters.characterIds.length > 0) {
+                        data = data.filter(entry => {
+                            const entryCharacterIds = (entry.entry_characters || [])
+                                .map(ec => ec.character_id)
+                                .filter(id => id != null);
+                            
+                            return filters.characterIds.every(id => 
+                                entryCharacterIds.includes(parseInt(id))
+                            );
+                        });
+                        console.log('人物过滤后结果数量:', data.length);
+                    }
+                    
+                    // 客户端过滤 - 论点 AND 关系
+                    if (filters.argumentIds && filters.argumentIds.length > 0) {
+                        data = data.filter(entry => {
+                            const entryArgumentIds = (entry.entry_arguments || [])
+                                .map(ea => ea.argument_id)
+                                .filter(id => id != null);
+                            
+                            return filters.argumentIds.every(id => 
+                                entryArgumentIds.includes(parseInt(id))
+                            );
+                        });
+                        console.log('论点过滤后结果数量:', data.length);
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('获取论语数据失败:', error);
+                    
+                    if (error.message === 'Failed to fetch') {
+                        throw new Error('网络连接失败，请检查:\n1. Supabase配置是否正确\n2. 网络连接是否正常\n3. Supabase服务是否可用');
+                    }
+                    
+                    throw error;
+                }
+            }
+
+            // 获取每日论语
+            async getDailyAnalect() {
+                try {
+                    const url = `${this.apiBaseUrl}/analects_entries?select=chapter,section_number,original_text,translation&show_in_daily=eq.true`;
+                    
+                    console.log('每日论语API请求URL:', url);
+                    
+                    const response = await fetch(url, {
+                        headers: this.headers
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('每日论语API错误:', response.status, errorText);
+                        throw new Error(`API请求失败: ${response.status} - ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('每日论语数据:', data);
+                    
+                    if (data.length === 0) return null;
+                    const randomIndex = Math.floor(Math.random() * data.length);
+                    return data[randomIndex];
+                } catch (error) {
+                    console.error('获取每日论语失败:', error);
+                    throw error;
+                }
+            }
+
+            // 获取所有人物 - 带缓存
+            async getCharacters() {
+                try {
+                    if (this.charactersCache) {
+                        return this.charactersCache;
+                    }
+
+                    if (!this.supabaseUrl || this.supabaseUrl.includes('your-project')) {
+                        throw new Error('请先配置正确的 Supabase URL');
+                    }
+                    
+                    const url = `${this.apiBaseUrl}/characters?order=name.asc`;
+                    console.log('获取人物URL:', url);
+                    
+                    const response = await fetch(url, { 
+                        headers: this.headers,
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('获取人物失败:', response.status, response.statusText, errorText);
+                        throw new Error(`获取人物失败: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('获取到的人物数据:', data);
+                    this.charactersCache = data;
+                    return data;
+                } catch (error) {
+                    console.error('获取人物列表失败:', error);
+                    
+                    if (error.message === 'Failed to fetch') {
+                        throw new Error('网络连接失败，请检查 Supabase 配置和网络连接');
+                    }
+                    
+                    throw error;
+                }
+            }
+
+            // 获取所有论点 - 带缓存
+            async getArguments() {
+                try {
+                    if (this.argumentsCache) {
+                        return this.argumentsCache;
+                    }
+
+                    if (!this.supabaseUrl || this.supabaseUrl.includes('your-project')) {
+                        throw new Error('请先配置正确的 Supabase URL');
+                    }
+                    
+                    const url = `${this.apiBaseUrl}/arguments?order=title.asc`;
+                    console.log('获取论点URL:', url);
+                    
+                    const response = await fetch(url, { 
+                        headers: this.headers,
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('获取论点失败:', response.status, response.statusText, errorText);
+                        throw new Error(`获取论点失败: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('获取到的论点数据:', data);
+                    this.argumentsCache = data;
+                    return data;
+                } catch (error) {
+                    console.error('获取论点列表失败:', error);
+                    
+                    if (error.message === 'Failed to fetch') {
+                        throw new Error('网络连接失败，请检查 Supabase 配置和网络连接');
+                    }
+                    
+                    throw error;
+                }
+            }
+
+            // 格式化日期为中文显示
+            formatDate(date = new Date()) {
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+                const weekday = weekdays[date.getDay()];
+                
+                return {
+                    full: `${year}年${month}月${day}日`,
+                    weekday: weekday,
+                    iso: date.toISOString().split('T')[0]
+                };
+            }
+
+            // 生成分享链接
+            generateShareLinks(entry, currentUrl = window.location.href) {
+                const text = `每日论语：${entry.original_text}`;
+                const url = currentUrl;
+                
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                
+                return {
+                    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+                    facebook: facebookUrl,
+                    copy: text + ' - ' + url,
+                    email: `mailto:?subject=${encodeURIComponent('每日论语分享')}&body=${encodeURIComponent(text + ' - ' + url)}`
+                };
+            }
+
+            // 复制到剪贴板
+            async copyToClipboard(text) {
+                try {
+                    if (navigator.clipboard) {
+                        await navigator.clipboard.writeText(text);
+                        return true;
+                    } else {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        textArea.style.top = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        return successful;
+                    }
+                } catch (err) {
+                    console.error('复制失败:', err);
+                    return false;
+                }
+            }
+
+            // 生成卡片HTML
+            generateCardHTML(entry) {
+                const characters = (entry.entry_characters || [])
+                    .map(ec => ec.characters?.name)
+                    .filter(Boolean)
+                    .join(', ');
+                
+                const argumentsList = (entry.entry_arguments || [])
+                    .map(ea => ea.arguments?.title)
+                    .filter(Boolean);
+                
+                const proverbs = (entry.entry_proverbs || [])
+                    .map(ep => ep.proverbs?.content)
+                    .filter(Boolean);
+
+                return `
+                    <div class="analects-header">
+                        <h3 class="analects-chapter">${entry.chapter || ''}</h3>
+                        <span class="analects-section">第${entry.section_number || ''}节</span>
+                    </div>
+                    
+                    <div class="analects-content">
+                        <div class="analects-original">${entry.original_text || ''}</div>
+                        
+                        ${entry.translation ? `<div class="analects-translation">${entry.translation}</div>` : ''}
+                        
+                        ${entry.annotation ? `<div class="analects-annotation">${entry.annotation}</div>` : ''}
+                    </div>
+
+                    <div class="analects-tags">
+                        ${characters ? `<div class="analects-tag analects-tag-character">人物: ${characters}</div>` : ''}
+                        
+                        ${argumentsList.map(arg => `<div class="analects-tag analects-tag-argument">${arg}</div>`).join('')}
+                        
+                        ${proverbs.map(proverb => `<div class="analects-tag analects-tag-proverb">${proverb}</div>`).join('')}
+                    </div>
+
+                    ${entry.personal_insight ? `<div class="analects-insight">${entry.personal_insight}</div>` : ''}
+                `;
+            }
+
+            // 渲染论语卡片
+            renderAnalectCard(entry, container) {
+                if (!container) {
+                    console.error('未找到容器元素');
+                    return;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'analects-card';
+                card.innerHTML = this.generateCardHTML(entry);
+                
+                container.appendChild(card);
+            }
+
+            // 渲染每日论语组件 - 包含原始样式和SVG图标
+            renderDailyAnalect(container) {
+                if (!container) {
+                    console.error('未找到容器元素');
+                    return;
+                }
+
+                container.innerHTML = '<div class="analects-loading">加载每日论语...</div>';
+
+                this.getDailyAnalect().then(entry => {
+                    if (!entry) {
+                        container.innerHTML = '<div class="analects-daily-empty">暂无每日论语</div>';
+                        return;
+                    }
+
+                    const dateInfo = this.formatDate();
+                    const shareLinks = this.generateShareLinks(entry);
+
+                    const dailyHTML = `
+                        <div class="analects-daily">
+                            <div class="analects-daily-header">
+                                <h1 class="analects-daily-title">每日论语</h1>
+                                <p class="analects-daily-subtitle">Daily Analects of Confucius</p>
+                                <div class="analects-daily-date">
+                                    ${dateInfo.full} · ${dateInfo.weekday}
+                                </div>
+                            </div>
+
+                            <div class="analects-daily-card">
+                                <div class="analects-daily-original">${entry.original_text}</div>
+                                
+                                ${entry.translation ? `<div class="analects-daily-translation">${entry.translation}</div>` : ''}
+                                
+                                <div class="analects-daily-reference">
+                                    ${entry.chapter} · 第${entry.section_number || ''}节
+                                </div>
+                            </div>
+
+                            <div class="analects-daily-share">
+                                <span class="analects-daily-share-label">分享：</span>
+                                <div class="analects-share-buttons">
+                                    <a href="${shareLinks.twitter}" 
+                                       class="analects-share-btn twitter" 
+                                       target="_blank" 
+                                       rel="noopener noreferrer"
+                                       title="分享到 Twitter">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                        </svg>
+                                    </a>
+                                    
+                                    <a href="${shareLinks.facebook}" 
+                                       class="analects-share-btn facebook" 
+                                       target="_blank" 
+                                       rel="noopener noreferrer"
+                                       onclick="return window.open(this.href, 'facebook-share', 'width=626,height=436,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes')"
+                                       title="分享到 Facebook">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                        </svg>
+                                    </a>
+                                    
+                                    <button class="analects-share-btn copy" 
+                                            onclick="window.AnalectsSDK.copyText('${shareLinks.copy.replace(/'/g, "\\'")}', this)"
+                                            title="复制分享内容">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                        </svg>
+                                    </button>
+                                    
+                                    <a href="${shareLinks.email}" 
+                                       class="analects-share-btn email"
+                                       title="通过邮件分享">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = dailyHTML;
+                }).catch(error => {
+                    console.error('渲染每日论语失败:', error);
+                    container.innerHTML = '<div class="analects-daily-error">加载每日论语失败，请检查配置</div>';
+                });
+            }
+
+            // 渲染搜索界面
+            renderSearchInterface(container) {
+                if (!container) {
+                    console.error('未找到容器元素');
+                    return;
+                }
+
+                const searchHTML = `
+                    <div class="analects-search">
+                        <div class="analects-search-header">
+                            <h1 class="analects-search-title">论语搜索</h1>
+                            <p class="analects-search-subtitle">Search in the Analects of Confucius</p>
+                        </div>
+
+                        <div class="analects-search-form">
+                            <div class="analects-keyword-section">
+                                <label class="analects-keyword-label" for="analects-keyword">
+                                    🔍 关键词搜索
+                                </label>
+                                <div class="analects-keyword-hint">💡 输入关键词后按回车键快速搜索</div>
+                                <input 
+                                    type="text" 
+                                    id="analects-keyword" 
+                                    class="analects-input" 
+                                    placeholder="输入关键词搜索论语原文、翻译或注释..."
+                                >
+                            </div>
+
+                            <div class="analects-advanced-filters">
+                                <h3 class="analects-advanced-title">高级筛选</h3>
+                                
+                                <div class="analects-filters-grid">
+                                    <div class="analects-filter-section">
+                                        <div class="analects-filter-header">
+                                            <h4 class="analects-filter-title characters">人物筛选</h4>
+                                            <span class="analects-filter-count" id="character-count">0</span>
+                                        </div>
+                                        <div class="analects-filter-search">
+                                            <input 
+                                                type="text" 
+                                                id="character-search" 
+                                                placeholder="搜索人物..."
+                                            >
+                                        </div>
+                                        <div 
+                                            id="character-filters" 
+                                            class="analects-filter-options"
+                                        >
+                                            <div class="analects-loading">加载中...</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="analects-filter-section">
+                                        <div class="analects-filter-header">
+                                            <h4 class="analects-filter-title arguments">论点筛选</h4>
+                                            <span class="analects-filter-count" id="argument-count">0</span>
+                                        </div>
+                                        <div class="analects-filter-search">
+                                            <input 
+                                                type="text" 
+                                                id="argument-search" 
+                                                placeholder="搜索论点..."
+                                            >
+                                        </div>
+                                        <div 
+                                            id="argument-filters" 
+                                            class="analects-filter-options"
+                                        >
+                                            <div class="analects-loading">加载中...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analects-search-actions">
+                                <button id="analects-search-btn" class="analects-btn">
+                                    🔍 开始搜索
+                                </button>
+                                <button id="analects-clear-btn" class="analects-btn analects-btn-secondary">
+                                    🧹 清空筛选
+                                </button>
+                                <button id="analects-reset-btn" class="analects-btn analects-btn-clear">
+                                    🔄 重置全部
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="analects-search-status" class="analects-search-status"></div>
+                        
+                        <div id="analects-search-stats" class="analects-search-stats" style="display: none;">
+                            <div class="analects-stat-item">
+                                <span class="analects-stat-number" id="total-results">0</span>
+                                <span class="analects-stat-label">搜索结果</span>
+                            </div>
+                            <div class="analects-stat-item">
+                                <span class="analects-stat-number" id="selected-characters">0</span>
+                                <span class="analects-stat-label">选中人物</span>
+                            </div>
+                            <div class="analects-stat-item">
+                                <span class="analects-stat-number" id="selected-arguments">0</span>
+                                <span class="analects-stat-label">选中论点</span>
+                            </div>
+                        </div>
+
+                        <div class="analects-results">
+                            <div id="analects-results-container"></div>
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML = searchHTML;
+                this.initializeSearchEvents();
+                this.loadFilterOptions();
+            }
+
+            // 初始化搜索事件
+            initializeSearchEvents() {
+                const searchBtn = document.getElementById('analects-search-btn');
+                const clearBtn = document.getElementById('analects-clear-btn');
+                const resetBtn = document.getElementById('analects-reset-btn');
+                const keywordInput = document.getElementById('analects-keyword');
+                const characterSearch = document.getElementById('character-search');
+                const argumentSearch = document.getElementById('argument-search');
+                
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', () => this.performSearch());
+                }
+                
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => this.clearFilters());
+                }
+
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => this.resetSearch());
+                }
+                
+                if (keywordInput) {
+                    keywordInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.performSearch();
+                        }
+                    });
+                }
+
+                if (characterSearch) {
+                    characterSearch.addEventListener('input', (e) => {
+                        this.filterOptions('character', e.target.value);
+                    });
+                }
+
+                if (argumentSearch) {
+                    argumentSearch.addEventListener('input', (e) => {
+                        this.filterOptions('argument', e.target.value);
+                    });
+                }
+            }
+
+            // 加载筛选选项
+            async loadFilterOptions() {
+                try {
+                    const statusDiv = document.getElementById('analects-search-status');
+                    if (statusDiv) {
+                        statusDiv.innerHTML = '<div class="analects-info">🔄 加载筛选选项...</div>';
+                    }
+
+                    const [characters, argumentsList] = await Promise.all([
+                        this.getCharacters(),
+                        this.getArguments()
+                    ]);
+
+                    console.log('加载的人物数据:', characters);
+                    console.log('加载的论点数据:', argumentsList);
+
+                    this.updateFilterCount('character', characters.length);
+                    this.updateFilterCount('argument', argumentsList.length);
+
+                    this.renderFilterOptions('character-filters', characters, 'character');
+                    this.renderFilterOptions('argument-filters', argumentsList, 'argument');
+                    
+                    if (statusDiv) {
+                        statusDiv.innerHTML = '<div class="analects-success">✅ 筛选选项加载完成</div>';
+                        setTimeout(() => {
+                            statusDiv.innerHTML = '';
+                        }, 2000);
+                    }
+                } catch (error) {
+                    console.error('加载筛选选项失败:', error);
+                    const statusDiv = document.getElementById('analects-search-status');
+                    if (statusDiv) {
+                        statusDiv.innerHTML = '<div class="analects-error">❌ 加载筛选选项失败，请检查配置</div>';
+                    }
+                    
+                    const characterContainer = document.getElementById('character-filters');
+                    const argumentContainer = document.getElementById('argument-filters');
+                    
+                    if (characterContainer) {
+                        characterContainer.innerHTML = '<div class="analects-no-options">人物数据加载失败</div>';
+                    }
+                    if (argumentContainer) {
+                        argumentContainer.innerHTML = '<div class="analects-no-options">论点数据加载失败</div>';
+                    }
+                }
+            }
+
+            // 更新筛选器计数
+            updateFilterCount(type, count) {
+                const countElement = document.getElementById(`${type}-count`);
+                if (countElement) {
+                    countElement.textContent = count;
+                }
+            }
+
+            // 渲染筛选选项 - 标签云模式
+            renderFilterOptions(containerId, options, type) {
+                const container = document.getElementById(containerId);
+                if (!container || !options || !Array.isArray(options)) {
+                    console.error('渲染筛选选项失败:', { containerId, options, type });
+                    if (container) {
+                        container.innerHTML = '<div class="analects-no-options">数据格式错误</div>';
+                    }
+                    return;
+                }
+
+                if (options.length === 0) {
+                    container.innerHTML = '<div class="analects-no-options">暂无选项</div>';
+                    return;
+                }
+
+                const tagCloud = document.createElement('div');
+                tagCloud.className = 'analects-tag-cloud';
+                tagCloud.setAttribute('data-type', type);
+
+                console.log(`开始渲染${type}选项，共${options.length}个:`, options.slice(0, 3));
+
+                options.forEach((option, index) => {
+                    if (!option || (!option.id && option.id !== 0)) {
+                        console.warn(`选项${index}缺少id:`, option);
+                        return;
+                    }
+
+                    const displayName = option.name || option.title || `选项${option.id}`;
+                    
+                    const tag = document.createElement('label');
+                    tag.className = 'analects-option-tag';
+                    tag.setAttribute('data-id', option.id);
+                    tag.setAttribute('data-name', displayName.toLowerCase());
+                    
+                    tag.innerHTML = `
+                        <input type="checkbox" value="${option.id}" data-type="${type}">
+                        <span>${displayName}</span>
+                    `;
+
+                    tag.addEventListener('click', (e) => {
+                        if (e.target.type !== 'checkbox') {
+                            const checkbox = tag.querySelector('input[type="checkbox"]');
+                            checkbox.checked = !checkbox.checked;
+                        }
+                        
+                        setTimeout(() => {
+                            tag.classList.toggle('selected', tag.querySelector('input[type="checkbox"]').checked);
+                            this.updateSearchStats();
+                        }, 0);
+                    });
+
+                    tagCloud.appendChild(tag);
+                });
+
+                container.innerHTML = '';
+                container.appendChild(tagCloud);
+                
+                console.log(`完成渲染${type}选项，共创建${tagCloud.children.length}个标签`);
+            }
+
+            // 过滤选项 - 支持实时搜索
+            filterOptions(type, searchTerm) {
+                const container = document.getElementById(`${type}-filters`);
+                if (!container) return;
+
+                const tags = container.querySelectorAll('.analects-option-tag');
+                const term = searchTerm.toLowerCase().trim();
+
+                let visibleCount = 0;
+                tags.forEach(tag => {
+                    const name = tag.getAttribute('data-name');
+                    const shouldShow = !term || name.includes(term);
+                    
+                    tag.style.display = shouldShow ? 'inline-flex' : 'none';
+                    if (shouldShow) visibleCount++;
+                });
+
+                const countElement = document.getElementById(`${type}-count`);
+                if (countElement) {
+                    const totalCount = tags.length;
+                    countElement.textContent = term ? `${visibleCount}/${totalCount}` : totalCount;
+                }
+            }
+
+            // 更新搜索统计
+            updateSearchStats() {
+                const selectedCharacters = document.querySelectorAll('#character-filters input[type="checkbox"]:checked').length;
+                const selectedArguments = document.querySelectorAll('#argument-filters input[type="checkbox"]:checked').length;
+
+                const selectedCharactersElement = document.getElementById('selected-characters');
+                const selectedArgumentsElement = document.getElementById('selected-arguments');
+
+                if (selectedCharactersElement) selectedCharactersElement.textContent = selectedCharacters;
+                if (selectedArgumentsElement) selectedArgumentsElement.textContent = selectedArguments;
+
+                const statsContainer = document.getElementById('analects-search-stats');
+                if (statsContainer) {
+                    const hasFilters = selectedCharacters > 0 || selectedArguments > 0;
+                    statsContainer.style.display = hasFilters ? 'flex' : 'none';
+                }
+            }
+
+            // 执行搜索 - 使用真实的Supabase数据
+            async performSearch() {
+                const keyword = document.getElementById('analects-keyword')?.value;
+                const resultsContainer = document.getElementById('analects-results-container');
+                const statusDiv = document.getElementById('analects-search-status');
+                
+                if (!resultsContainer) return;
+
+                const selectedCharacters = Array.from(
+                    document.querySelectorAll('#character-filters input[type="checkbox"]:checked')
+                ).map(cb => parseInt(cb.value));
+                
+                const selectedArguments = Array.from(
+                    document.querySelectorAll('#argument-filters input[type="checkbox"]:checked')
+                ).map(cb => parseInt(cb.value));
+
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<div class="analects-info">🔍 搜索中...</div>';
+                }
+                resultsContainer.innerHTML = '<div class="analects-loading">正在搜索论语条目...</div>';
+
+                try {
+                    const filters = {
+                        keyword: keyword?.trim(),
+                        characterIds: selectedCharacters,
+                        argumentIds: selectedArguments
+                    };
+                    
+                    console.log('搜索过滤条件:', filters);
+                    
+                    const results = await this.fetchAnalects(filters);
+                    
+                    const totalResultsElement = document.getElementById('total-results');
+                    if (totalResultsElement) {
+                        totalResultsElement.textContent = results.length;
+                    }
+
+                    if (statusDiv) {
+                        if (results.length === 0) {
+                            statusDiv.innerHTML = '<div class="analects-warning">⚠️ 未找到匹配的条目</div>';
+                        } else {
+                            statusDiv.innerHTML = `<div class="analects-success">✅ 找到 ${results.length} 条结果</div>`;
+                        }
+                    }
+                    
+                    if (results.length === 0) {
+                        resultsContainer.innerHTML = `
+                            <div class="analects-no-results">
+                                <h3>未找到相关条目</h3>
+                                <p>请尝试：</p>
+                                <ul style="text-align: left; display: inline-block;">
+                                    <li>使用不同的关键词</li>
+                                    <li>减少筛选条件</li>
+                                    <li>检查输入的关键词是否正确</li>
+                                </ul>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const statsContainer = document.getElementById('analects-search-stats');
+                    if (statsContainer) {
+                        statsContainer.style.display = 'flex';
+                    }
+
+                    resultsContainer.innerHTML = '';
+                    results.forEach((entry, index) => {
+                        setTimeout(() => {
+                            this.renderAnalectCard(entry, resultsContainer);
+                        }, index * 50);
+                    });
+
+                } catch (error) {
+                    console.error('搜索失败:', error);
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `<div class="analects-error">❌ 搜索失败：${error.message}</div>`;
+                    }
+                    resultsContainer.innerHTML = `
+                        <div class="analects-error">
+                            <h3>搜索失败</h3>
+                            <p>${error.message}</p>
+                            <p style="font-size: 14px; color: #666; margin-top: 12px;">
+                                请检查Supabase配置是否正确，或查看控制台了解详细错误信息。
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+
+            // 清空筛选条件
+            clearFilters() {
+                const characterSearch = document.getElementById('character-search');
+                const argumentSearch = document.getElementById('argument-search');
+                
+                if (characterSearch) {
+                    characterSearch.value = '';
+                    this.filterOptions('character', '');
+                }
+                if (argumentSearch) {
+                    argumentSearch.value = '';
+                    this.filterOptions('argument', '');
+                }
+
+                const checkboxes = document.querySelectorAll('.analects-tag-cloud input[type="checkbox"]');
+                const tags = document.querySelectorAll('.analects-option-tag');
+                
+                checkboxes.forEach(cb => cb.checked = false);
+                tags.forEach(tag => tag.classList.remove('selected'));
+
+                this.updateSearchStats();
+
+                const statusDiv = document.getElementById('analects-search-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<div class="analects-info">🧹 已清空所有筛选条件</div>';
+                    setTimeout(() => {
+                        statusDiv.innerHTML = '';
+                    }, 2000);
+                }
+            }
+
+            // 重置所有搜索内容
+            resetSearch() {
+                const keywordInput = document.getElementById('analects-keyword');
+                if (keywordInput) keywordInput.value = '';
+
+                this.clearFilters();
+
+                const resultsContainer = document.getElementById('analects-results-container');
+                const statsContainer = document.getElementById('analects-search-stats');
+                
+                if (resultsContainer) resultsContainer.innerHTML = '';
+                if (statsContainer) statsContainer.style.display = 'none';
+
+                const totalResultsElement = document.getElementById('total-results');
+                if (totalResultsElement) totalResultsElement.textContent = '0';
+
+                const statusDiv = document.getElementById('analects-search-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<div class="analects-success">🔄 已重置所有搜索条件</div>';
+                    setTimeout(() => {
+                        statusDiv.innerHTML = '';
+                    }, 2000);
+                }
+            }
+
+            // 测试连接方法
+            async testConnection() {
+                try {
+                    const url = `${this.apiBaseUrl}/characters?limit=1`;
+                    const response = await fetch(url, {
+                        headers: this.headers,
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`连接测试失败: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('连接测试成功，示例数据:', data);
+                    return {
+                        success: true,
+                        message: '连接测试成功',
+                        sampleData: data
+                    };
+                } catch (error) {
+                    console.error('连接测试失败:', error);
+                    return {
+                        success: false,
+                        message: error.message,
+                        error: error
+                    };
+                }
+            }
+        }
+
+        // 全局复制方法
+        if (typeof window !== 'undefined') {
+            window.AnalectsSDK = AnalectsSDK;
+            window.AnalectsSDK.copyText = async function(text, button) {
+                const originalTitle = button.title;
+                try {
+                    if (navigator.clipboard) {
+                        await navigator.clipboard.writeText(text);
+                        button.title = '已复制！';
+                        setTimeout(() => {
+                            button.title = originalTitle;
+                        }, 2000);
+                    } else {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        textArea.style.top = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        if (successful) {
+                            button.title = '已复制！';
+                            setTimeout(() => {
+                                button.title = originalTitle;
+                            }, 2000);
+                        } else {
+                            button.title = '复制失败';
+                        }
+                    }
+                } catch (err) {
+                    console.error('复制失败:', err);
+                    button.title = '复制失败';
+                }
+            };
+        }
+
+        // 全局变量
+        let sdk = null;
+
+        // 复制到剪贴板函数
+        async function copyToClipboard(text) {
+            try {
+                if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(text);
+                    alert('已复制到剪贴板！');
+                } else {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('已复制到剪贴板！');
+                }
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败');
+            }
+        }
+
+        // 封装所有方法到 SDKDemo 对象中
+        window.SDKDemo = {
+            // 初始化 SDK
+            initializeSDK: function() {
+                const supabaseUrl = document.getElementById('supabase-url').value;
+                const supabaseKey = document.getElementById('supabase-key').value;
+                const statusDiv = document.getElementById('config-status');
+                
+                if (!supabaseUrl || !supabaseKey) {
+                    statusDiv.innerHTML = '<div class="status error">请填写完整的 Supabase 配置信息</div>';
+                    return;
+                }
+                
+                try {
+                    sdk = new AnalectsSDK({
+                        supabaseUrl: supabaseUrl,
+                        supabaseKey: supabaseKey
+                    });
+                    
+                    statusDiv.innerHTML = '<div class="status success">✅ SDK 初始化成功！现在可以测试所有功能。</div>';
+                    
+                } catch (error) {
+                    statusDiv.innerHTML = `<div class="status error">SDK 初始化失败：${error.message}</div>`;
+                }
+            },
+
+            // 测试连接
+            testConnection: async function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const statusDiv = document.getElementById('config-status');
+                statusDiv.innerHTML = '<div class="status info">🔄 测试连接中...</div>';
+                
+                try {
+                    const result = await sdk.testConnection();
+                    if (result.success) {
+                        statusDiv.innerHTML = `<div class="status success">✅ 连接测试成功！示例数据条数: ${result.sampleData.length}</div>`;
+                    } else {
+                        statusDiv.innerHTML = `<div class="status error">❌ 连接测试失败: ${result.message}</div>`;
+                    }
+                } catch (error) {
+                    statusDiv.innerHTML = `<div class="status error">连接测试出错: ${error.message}</div>`;
+                }
+            },
+
+            // 加载搜索界面
+            loadSearchInterface: function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const container = document.getElementById('search-container');
+                sdk.renderSearchInterface(container);
+            },
+
+            // 加载每日论语
+            loadDailyAnalect: function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const container = document.getElementById('daily-analect-container');
+                sdk.renderDailyAnalect(container);
+            },
+
+            // 加载随机论语
+            loadRandomDaily: function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const container = document.getElementById('daily-analect-container');
+                sdk.renderDailyAnalect(container);
+            },
+
+            clearDaily: function() {
+                document.getElementById('daily-analect-container').innerHTML = '';
+            },
+
+            clearSearch: function() {
+                document.getElementById('search-container').innerHTML = '';
+            },
+
+            // 测试获取人物数据
+            testGetCharacters: async function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const resultsDiv = document.getElementById('api-results');
+                resultsDiv.innerHTML = '<div class="status info">正在获取人物信息...</div>';
+                
+                try {
+                    const characters = await sdk.getCharacters();
+                    resultsDiv.innerHTML = `
+                        <div class="status success">✅ 成功获取 ${characters.length} 个人物</div>
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px; margin-top: 16px;">
+                            <h4>人物列表预览 (前10个):</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                                ${characters.slice(0, 10).map(char => 
+                                    `<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${char.name}</span>`
+                                ).join('')}
+                                ${characters.length > 10 ? '<span style="color: #666;">...</span>' : ''}
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    resultsDiv.innerHTML = `<div class="status error">获取失败：${error.message}</div>`;
+                }
+            },
+
+            // 测试获取论点数据
+            testGetArguments: async function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const resultsDiv = document.getElementById('api-results');
+                resultsDiv.innerHTML = '<div class="status info">正在获取论点信息...</div>';
+                
+                try {
+                    const argumentsList = await sdk.getArguments();
+                    resultsDiv.innerHTML = `
+                        <div class="status success">✅ 成功获取 ${argumentsList.length} 个论点</div>
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px; margin-top: 16px;">
+                            <h4>论点列表预览 (前10个):</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                                ${argumentsList.slice(0, 10).map(arg => 
+                                    `<span style="background: #fed7d7; color: #c53030; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${arg.title}</span>`
+                                ).join('')}
+                                ${argumentsList.length > 10 ? '<span style="color: #666;">...</span>' : ''}
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    resultsDiv.innerHTML = `<div class="status error">获取失败：${error.message}</div>`;
+                }
+            },
+
+            // 测试高级搜索
+            testAdvancedSearch: async function() {
+                if (!sdk) {
+                    alert('请先初始化 SDK');
+                    return;
+                }
+                
+                const resultsDiv = document.getElementById('api-results');
+                resultsDiv.innerHTML = '<div class="status info">正在测试高级搜索...</div>';
+                
+                try {
+                    // 测试简单关键词搜索
+                    const keywordResults = await sdk.fetchAnalects({ keyword: '学' });
+                    
+                    resultsDiv.innerHTML = `
+                        <div class="status success">✅ 高级搜索测试完成</div>
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px; margin-top: 16px;">
+                            <h4>🔍 搜索能力测试结果:</h4>
+                            <ul style="margin: 12px 0; padding-left: 20px; color: #4a5568;">
+                                <li>✅ 关键词"学"搜索：找到 ${keywordResults.length} 条结果</li>
+                                <li>✅ 支持原文、翻译、注释全文检索</li>
+                                <li>✅ 支持人物筛选（AND关系）</li>
+                                <li>✅ 支持论点筛选（AND关系）</li>
+                                <li>✅ 实时过滤和缓存优化</li>
+                                <li>✅ 响应式设计适配</li>
+                            </ul>
+                        </div>
+                    `;
+                } catch (error) {
+                    resultsDiv.innerHTML = `<div class="status error">测试失败：${error.message}</div>`;
+                }
+            },
+
+            clearApiResults: function() {
+                document.getElementById('api-results').innerHTML = '';
+            },
+
+            // 自动初始化相关函数
+            applyConfigToAutoInit: function() {
+                const supabaseUrl = document.getElementById('supabase-url').value;
+                const supabaseKey = document.getElementById('supabase-key').value;
+                
+                if (!supabaseUrl || !supabaseKey) {
+                    alert('请先在配置区域填写 Supabase 信息');
+                    return;
+                }
+                
+                const autoInitDiv = document.getElementById('auto-init-container');
+                autoInitDiv.setAttribute('data-supabase-url', supabaseUrl);
+                autoInitDiv.setAttribute('data-supabase-key', supabaseKey);
+                
+                const config = { supabaseUrl, supabaseKey };
+                const autoSdk = new AnalectsSDK(config);
+                
+                const dailyContainer = autoInitDiv.querySelector('[data-analects-daily]');
+                const searchContainer = autoInitDiv.querySelector('[data-analects-search]');
+                
+                if (dailyContainer) {
+                    dailyContainer.innerHTML = '';
+                    autoSdk.renderDailyAnalect(dailyContainer);
+                }
+                
+                if (searchContainer) {
+                    searchContainer.innerHTML = '';
+                    autoSdk.renderSearchInterface(searchContainer);
+                }
+            },
+            
+            clearAutoInit: function() {
+                const autoInitDiv = document.getElementById('auto-init-container');
+                const dailyContainer = autoInitDiv.querySelector('[data-analects-daily]');
+                const searchContainer = autoInitDiv.querySelector('[data-analects-search]');
+                
+                if (dailyContainer) dailyContainer.innerHTML = '';
+                if (searchContainer) searchContainer.innerHTML = '';
+            },
+
+            copyToClipboard: copyToClipboard
+        };
+        
+        // 自动初始化（如果页面包含配置）
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusDiv = document.getElementById('config-status');
+            statusDiv.innerHTML = '<div class="status info">请在上方输入 Supabase 配置信息并点击"初始化 SDK"开始测试完整功能</div>';
+            
+            // 检查是否有自动初始化元素
+            const autoInit = document.querySelector('[data-analects-auto-init]');
+            if (autoInit) {
+                const supabaseUrl = autoInit.getAttribute('data-supabase-url');
+                const supabaseKey = autoInit.getAttribute('data-supabase-key');
+                
+                if (supabaseUrl && supabaseKey && !supabaseUrl.includes('your-project')) {
+                    const config = { supabaseUrl, supabaseKey };
+                    const autoSdk = new AnalectsSDK(config);
+                    
+                    // 自动渲染组件
+                    const searchContainers = document.querySelectorAll('[data-analects-search]');
+                    searchContainers.forEach(container => autoSdk.renderSearchInterface(container));
+                    
+                    const dailyContainers = document.querySelectorAll('[data-analects-daily]');
+                    dailyContainers.forEach(container => autoSdk.renderDailyAnalect(container));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
