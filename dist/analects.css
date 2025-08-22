@@ -1,0 +1,156 @@
+/* 干净样式：隐藏原生单选/复选圈，使用 Chip 风格；满足 5 项需求 */
+
+:root {
+  --primary: #2d3748;
+  --muted: #718096;
+  --green: #38a169;
+  --bg: #ffffff;
+  --border: #e2e8f0;
+  --card: #fafafa;
+}
+
+* { box-sizing: border-box; }
+.analects-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  margin: 8px 0 24px;
+  overflow: hidden;
+}
+.analects-card-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.analects-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+.analects-card-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: auto;
+}
+.analects-card-body { padding: 14px 16px; }
+
+.analects-searchbar {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.analects-input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+.analects-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.analects-btn.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.analects-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.analects-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+@media (min-width: 720px) {
+  .analects-filters { grid-template-columns: 1fr 1fr; }
+}
+.analects-filter-title {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.analects-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.analects-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+/* 隐藏原生圆圈/方框 */
+.analects-chip input[type="radio"],
+.analects-chip input[type="checkbox"] {
+  display: none;
+}
+/* 选中态 */
+.analects-chip.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(45,55,72,0.08);
+}
+/* “全部章节”：只有在 .selected 时才显示绿色，其余时候为白底 */
+.analects-chip.all-option {
+  background: #fff;
+  border-color: var(--border);
+}
+.analects-chip.all-option.selected {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+.analects-status {
+  font-size: 13px;
+  margin: 8px 0 12px;
+}
+.analects-status.muted { color: var(--muted); }
+
+.analects-results { display: grid; gap: 12px; }
+.analects-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.analects-item .meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.analects-item .text { font-size: 15px; line-height: 1.6; }
+.analects-item .subtext { font-size: 13px; line-height: 1.5; margin-top: 6px; }
+.analects-item .subtext.muted { color: var(--muted); }
+
+.analects-loading { color: var(--muted); }
+.analects-error { color: #e53e3e; }
+
+.analects-loadmore {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/*# sourceMappingURL=analects.css.map*/
