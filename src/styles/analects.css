@@ -1266,4 +1266,27 @@
     display: none;
   }
 }
+
+/* ================================
+   Analects SDK - Responsive Fixes (wordpress)
+   ================================ */
+
+/* 让搜索框宽度占满，与选项区域对齐 */
+.analects-search input[type="text"],
+.analects-search select {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* 人物/论点区域自适应，避免与右侧重叠 */
+.analects-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 控制间距 */
+}
+
+.analects-filters > div {
+  flex: 1 1 200px; /* 最小200px，超出时自动换行 */
+  box-sizing: border-box;
+}
   
