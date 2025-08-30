@@ -402,14 +402,17 @@
 </div>
 
 <script>
-  // 初始化 SDK
-  const sdk = new AnalectsSDK({
-    supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+  // 等待页面加载完成后初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    // 初始化 SDK
+    const sdk = new AnalectsSDK({
+      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+    });
+    
+    // 渲染每日论语
+    sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));
   });
-  
-  // 渲染每日论语
-  sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));
 <\/script>`;
       } else {
         titleText = '论语查询 - 嵌入代码';
@@ -423,14 +426,17 @@
 </div>
 
 <script>
-  // 初始化 SDK
-  const sdk = new AnalectsSDK({
-    supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+  // 等待页面加载完成后初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    // 初始化 SDK
+    const sdk = new AnalectsSDK({
+      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+    });
+    
+    // 渲染论语查询
+    sdk.renderSearchInterface(document.getElementById('analects-search-embed'));
   });
-  
-  // 渲染论语查询
-  sdk.renderSearchInterface(document.getElementById('analects-search-embed'));
 <\/script>`;
       }
       
