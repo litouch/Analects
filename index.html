@@ -191,6 +191,89 @@
     .toast.show {
       transform: translateX(0);
     }
+    
+    /* 页面底部样式 */
+    .footer {
+      margin-top: 60px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      padding: 40px 30px;
+    }
+    
+    .footer-section h4 {
+      color: #2d3748;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #4299e1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      margin-bottom: 8px;
+    }
+    
+    .footer-links a:hover {
+      color: #3182ce;
+      text-decoration: underline;
+    }
+    
+    .footer-links .icon {
+      font-size: 16px;
+    }
+    
+    .footer-desc {
+      color: #718096;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 8px 0 0 0;
+    }
+    
+    .footer-bottom {
+      background: #f7fafc;
+      padding: 20px 30px;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .footer-bottom p {
+      color: #718096;
+      font-size: 14px;
+      margin: 0;
+    }
+    
+    .footer-bottom a {
+      color: #4299e1;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .footer-bottom a:hover {
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 30px 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -241,6 +324,48 @@
 
   <!-- 通知提示 -->
   <div class="toast" id="toast">代码已复制到剪贴板！</div>
+
+  <!-- 页面底部信息 -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>📚 开源项目</h4>
+        <div class="footer-links">
+          <a href="https://github.com/litouch/Analects" target="_blank" rel="noopener noreferrer">
+            <span class="icon">⭐</span>
+            GitHub 仓库
+          </a>
+          <p class="footer-desc">查看源代码、提交 Issue 或贡献代码</p>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>👨‍💻 作者博客</h4>
+        <div class="footer-links">
+          <a href="https://lehua.li" target="_blank" rel="noopener noreferrer">
+            <span class="icon">🌐</span>
+            lehua.li
+          </a>
+          <p class="footer-desc">更多技术分享与项目介绍</p>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>📖 关于项目</h4>
+        <p class="footer-desc">
+          论语 SDK 致力于传播中华传统文化，让更多人能够轻松地在网站中集成论语内容。
+          <br>
+          欢迎 Star ⭐ 和贡献代码！
+        </p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 论语 SDK. Made with ❤️ by 
+        <a href="https://lehua.li" target="_blank" rel="noopener noreferrer">lehua.li</a>
+      </p>
+    </div>
+  </footer>
 
   <!-- 引入 SDK JS -->
   <script src="./analects.js"></script>
