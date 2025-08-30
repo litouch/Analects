@@ -260,6 +260,7 @@ dist/                 # 构建输出目录
 
 webpack.config.js     # Webpack 配置
 package.json          # 项目配置
+index.html            # SDK演示和获取嵌入代码页
 ```
 
 ### 构建配置
@@ -295,6 +296,9 @@ SDK 依赖以下数据库表：
 - IE 11+（有限支持）
 
 ## 📝 更新日志
+
+### v1.0.1 (2024-08-30)
+- ✨ 发布SDK演示及获取嵌入代码页，托管页面https://analects.vercel.app/
 
 ### v1.0.0 (2024-08-24)
 - ✨ 初始发布
