@@ -2,6 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -70,6 +71,17 @@ module.exports = (env, argv) => {
         filename: (pathData) => {
           return pathData.chunk.name === 'analects.min' ? 'analects.min.css' : 'analects.css';
         }
+      }),
+      // 添加复制插件，自动复制静态文件到 dist 目录
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'index.html',
+            to: 'index.html',
+            noErrorOnMissing: true // 如果文件不存在不报错
+          }
+          // 如果您有其他静态资源（如图片、字体等），也可以在这里添加
+        ]
       })
     ],
 
