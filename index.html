@@ -16,6 +16,7 @@
     h1 {
       text-align: center;
       margin-bottom: 30px;
+      color: #2d3748;
     }
     .section {
       background: #fff;
@@ -23,6 +24,172 @@
       border-radius: 8px;
       margin-bottom: 40px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    
+    /* 嵌入代码功能样式 */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 0;
+    }
+    
+    .embed-btn {
+      background: #4299e1;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .embed-btn:hover {
+      background: #3182ce;
+      transform: translateY(-1px);
+    }
+    
+    .embed-btn:active {
+      transform: translateY(0);
+    }
+    
+    .embed-btn.copied {
+      background: #38a169;
+    }
+    
+    .embed-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .embed-modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #718096;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close-btn:hover {
+      color: #2d3748;
+    }
+    
+    .code-block {
+      background: #1a202c;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .copy-code-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #4299e1;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .copy-code-btn:hover {
+      background: #3182ce;
+    }
+    
+    .copy-code-btn.copied {
+      background: #38a169;
+    }
+    
+    .usage-note {
+      background: #edf2f7;
+      padding: 15px;
+      border-radius: 6px;
+      color: #4a5568;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #38a169;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      z-index: 1001;
+    }
+    
+    .toast.show {
+      transform: translateX(0);
     }
   </style>
 </head>
@@ -31,21 +198,57 @@
 
   <!-- 每日论语 -->
   <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">📅 每日论语</h2>
+      <button class="embed-btn" onclick="showEmbedModal('daily')">
+        <span>📋</span>
+        获取嵌入代码
+      </button>
+    </div>
     <div id="daily-analect"></div>
   </div>
 
   <!-- 论语查询 -->
   <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">🔍 论语查询</h2>
+      <button class="embed-btn" onclick="showEmbedModal('search')">
+        <span>📋</span>
+        获取嵌入代码
+      </button>
+    </div>
     <div id="analects-search"></div>
   </div>
+
+  <!-- 嵌入代码弹窗 -->
+  <div class="embed-modal" id="embedModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">嵌入代码</h3>
+        <button class="close-btn" onclick="closeEmbedModal()">&times;</button>
+      </div>
+      
+      <div class="usage-note">
+        <strong>使用说明：</strong>复制下面的代码，粘贴到您的网页 HTML 中即可显示相同效果的论语组件。
+      </div>
+      
+      <div class="code-block">
+        <button class="copy-code-btn" onclick="copyEmbedCode()">复制</button>
+        <pre id="embedCode"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知提示 -->
+  <div class="toast" id="toast">代码已复制到剪贴板！</div>
 
   <!-- 引入 SDK JS -->
   <script src="./analects.js"></script>
   <script>
     // 初始化 SDK
     const sdk = new AnalectsSDK({
-      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', // 替换为你的 Supabase URL
-      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q' // 替换为你的 Supabase anon key
+      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
     });
 
     // 渲染每日论语
@@ -53,6 +256,118 @@
 
     // 渲染论语查询
     sdk.renderSearchInterface(document.getElementById('analects-search'));
+
+    // 嵌入代码功能
+    function showEmbedModal(type) {
+      const modal = document.getElementById('embedModal');
+      const title = document.getElementById('modalTitle');
+      const codeElement = document.getElementById('embedCode');
+      
+      let code, titleText;
+      
+      if (type === 'daily') {
+        titleText = '每日论语 - 嵌入代码';
+        code = `<!-- 引入论语 SDK -->
+<link rel="stylesheet" href="https://analects.vercel.app/analects.css">
+<script src="https://analects.vercel.app/analects.js"></script>
+
+<!-- 每日论语容器 -->
+<div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+  <div id="daily-analect-embed"></div>
+</div>
+
+<script>
+  // 初始化 SDK
+  const sdk = new AnalectsSDK({
+    supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+  });
+  
+  // 渲染每日论语
+  sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));
+</script>`;
+      } else {
+        titleText = '论语查询 - 嵌入代码';
+        code = `<!-- 引入论语 SDK -->
+<link rel="stylesheet" href="https://analects.vercel.app/analects.css">
+<script src="https://analects.vercel.app/analects.js"></script>
+
+<!-- 论语查询容器 -->
+<div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+  <div id="analects-search-embed"></div>
+</div>
+
+<script>
+  // 初始化 SDK
+  const sdk = new AnalectsSDK({
+    supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+  });
+  
+  // 渲染论语查询
+  sdk.renderSearchInterface(document.getElementById('analects-search-embed'));
+</script>`;
+      }
+      
+      title.textContent = titleText;
+      codeElement.textContent = code;
+      modal.classList.add('show');
+      
+      // 存储当前代码供复制使用
+      window.currentEmbedCode = code;
+    }
+    
+    function closeEmbedModal() {
+      document.getElementById('embedModal').classList.remove('show');
+    }
+    
+    function copyEmbedCode() {
+      const button = event.target;
+      const code = window.currentEmbedCode;
+      
+      navigator.clipboard.writeText(code).then(() => {
+        showToast();
+        button.textContent = '已复制!';
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+          button.textContent = '复制';
+          button.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('复制失败:', err);
+        // 降级方案
+        const textArea = document.createElement('textarea');
+        textArea.value = code;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast();
+      });
+    }
+    
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+    
+    // 点击模态框外部关闭
+    document.getElementById('embedModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeEmbedModal();
+      }
+    });
+    
+    // ESC 键关闭模态框
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeEmbedModal();
+      }
+    });
   </script>
 </body>
 </html>
