@@ -2,8 +2,66 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>每日论语 & 论语查询 SDK演示页</title>
+  <title>论语查询 | 每日论语 | 在线论语搜索 - 传承中华经典智慧</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="专业的论语在线查询平台，提供每日论语推送、论语全文搜索、章句检索等功能。学习孔子思想，传承中华传统文化，探索仁义礼智信的深刻内涵。">
+  <meta name="keywords" content="论语查询,每日论语,论语搜索,线上论语,论语全文,孔子语录,论语章句,国学经典,中华文化,儒家思想,论语学习,古籍检索,论语名句,孔子名言,四书五经,经典国学,论语原文,论语注释,论语翻译,传统文化">
+  <meta name="author" content="lehua.li">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="zh-CN">
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="论语查询 | 每日论语 | 在线论语搜索 - 传承中华经典智慧">
+  <meta property="og:description" content="专业的论语在线查询平台，提供每日论语推送、论语全文搜索、章句检索等功能。学习孔子思想，传承中华传统文化。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lunyu.xyz/">
+  <meta property="og:site_name" content="论语查询平台">
+  <meta property="og:locale" content="zh_CN">
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="论语查询 | 每日论语 | 在线论语搜索">
+  <meta name="twitter:description" content="专业的论语在线查询平台，学习孔子思想，传承中华传统文化">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://lunyu.xyz/">
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "论语查询平台",
+    "alternateName": "每日论语",
+    "url": "https://lunyu.xyz/",
+    "description": "专业的论语在线查询平台，提供每日论语推送、论语全文搜索、章句检索等功能",
+    "inLanguage": "zh-CN",
+    "author": {
+      "@type": "Person",
+      "name": "lehua.li",
+      "url": "https://lehua.li"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://lunyu.xyz/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "about": [
+      {
+        "@type": "Thing",
+        "name": "论语",
+        "description": "儒家经典著作，记录孔子及其弟子的言行"
+      },
+      {
+        "@type": "Person",
+        "name": "孔子",
+        "description": "春秋时期思想家、教育家，儒家学派创始人"
+      }
+    ]
+  }
+  </script>
   <!-- 引入 SDK 样式 -->
   <link rel="stylesheet" href="./analects.css">
   <style>
@@ -17,6 +75,18 @@
       text-align: center;
       margin-bottom: 30px;
       color: #2d3748;
+    }
+    /* 隐藏但保持可访问性的标题 */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     .section {
       background: #fff;
