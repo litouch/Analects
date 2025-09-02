@@ -17,6 +17,7 @@
   <meta property="og:description" content="专业的论语在线查询平台，开源论语SDK，提供每日论语推送、论语全文搜索、章句检索等功能。学习孔子思想，传承中华传统文化。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lunyu.xyz/">
+  <meta property="og:image" content="https://analects.vercel.app/logo.png">
   <meta property="og:site_name" content="论语查询平台">
   <meta property="og:locale" content="zh_CN">
   
@@ -24,6 +25,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="论语查询 | 每日论语 | 在线论语搜索">
   <meta name="twitter:description" content="专业的论语在线查询平台，学习孔子思想，传承中华传统文化">
+  <meta name="twitter:image" content="https://analects.vercel.app/logo.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./logo.png">
+  <link rel="apple-touch-icon" href="./logo.png">
   
   <!-- Canonical URL -->
   <link rel="canonical" href="https://lunyu.xyz/">
@@ -71,11 +77,47 @@
       margin: 0;
       padding: 20px;
     }
-    h1 {
+    
+    /* Header样式 */
+    .header {
       text-align: center;
-      margin-bottom: 30px;
-      color: #2d3748;
+      margin-bottom: 40px;
+      padding: 20px 0;
     }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    
+    .logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .main-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0;
+      background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      font-size: 1rem;
+      color: #718096;
+      margin: 8px 0 0 0;
+      font-weight: 400;
+    }
+    
     /* 隐藏但保持可访问性的标题 */
     .sr-only {
       position: absolute;
@@ -390,6 +432,19 @@
     }
     
     @media (max-width: 768px) {
+      .main-title {
+        font-size: 2rem;
+      }
+      
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .logo-container {
+        gap: 12px;
+      }
+      
       .footer-content {
         grid-template-columns: 1fr;
         gap: 25px;
@@ -399,7 +454,15 @@
   </style>
 </head>
 <body>
-  <h1>📜 每日论语 & 论语查询</h1>
+  <!-- 更新后的Header -->
+  <header class="header">
+    <div class="logo-container">
+      <img src="./logo.png" alt="论语SDK Logo" class="logo">
+      <h1 class="main-title">论语SDK</h1>
+    </div>
+    <p class="subtitle">每日论语 · 在线查询 · 开源SDK</p>
+  </header>
+
  <!-- 论语感悟引言 -->
   <div class="section">
     <div class="quotes-container">
@@ -584,67 +647,3 @@
     sdk.renderSearchInterface(document.getElementById('analects-search-embed'));
   });
 <\/script>`;
-      }
-      
-      title.textContent = titleText;
-      codeElement.textContent = code;
-      modal.classList.add('show');
-      
-      // 存储当前代码供复制使用
-      window.currentEmbedCode = code;
-    }
-    
-    function closeEmbedModal() {
-      document.getElementById('embedModal').classList.remove('show');
-    }
-    
-    function copyEmbedCode() {
-      const button = event.target;
-      const code = window.currentEmbedCode;
-      
-      navigator.clipboard.writeText(code).then(() => {
-        showToast();
-        button.textContent = '已复制!';
-        button.classList.add('copied');
-        
-        setTimeout(() => {
-          button.textContent = '复制';
-          button.classList.remove('copied');
-        }, 2000);
-      }).catch(err => {
-        console.error('复制失败:', err);
-        // 降级方案
-        const textArea = document.createElement('textarea');
-        textArea.value = code;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showToast();
-      });
-    }
-    
-    function showToast() {
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
-    }
-    
-    // 点击模态框外部关闭
-    document.getElementById('embedModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeEmbedModal();
-      }
-    });
-    
-    // ESC 键关闭模态框
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeEmbedModal();
-      }
-    });
-  </script>
-</body>
-</html>

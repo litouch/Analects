@@ -72,15 +72,25 @@ module.exports = (env, argv) => {
           return pathData.chunk.name === 'analects.min' ? 'analects.min.css' : 'analects.css';
         }
       }),
-      // 添加复制插件，自动复制静态文件到 dist 目录
+      // 更新复制插件，复制静态文件到 dist 目录
       new CopyWebpackPlugin({
         patterns: [
           {
             from: 'index.html',
             to: 'index.html',
-            noErrorOnMissing: true // 如果文件不存在不报错
+            noErrorOnMissing: true
+          },
+          {
+            from: 'logo.png',
+            to: 'logo.png',
+            noErrorOnMissing: true // 如果logo文件不存在不报错
+          },
+          // 如果您有其他静态资源（如字体等），也可以在这里添加
+          {
+            from: 'favicon.ico',
+            to: 'favicon.ico',
+            noErrorOnMissing: true
           }
-          // 如果您有其他静态资源（如图片、字体等），也可以在这里添加
         ]
       })
     ],
