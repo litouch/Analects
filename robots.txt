@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# 指向sitemap位置
+Sitemap: https://lunyu.xyz/sitemap.xml
+
+# 针对百度搜索引擎优化
+User-agent: Baiduspider
+Allow: /
+
+# 针对搜狗搜索引擎
+User-agent: Sogou web spider
+Allow: /

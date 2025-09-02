@@ -85,6 +85,16 @@ module.exports = (env, argv) => {
             to: 'logo.png',
             noErrorOnMissing: true // 如果logo文件不存在不报错
           },
+          {
+            from: 'robots.txt',
+            to: 'robots.txt',
+            noErrorOnMissing: true // 如果robots文件不存在不报错
+          },
+          {
+            from: 'sitemap.xml',
+            to: 'sitemap.xml',
+            noErrorOnMissing: true // 如果sitemap文件不存在不报错
+          },
           // 如果您有其他静态资源（如字体等），也可以在这里添加
           {
             from: 'favicon.ico',
