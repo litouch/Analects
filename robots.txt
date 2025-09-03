@@ -4,6 +4,14 @@ Allow: /
 # 指向sitemap位置
 Sitemap: https://lunyu.xyz/sitemap.xml
 
+# 针对Google搜索引擎
+User-agent: Googlebot
+Allow: /
+
+# 针对Bing搜索引擎
+User-agent: bingbot
+Allow: /
+
 # 针对百度搜索引擎优化
 User-agent: Baiduspider
 Allow: /
