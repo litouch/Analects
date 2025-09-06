@@ -2,47 +2,55 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>论语查询 | 每日论语 | 在线论语搜索 - 论语SDK</title>
+  <title>论语SDK：每日论语、论语查询、开源代码分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO Meta Tags -->
-  <meta name="description" content="专业的论语在线查询平台，开源论语SDK，提供每日论语推送、论语全文搜索、章句检索等功能。学习孔子思想，传承中华传统文化。">
-  <meta name="keywords" content="论语SDK,论语查询,每日论语,论语搜索,线上论语,论语全文,孔子语录,论语章句,国学经典,中华文化,儒家思想,论语学习,古籍检索,论语名句,孔子名言,四书五经,经典国学,论语原文,论语注释,论语翻译,传统文化">
+  <meta name="description" content="一个开源的论语SDK，提供每日论语、全文检索、随机章句等功能，致力于传播中华传统文化。">
+  <meta name="keywords" content="论语SDK,论语查询,每日论语,论语搜索,线上论语,论语全文,孔子语录,国学经典,中华文化,儒家思想,开源SDK">
   <meta name="author" content="lehua.li">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="zh-CN">
-  
-  <!-- Open Graph Tags -->
-  <meta property="og:title" content="论语查询 | 每日论语 | 在线论语搜索 - 论语SDK">
-  <meta property="og:description" content="专业的论语在线查询平台，开源论语SDK，提供每日论语推送、论语全文搜索、章句检索等功能。学习孔子思想，传承中华传统文化。">
+
+  <!-- Open Graph Tags for Social Sharing -->
+  <meta property="og:title" content="论语SDK：每日论语、论语查询、开源代码分享">
+  <meta property="og:description" content="一个开源的论语SDK，提供每日论语、全文检索等功能，致力于传播中华传统文化。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lunyu.xyz/">
-  <meta property="og:image" content="https://lunyu.xyz/logo.png">
-  <meta property="og:site_name" content="论语查询平台">
+  <meta property="og:image" content="https://lunyu.xyz/og-image.png">
+  <meta property="og:site_name" content="论语SDK">
   <meta property="og:locale" content="zh_CN">
-  
+
   <!-- Twitter Card Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="论语查询 | 每日论语 | 在线论语搜索">
-  <meta name="twitter:description" content="专业的论语在线查询平台，学习孔子思想，传承中华传统文化">
-  <meta name="twitter:image" content="https://lunyu.xyz/logo.png">
+  <meta name="twitter:title" content="论语SDK：每日论语、论语查询、开源代码分享">
+  <meta name="twitter:description" content="一个开源的论语SDK，提供每日论语、全文检索等功能，致力于传播中华传统文化。">
+  <meta name="twitter:image" content="https://lunyu.xyz/og-image.png">
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts Mirror for Mainland China & Added Zen Antique Soft for Logo -->
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&family=Zen+Antique+Soft&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="./favicon.ico">
-  <link rel="apple-touch-icon" href="./favicon.ico">
-  
+  <link rel="icon" type="image/png" href="https://lunyu.xyz/favicon.ico">
+  <link rel="apple-touch-icon" href="https://lunyu.xyz/favicon.ico">
+
   <!-- Canonical URL -->
   <link rel="canonical" href="https://lunyu.xyz/">
-  
+
+  <!-- Analects SDK CSS -->
+  <link rel="stylesheet" href="https://analects.vercel.app/analects.css">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "论语查询平台",
+    "name": "论语SDK",
     "alternateName": "每日论语",
     "url": "https://lunyu.xyz/",
-    "description": "专业的论语在线查询平台，开源论语SDK，提供每日论语推送、论语全文搜索、章句检索等功能",
+    "description": "一个开源的论语SDK，提供每日论语、全文检索、随机章句等功能，致力于传播中华传统文化。",
     "inLanguage": "zh-CN",
     "author": {
       "@type": "Person",
@@ -51,649 +59,419 @@
     },
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://lunyu.xyz/?q={search_term_string}",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://lunyu.xyz/?q={search_term_string}"
+      },
       "query-input": "required name=search_term_string"
     },
     "about": [
       {
         "@type": "Thing",
         "name": "论语",
-        "description": "儒家经典著作，记录孔子及其弟子的言行"
+        "description": "儒家经典著作，记录孔子及其弟子的言行。"
       },
       {
         "@type": "Person",
         "name": "孔子",
-        "description": "春秋时期思想家、教育家，儒家学派创始人"
+        "description": "春秋时期思想家、教育家，儒家学派创始人。"
       }
     ]
   }
   </script>
-  <!-- 引入 SDK 样式 -->
-  <link rel="stylesheet" href="./analects.css">
+
   <style>
+    /* Custom styles to complement Tailwind CSS */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f7fafc;
-      margin: 0;
-      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc; /* Lighter gray background */
+      scroll-behavior: smooth;
     }
-	
-	/* Header样式 */
-	.header {
-	 text-align: center;
-	 margin-bottom: 30px;
-	 padding: 15px 0;
-	}
-
-	.logo {
-	 width: 150px;
-	 height: 67px;
-	 object-fit: contain;
-	 margin-bottom: 12px;
-	}
-
-	.main-title {
-	 font-size: 1rem;
-	 font-weight: 600;
-	 color: #2d3748;
-	 margin: 0;
-	 background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-	 -webkit-background-clip: text;
-	 -webkit-text-fill-color: transparent;
-	 background-clip: text;
-	 letter-spacing: 0.3px;
-	}
-		
-  
-    /* 隐藏但保持可访问性的标题 */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-    .section {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 40px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      position: relative;
-    }
-    
-	/* 引言区域样式 */
-	    .quotes-container {
-	      display: grid;
-	      gap: 16px;
-	    }
-    
-	    .quote-item {
-	      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-	      border-left: 4px solid #4299e1;
-	      padding: 16px 20px;
-	      border-radius: 0 6px 6px 0;
-	      position: relative;
-	      transition: all 0.3s ease;
-	    }
-    
-	    .quote-item:hover {
-	      transform: translateX(4px);
-	      box-shadow: 0 4px 12px rgba(66, 153, 225, 0.15);
-	    }
-    
-	    .quote-text {
-	      font-size: 14px;
-	      line-height: 1.6;
-	      color: #2d3748;
-	      margin-bottom: 8px;
-	      text-align: justify;
-	      letter-spacing: 0.2px;
-	    }
-    
-	    .quote-author {
-	      font-size: 12px;
-	      color: #4a5568;
-	      font-weight: 500;
-	      text-align: right;
-	      font-style: italic;
-	    }
-    
-	    @media (max-width: 768px), (max-height: 768px) and (orientation: landscape) {
-	      .quote-item {
-	        padding: 12px 16px;
-	      }
-      
-	      .quote-text {
-	        font-size: 13px;
-	        line-height: 1.5;
-	      }
-      
-	      .quote-author {
-	        font-size: 11px;
-	      }
-	    }
-	
-    /* 嵌入代码功能样式 */
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    
-    .section-title {
-      font-size: 1.25rem;
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Noto Serif SC', serif;
       font-weight: 600;
-      color: #2d3748;
-      margin: 0;
     }
-    
-    .embed-btn {
-      background: #4299e1;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .font-logo {
+      font-family: 'Zen Antique Soft', serif;
     }
-    
-    .embed-btn:hover {
-      background: #3182ce;
-      transform: translateY(-1px);
+    .font-serif-quote {
+      font-family: 'Noto Serif SC', serif;
     }
-    
-    .embed-btn:active {
-      transform: translateY(0);
+    .btn-primary {
+      @apply bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-all duration-300 transform hover:-translate-y-0.5;
     }
-    
-    .embed-btn.copied {
-      background: #38a169;
+    .card {
+      @apply bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200/80;
     }
-    
-    .embed-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
+    .chapter-item {
+        @apply bg-gray-50/80 border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:border-blue-300 hover:bg-white;
     }
-    
-    .embed-modal.show {
-      display: flex;
-    }
-    
-    .modal-content {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .modal-title {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #2d3748;
-    }
-    
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: #718096;
-      padding: 0;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .close-btn:hover {
-      color: #2d3748;
-    }
-    
-    .code-block {
-      background: #1a202c;
-      color: #e2e8f0;
-      padding: 20px;
-      border-radius: 8px;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 14px;
-      line-height: 1.5;
-      overflow-x: auto;
-      margin-bottom: 15px;
-      position: relative;
-    }
-    
-    .copy-code-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #4299e1;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s ease;
-    }
-    
-    .copy-code-btn:hover {
-      background: #3182ce;
-    }
-    
-    .copy-code-btn.copied {
-      background: #38a169;
-    }
-    
-    .usage-note {
-      background: #edf2f7;
-      padding: 15px;
-      border-radius: 6px;
-      color: #4a5568;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #38a169;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-weight: 500;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-      z-index: 1001;
-    }
-    
-    .toast.show {
-      transform: translateX(0);
-    }
-    
-    /* 页面底部样式 */
-    .footer {
-      margin-top: 60px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      overflow: hidden;
-    }
-    
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      padding: 40px 30px;
-    }
-    
-    .footer-section h4 {
-      color: #2d3748;
-      font-size: 1.1rem;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .footer-links a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #4299e1;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s ease;
-      margin-bottom: 8px;
-    }
-    
-    .footer-links a:hover {
-      color: #3182ce;
-      text-decoration: underline;
-    }
-    
-    .footer-links .icon {
-      font-size: 16px;
-    }
-    
-    .footer-desc {
-      color: #718096;
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 8px 0 0 0;
-    }
-    
-    .footer-bottom {
-      background: #f7fafc;
-      padding: 20px 30px;
-      text-align: center;
-      border-top: 1px solid #e2e8f0;
-    }
-    
-    .footer-bottom p {
-      color: #718096;
-      font-size: 14px;
-      margin: 0;
-    }
-    
-    .footer-bottom a {
-      color: #4299e1;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    
-    .footer-bottom a:hover {
-      text-decoration: underline;
-    }
-    
-	@media (max-width: 768px) {
-	  .header {
-	    padding: 12px 0;
-	    margin-bottom: 25px;
-	  }
-  
-	  .logo {
-	    width: 120px;
-	    height: 54px;
-	    margin-bottom: 10px;
-	  }
-  
-	  .main-title {
-	    font-size: 0.9rem;
-	  }
-  
-	  .footer-content {
-	    grid-template-columns: 1fr;
-	    gap: 25px;
-	    padding: 30px 20px;
-	  }
-	}
   </style>
 </head>
-<body>
-	
- <header class="header">
-     <img src="./logo.png" alt="论语SDK Logo" class="logo">
-     <h1 class="main-title">每日论语 · 论语查询 · 开源SDK</h1>
-   </header>
-   
- <!-- 论语感悟引言 -->
-  <div class="section">
-    <div class="quotes-container">
-      <div class="quote-item">
-        <div class="quote-text">
-          孔子对曾参说："吾道一以贯之。"曾参告诉其它同学说："夫子之道，忠恕而已矣。"（4.15）"吾道"就是孔子自己的整个思想体系，而贯穿这个思想体系的，必然是它的核心。分别讲是"忠恕"，概括讲是"仁"。孔子自己曾给"恕"下了定义："己所不欲，勿施于人。"（15.24）这是"仁"的消极面。另一面是积极面："己欲立而立人，己欲达而达人。"（6.30）
-        </div>
-        <div class="quote-author">—— 杨伯峻</div>
-      </div>
-      
-      <div class="quote-item">
-        <div class="quote-text">
-          尽己之心以待人谓之忠，推己之心以及人谓之恕。
-        </div>
-        <div class="quote-author">—— 钱穆</div>
-      </div>
-      
-      <div class="quote-item">
-        <div class="quote-text">
-          孔子思想的核心，一般都说是'仁'，综合下来一分为二，一是'为仁由己'，把自己当人；一是'仁者爱人'，把别人当人...仁的核心就是'忠恕'。'尽己曰忠'，忠也就是为仁由己；而所谓恕道，恕也就是仁者爱人。
-        </div>
-        <div class="quote-author">—— 刘勃《匏瓜》</div>
-      </div>
-    </div>
-  </div>
-  <!-- 每日论语 -->
-  <div class="section">
-    <div class="section-header">
-      <h2 class="section-title">📅 每日论语</h2>
-      <button class="embed-btn" onclick="showEmbedModal('daily')">
-        <span>📋</span>
-        获取嵌入代码
-      </button>
-    </div>
-    <div id="daily-analect"></div>
-  </div>
+<body class="text-gray-800 antialiased">
 
-  <!-- 论语查询 -->
-  <div class="section">
-    <div class="section-header">
-      <h2 class="section-title">🔍 论语查询</h2>
-      <button class="embed-btn" onclick="showEmbedModal('search')">
-        <span>📋</span>
-        获取嵌入代码
-      </button>
-    </div>
-    <div id="analects-search"></div>
-  </div>
+  <!-- Main Container -->
+  <div class="container mx-auto max-w-5xl px-4 py-8">
 
-  <!-- 嵌入代码弹窗 -->
-  <div class="embed-modal" id="embedModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalTitle">嵌入代码</h3>
-        <button class="close-btn" onclick="closeEmbedModal()">&times;</button>
-      </div>
-      
-      <div class="usage-note">
-        <strong>使用说明：</strong>复制下面的代码，粘贴到您的网页 HTML 中即可显示相同效果的论语组件。
-      </div>
-      
-      <div class="code-block">
-        <button class="copy-code-btn" onclick="copyEmbedCode()">复制</button>
-        <pre id="embedCode"></pre>
-      </div>
-    </div>
-  </div>
-
-  <!-- 通知提示 -->
-  <div class="toast" id="toast">代码已复制到剪贴板！</div>
-
-  <!-- 页面底部信息 -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>📚 开源项目</h4>
-        <div class="footer-links">
-          <a href="https://github.com/litouch/Analects" target="_blank" rel="noopener noreferrer">
-            <span class="icon">⭐</span>
-            GitHub 仓库
-          </a>
-          <p class="footer-desc">查看源代码、提交 Issue 或贡献代码</p>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h4>👨‍💻 作者博客</h4>
-        <div class="footer-links">
-          <a href="https://lehua.li" target="_blank" rel="noopener noreferrer">
-            <span class="icon">🌐</span>
-            lehua.li
-          </a>
-          <p class="footer-desc">更多技术分享与项目介绍</p>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h4>📖 关于项目</h4>
-        <p class="footer-desc">
-          论语 SDK 致力于传播中华传统文化，让更多人能够轻松地在网站中集成论语内容。
-          <br>
-          欢迎 Star ⭐ 和贡献代码！
-        </p>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <p>&copy; 2025 论语 SDK. Made with ❤️ by 
-        <a href="https://lehua.li" target="_blank" rel="noopener noreferrer">lehua.li</a>
+    <!-- Header Section with Text Logo (Compact) -->
+    <header class="text-center mb-8">
+      <h1 class="font-logo text-4xl md:text-5xl font-normal text-gray-900 mb-2">
+        論語SDK
+      </h1>
+      <p class="text-lg md:text-xl font-medium text-gray-500 tracking-tight">
+        每日论语、论语查询、开源分享
       </p>
+    </header>
+
+    <!-- Introduction Section (Updated Text) -->
+    <section class="mb-8 bg-white/80 backdrop-blur-sm border border-gray-200/80 p-6 rounded-xl shadow-md">
+       <div class="max-w-3xl mx-auto text-left text-gray-600 space-y-4 text-sm md:text-base leading-relaxed">
+          <p><strong class="font-bold text-gray-900">《论语》</strong>是孔子及其弟子言论的汇编，由孔子门生及再传弟子集录整理（疑为曾参弟子），是儒家重要经典。南宋朱熹将其定为四书之首并做集注，明清科举更不出四书，论语的影响由此深远。论语中的教育、道德、伦理、政治思想和言语已经深深融入华夏文化的血脉和思维中。今通行本《论语》共计20篇，约1.2万字。</p>
+          <p><strong class="font-bold text-gray-900">孔子</strong>（公元前551—479年），名丘，字仲尼，终年七十二岁。远祖是商人，周灭商后封于宋。先祖孔父嘉是宋国宗室，后代出奔到鲁国。伟大的思想家、教育家，儒家思想的奠基人，被誉为"万世师表"。</p>
+      </div>
+    </section>
+
+    <!-- Core Features Grid (Adjusted Spacing) -->
+    <main class="space-y-6">
+
+      <!-- 1. Daily Analects Section -->
+      <section id="daily" class="card">
+        <div class="p-6 md:p-8">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-3 sm:mb-0">📅 每日论语</h2>
+            <button class="btn-primary flex items-center gap-2" onclick="showEmbedModal('daily')">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+              获取嵌入代码
+            </button>
+          </div>
+          <div id="daily-analect" class="bg-gray-50 rounded-lg p-4 min-h-[100px]">
+            <!-- SDK will render here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Twenty Chapters Section -->
+      <section id="chapters" class="card">
+        <div class="p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">论语二十篇</h2>
+            <div id="chapter-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                <!-- Chapters will be injected by JS -->
+            </div>
+            <div class="text-center mt-6">
+                <button id="toggle-chapters-btn" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors">展开全部</button>
+            </div>
+        </div>
+      </section>
+      
+      <!-- 3. Analects Search Section -->
+      <section id="search" class="card">
+        <div class="p-6 md:p-8">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-3 sm:mb-0">🔍 论语查询</h2>
+            <button class="btn-primary flex items-center gap-2" onclick="showEmbedModal('search')">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+              获取嵌入代码
+            </button>
+          </div>
+          <div id="analects-search">
+            <!-- SDK will render here -->
+          </div>
+        </div>
+      </section>
+      
+      <!-- 4. Quotes on "Ren" (Benevolence) - Updated with 3 quotes -->
+      <section id="quotes">
+        <div class="space-y-8">
+            <div class="border-l-4 border-blue-500 pl-6 py-2">
+              <blockquote class="text-gray-700 leading-relaxed">
+                <p class="font-serif-quote text-lg">孔子对曾参说："吾道一以贯之。"曾参告诉其它同学说："夫子之道，忠恕而已矣。"（4.15）"吾道"就是孔子自己的整个思想体系，而贯穿这个思想体系的，必然是它的核心。分别讲是"忠恕"，概括讲是"仁"。孔子自己曾给"恕"下了定义："己所不欲，勿施于人。"（15.24）这是"仁"的消极面。另一面是积极面："己欲立而立人，己欲达而达人。"（6.30）</p>
+              </blockquote>
+              <cite class="block text-right mt-3 text-sm text-gray-500 not-italic">— 杨伯峻</cite>
+            </div>
+            <div class="border-l-4 border-blue-500 pl-6 py-2">
+              <blockquote class="text-gray-700 leading-relaxed">
+                 <p class="font-serif-quote text-lg">尽己之心以待人谓之忠，推己之心以及人谓之恕。</p>
+              </blockquote>
+              <cite class="block text-right mt-3 text-sm text-gray-500 not-italic">— 钱穆</cite>
+            </div>
+            <div class="border-l-4 border-blue-500 pl-6 py-2">
+              <blockquote class="text-gray-700 leading-relaxed">
+                 <p class="font-serif-quote text-lg">孔子思想的核心，一般都说是'仁'，综合下来一分为二，一是'为仁由己'，把自己当人；一是'仁者爱人'，把别人当人...仁的核心就是'忠恕'。'尽己曰忠'，忠也就是为仁由己；而所谓恕道，恕也就是仁者爱人。</p>
+              </blockquote>
+              <cite class="block text-right mt-3 text-sm text-gray-500 not-italic">— 刘勃《匏瓜》</cite>
+            </div>
+        </div>
+      </section>
+
+      <!-- 5. Recommended Books Section (3 Columns) -->
+      <section id="books" class="card">
+        <div class="p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">相关著作推荐</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800">论语译注</h3>
+                    <p class="text-gray-500 text-sm mt-1">杨伯峻 著</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800">论语新解</h3>
+                    <p class="text-gray-500 text-sm mt-1">钱穆 著</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800">论语集释</h3>
+                    <p class="text-gray-500 text-sm mt-1">程树德 著</p>
+                </div>
+            </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h4 class="font-semibold text-base text-gray-800 mb-3">📚 开源项目</h4>
+                <a href="https://github.com/litouch/Analects" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">GitHub 仓库</a>
+                <p class="text-sm text-gray-500 mt-1">查看源码、提交 Issue 或贡献代码。</p>
+            </div>
+            <div>
+                <h4 class="font-semibold text-base text-gray-800 mb-3">👨‍💻 作者博客</h4>
+                <a href="https://lehua.li" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">lehua.li</a>
+                <p class="text-sm text-gray-500 mt-1">更多技术分享与项目介绍。</p>
+            </div>
+            <div>
+                <h4 class="font-semibold text-base text-gray-800 mb-3">📖 关于项目</h4>
+                <p class="text-sm text-gray-500 mt-1">论语 SDK 致力于传播中华传统文化，让更多人能轻松集成和学习论语。</p>
+            </div>
+        </div>
+        <div class="mt-10 text-center text-sm text-gray-500">
+            <p>&copy; <span id="year"></span> 论语 SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+        </div>
+    </footer>
+
+  </div>
+
+  <!-- Embed Code Modal -->
+  <div id="embedModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div id="modalContent" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform scale-95 transition-all duration-300">
+      <div class="flex justify-between items-center p-5 border-b border-gray-200">
+        <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">嵌入代码</h3>
+        <button onclick="closeEmbedModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+      </div>
+      <div class="p-6 overflow-y-auto">
+        <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-r-lg mb-5 text-sm">
+          <strong>使用说明：</strong> 复制下方代码，粘贴到您网页的 HTML 中即可。
+        </div>
+        <div class="bg-gray-900 rounded-lg p-4 relative font-mono text-sm text-gray-200">
+          <button onclick="copyEmbedCode(this)" class="absolute top-3 right-3 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1 px-3 rounded-md transition-colors">复制</button>
+          <pre id="embedCode" class="overflow-x-auto whitespace-pre-wrap"></pre>
+        </div>
+      </div>
     </div>
-  </footer>
+  </div>
 
-  <!-- 引入 SDK JS -->
-  <script src="./analects.js"></script>
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 right-5 bg-green-600 text-white py-2 px-5 rounded-lg shadow-lg transform translate-x-[120%] transition-transform duration-300 ease-in-out z-50">
+    代码已复制到剪贴板！
+  </div>
+
+  <!-- Analects SDK JS -->
+  <script src="https://analects.vercel.app/analects.js"></script>
   <script>
-    // 初始化 SDK
-    const sdk = new AnalectsSDK({
-      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
-    });
-
-    // 渲染每日论语
-    sdk.renderDailyAnalect(document.getElementById('daily-analect'));
-
-    // 渲染论语查询
-    sdk.renderSearchInterface(document.getElementById('analects-search'));
-
-    // 嵌入代码功能
-    function showEmbedModal(type) {
-      const modal = document.getElementById('embedModal');
-      const title = document.getElementById('modalTitle');
-      const codeElement = document.getElementById('embedCode');
-      
-      let code, titleText;
-      
-      if (type === 'daily') {
-        titleText = '每日论语 - 嵌入代码';
-        code = `<!-- 引入论语 SDK -->
-<link rel="stylesheet" href="https://analects.vercel.app/analects.css">
-<script src="https://analects.vercel.app/analects.js"><\/script>
-
-<!-- 每日论语容器 -->
-<div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-  <div id="daily-analect-embed"></div>
-</div>
-
-<script>
-  // 等待页面加载完成后初始化
-  document.addEventListener('DOMContentLoaded', function() {
-    // 初始化 SDK
-    const sdk = new AnalectsSDK({
-      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
-    });
+    // --- SDK Initialization ---
+    let sdk;
+    try {
+        sdk = new AnalectsSDK({
+            supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+            supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
+        });
+        sdk.renderDailyAnalect(document.getElementById('daily-analect'));
+        sdk.renderSearchInterface(document.getElementById('analects-search'));
+    } catch (e) {
+        console.error("AnalectsSDK failed to initialize.", e);
+    }
     
-    // 渲染每日论语
+
+    // --- Dynamic Content & Event Listeners ---
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('year').textContent = new Date().getFullYear();
+        const chapters = [
+            { name: "学而第一", desc: "主要讲“务本”的道理，引导初学者进入“道德之门”。" },
+            { name: "为政第二", desc: "主要讲治理国家的道理和方法。" },
+            { name: "八佾第三", desc: "主要记录孔子谈论礼乐。" },
+            { name: "里仁第四", desc: "主要讲仁德的道理。" },
+            { name: "公冶长第五", desc: "主要讲评价古今人物及其得失。" },
+            { name: "雍也第六", desc: "记录孔子和弟子们的言行。" },
+            { name: "述而第七", desc: "主要记录孔子的容貌和言行。" },
+            { name: "泰伯第八", desc: "主要记孔子和曾子的言论及其对古人的评论。" },
+            { name: "子罕第九", desc: "主要记孔子言论，重点为孔子的行事风格。" },
+            { name: "乡党第十", desc: "主要记录孔子言谈举止，衣食住行和生活习惯。" },
+            { name: "先进第十一", desc: "主要记录孔子教育言论和对其弟子的评论。" },
+            { name: "颜渊第十二", desc: "主要讲孔子教育弟子如何实行仁德、为政和处世。" },
+            { name: "子路第十三", desc: "主要记录孔子论述为人和为政的道理。" },
+            { name: "宪问第十四", desc: "主要记录孔子和其弟子论修身为人之道。" },
+            { name: "卫灵公第十五", desc: "主要记录关于仁德治国方面的言论。" },
+            { name: "季氏第十六", desc: "主要记孔子论君子修身，以及如何用礼法治国。" },
+            { name: "阳货第十七", desc: "主要记录孔子论述仁德，阐发礼乐治国之道。" },
+            { name: "微子第十八", desc: "主要记录古代圣贤事迹与孔子周游中的言行。" },
+            { name: "子张第十九", desc: "主要记录孔子和弟子们探讨求学为道的言论。" },
+            { name: "尧曰第二十", desc: "主要记录古代圣贤的言论和孔子对于为政的论述。" }
+        ];
+        const grid = document.getElementById('chapter-grid');
+        chapters.forEach((chapter, index) => {
+            const item = document.createElement('div');
+            item.className = 'chapter-item';
+            if (index >= 6) { item.classList.add('hidden'); }
+            item.innerHTML = `<h4 class="font-semibold text-gray-900 text-base mb-1">${chapter.name}</h4><p class="text-gray-500">${chapter.desc}</p>`;
+            grid.appendChild(item);
+        });
+        const toggleBtn = document.getElementById('toggle-chapters-btn');
+        toggleBtn.addEventListener('click', () => {
+            const hiddenItems = grid.querySelectorAll('.hidden');
+            if (hiddenItems.length > 0) {
+                hiddenItems.forEach(item => item.classList.remove('hidden'));
+                toggleBtn.textContent = '收起列表';
+            } else {
+                Array.from(grid.children).forEach((item, index) => {
+                    if (index >= 6) item.classList.add('hidden');
+                });
+                toggleBtn.textContent = '展开全部';
+            }
+        });
+    });
+
+    // --- Modal Functionality (REPAIRED and ROBUST) ---
+    const embedModal = document.getElementById('embedModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalTitle = document.getElementById('modalTitle');
+    const embedCodeEl = document.getElementById('embedCode');
+    let codeToCopy = '';
+
+    function showEmbedModal(type) {
+      const sdkUrl = 'https://analects.vercel.app';
+      // Hardcoding credentials for robustness, as in the original file.
+      const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q' }`;
+
+      if (type === 'daily') {
+        modalTitle.textContent = '每日论语 - 嵌入代码';
+        codeToCopy = `<!-- 1. 引入论语 SDK -->
+<link rel="stylesheet" href="${sdkUrl}/analects.css">
+<script src="${sdkUrl}/analects.js"><\/script>
+
+<!-- 2. 准备容器 -->
+<div id="daily-analect-embed"></div>
+
+<!-- 3. 初始化并渲染 -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sdk = new AnalectsSDK(${supabaseCreds});
     sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));
   });
 <\/script>`;
       } else {
-        titleText = '论语查询 - 嵌入代码';
-        code = `<!-- 引入论语 SDK -->
-<link rel="stylesheet" href="https://analects.vercel.app/analects.css">
-<script src="https://analects.vercel.app/analects.js"><\/script>
+        modalTitle.textContent = '论语查询 - 嵌入代码';
+        codeToCopy = `<!-- 1. 引入论语 SDK -->
+<link rel="stylesheet" href="${sdkUrl}/analects.css">
+<script src="${sdkUrl}/analects.js"><\/script>
 
-<!-- 论语查询容器 -->
-<div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-  <div id="analects-search-embed"></div>
-</div>
+<!-- 2. 准备容器 -->
+<div id="analects-search-embed"></div>
 
+<!-- 3. 初始化并渲染 -->
 <script>
-  // 等待页面加载完成后初始化
   document.addEventListener('DOMContentLoaded', function() {
-    // 初始化 SDK
-    const sdk = new AnalectsSDK({
-      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjQ1OTIsImV4cCI6MjA2OTk0MDU5Mn0.2xP2sqHBdFyO1phAYsO96YEVo-qBXVrXqv1k0ct7-7Q'
-    });
-    
-    // 渲染论语查询
+    const sdk = new AnalectsSDK(${supabaseCreds});
     sdk.renderSearchInterface(document.getElementById('analects-search-embed'));
   });
 <\/script>`;
       }
       
-      title.textContent = titleText;
-      codeElement.textContent = code;
-      modal.classList.add('show');
+      embedCodeEl.textContent = codeToCopy;
       
-      // 存储当前代码供复制使用
-      window.currentEmbedCode = code;
+      embedModal.classList.remove('opacity-0', 'pointer-events-none');
+      modalContent.classList.remove('scale-95');
+      modalContent.classList.add('scale-100');
     }
     
     function closeEmbedModal() {
-      document.getElementById('embedModal').classList.remove('show');
+      embedModal.classList.add('opacity-0');
+      modalContent.classList.remove('scale-100');
+      modalContent.classList.add('scale-95');
+      setTimeout(() => embedModal.classList.add('pointer-events-none'), 300);
     }
     
-    function copyEmbedCode() {
-      const button = event.target;
-      const code = window.currentEmbedCode;
-      
-      navigator.clipboard.writeText(code).then(() => {
-        showToast();
-        button.textContent = '已复制!';
-        button.classList.add('copied');
+    function copyEmbedCode(button) {
+      // Modern method
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(codeToCopy).then(() => {
+          showToast('代码已复制到剪贴板！');
+          button.textContent = '已复制!';
+          setTimeout(() => { button.textContent = '复制'; }, 2000);
+        }).catch(err => {
+          console.error('Modern copy failed, trying fallback:', err);
+          fallbackCopyTextToClipboard(button, codeToCopy); // Fallback on error
+        });
+      } else {
+        console.log('Using fallback copy method.');
+        fallbackCopyTextToClipboard(button, codeToCopy); // Fallback for older browsers
+      }
+    }
+
+    // Fallback copy function from the original file
+    function fallbackCopyTextToClipboard(button, text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
         
-        setTimeout(() => {
-          button.textContent = '复制';
-          button.classList.remove('copied');
-        }, 2000);
-      }).catch(err => {
-        console.error('复制失败:', err);
-        // 降级方案
-        const textArea = document.createElement('textarea');
-        textArea.value = code;
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
         document.body.appendChild(textArea);
+        textArea.focus();
         textArea.select();
-        document.execCommand('copy');
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showToast('代码已复制到剪贴板！');
+                button.textContent = '已复制!';
+                setTimeout(() => { button.textContent = '复制'; }, 2000);
+            } else {
+                 showToast('复制失败，请手动操作', true);
+            }
+        } catch (err) {
+            showToast('复制失败，请手动操作', true);
+            console.error('Fallback copy failed', err);
+        }
+
         document.body.removeChild(textArea);
-        showToast();
-      });
     }
     
-    function showToast() {
+    function showToast(message = '代码已复制到剪贴板！', isError = false) {
       const toast = document.getElementById('toast');
-      toast.classList.add('show');
+      toast.textContent = message;
+      if (isError) {
+        toast.classList.remove('bg-green-600');
+        toast.classList.add('bg-red-600');
+      } else {
+        toast.classList.remove('bg-red-600');
+        toast.classList.add('bg-green-600');
+      }
+      toast.classList.remove('translate-x-[120%]');
       setTimeout(() => {
-        toast.classList.remove('show');
+        toast.classList.add('translate-x-[120%]');
       }, 3000);
     }
     
-    // 点击模态框外部关闭
-    document.getElementById('embedModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeEmbedModal();
-      }
+    embedModal.addEventListener('click', (e) => {
+      if (e.target === embedModal) closeEmbedModal();
     });
     
-    // ESC 键关闭模态框
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeEmbedModal();
-      }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeEmbedModal();
     });
   </script>
+
 </body>
 </html>

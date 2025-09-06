@@ -81,8 +81,8 @@ module.exports = (env, argv) => {
             noErrorOnMissing: true
           },
           {
-            from: 'logo.png',
-            to: 'logo.png',
+            from: 'og-image.png',
+            to: 'og-image.png',
             noErrorOnMissing: true // 如果logo文件不存在不报错
           },
           {
