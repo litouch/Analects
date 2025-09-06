@@ -978,21 +978,34 @@ var AnalectsSDK = /*#__PURE__*/function () {
     key: "setupAutoLoad",
     value: function setupAutoLoad() {
       var _this6 = this;
+      // 如果之前存在监听器，先从 window 移除
       if (this.scrollListener) {
         window.removeEventListener('scroll', this.scrollListener);
       }
       this.scrollListener = function () {
+        // 检查是否应该加载
         if (!_this6.isAutoLoadingEnabled || _this6.pagination.isLoading || !_this6.pagination.hasMore || _this6.pagination.totalLoaded === 0) {
           return;
         }
-        var _document$documentEle = document.documentElement,
-          scrollTop = _document$documentEle.scrollTop,
-          scrollHeight = _document$documentEle.scrollHeight;
-        var windowHeight = window.innerHeight;
-        if (scrollTop + windowHeight >= scrollHeight - 200) {
+
+        // 获取结果容器元素
+        var resultsContainer = document.getElementById('analects-results-container');
+        if (!resultsContainer) {
+          return; // 如果容器不存在，则不执行任何操作
+        }
+
+        // 关键修改：检查 resultsContainer 元素的位置
+        var rect = resultsContainer.getBoundingClientRect();
+
+        // 当结果容器的底部进入视口，并且距离视口底部小于等于 200px 时，加载更多
+        // rect.bottom 是容器底部相对于视口顶部的距离
+        // window.innerHeight 是视口的高度
+        if (rect.bottom <= window.innerHeight + 200) {
           _this6.loadMoreResults();
         }
       };
+
+      // 监听器仍然绑定在 window 对象上
       window.addEventListener('scroll', this.scrollListener, {
         passive: true
       });

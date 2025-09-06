@@ -801,27 +801,39 @@ class AnalectsSDK {
 
   // 设置自动加载功能
   setupAutoLoad() {
-    if (this.scrollListener) {
-      window.removeEventListener('scroll', this.scrollListener);
-    }
-
-    this.scrollListener = () => {
-      if (!this.isAutoLoadingEnabled || 
-          this.pagination.isLoading || 
-          !this.pagination.hasMore ||
-          this.pagination.totalLoaded === 0) {
-        return;
+      // 如果之前存在监听器，先从 window 移除
+      if (this.scrollListener) {
+          window.removeEventListener('scroll', this.scrollListener);
       }
 
-      const { scrollTop, scrollHeight } = document.documentElement;
-      const windowHeight = window.innerHeight;
-    
-      if (scrollTop + windowHeight >= scrollHeight - 200) {
-        this.loadMoreResults();
-      }
-    };
+      this.scrollListener = () => {
+          // 检查是否应该加载
+          if (!this.isAutoLoadingEnabled || 
+              this.pagination.isLoading || 
+              !this.pagination.hasMore ||
+              this.pagination.totalLoaded === 0) {
+              return;
+          }
 
-    window.addEventListener('scroll', this.scrollListener, { passive: true });
+          // 获取结果容器元素
+          const resultsContainer = document.getElementById('analects-results-container');
+          if (!resultsContainer) {
+              return; // 如果容器不存在，则不执行任何操作
+          }
+
+          // 关键修改：检查 resultsContainer 元素的位置
+          const rect = resultsContainer.getBoundingClientRect();
+        
+          // 当结果容器的底部进入视口，并且距离视口底部小于等于 200px 时，加载更多
+          // rect.bottom 是容器底部相对于视口顶部的距离
+          // window.innerHeight 是视口的高度
+          if (rect.bottom <= window.innerHeight + 200) {
+              this.loadMoreResults();
+          }
+      };
+
+      // 监听器仍然绑定在 window 对象上
+      window.addEventListener('scroll', this.scrollListener, { passive: true });
   }
 
   // 加载搜索选项
