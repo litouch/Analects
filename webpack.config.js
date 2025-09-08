@@ -4,6 +4,11 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+// [新增] 1. 引入 package.json 文件
+const packageJson = require('./package.json');
+// [新增] 2. 从版本号中提取主版本号 (例如 "1.0.0" -> "v1")
+const majorVersion = `v${packageJson.version.split('.')[0]}`;
+
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
   
@@ -15,8 +20,10 @@ module.exports = (env, argv) => {
     
     output: {
       path: path.resolve(__dirname, 'dist'),
+      // [修改] 3. 动态修改输出的 JS 文件名，为其加上版本目录前缀
       filename: (pathData) => {
-        return pathData.chunk.name === 'analects.min' ? 'analects.min.js' : 'analects.js';
+        const name = pathData.chunk.name === 'analects.min' ? 'analects.min.js' : 'analects.js';
+        return `${majorVersion}/${name}`; // 修改后的效果: "v1/analects.js"
       },
       library: {
         name: 'AnalectsSDK',
@@ -26,6 +33,7 @@ module.exports = (env, argv) => {
       globalObject: 'typeof self !== \'undefined\' ? self : this',
       clean: true
     },
+
 
     module: {
       rules: [
@@ -68,39 +76,21 @@ module.exports = (env, argv) => {
 
     plugins: [
       new MiniCssExtractPlugin({
+        // [修改] 4. 动态修改输出的 CSS 文件名
         filename: (pathData) => {
-          return pathData.chunk.name === 'analects.min' ? 'analects.min.css' : 'analects.css';
+          const name = pathData.chunk.name === 'analects.min' ? 'analects.min.css' : 'analects.css';
+          return `${majorVersion}/${name}`; // 修改后的效果: "v1/analects.min.css"
         }
       }),
-      // 更新复制插件，复制静态文件到 dist 目录
+	  
       new CopyWebpackPlugin({
+        // [修改] 5. 确保静态文件复制到 dist 根目录
         patterns: [
-          {
-            from: 'index.html',
-            to: 'index.html',
-            noErrorOnMissing: true
-          },
-          {
-            from: 'og-image.png',
-            to: 'og-image.png',
-            noErrorOnMissing: true // 如果logo文件不存在不报错
-          },
-          {
-            from: 'robots.txt',
-            to: 'robots.txt',
-            noErrorOnMissing: true // 如果robots文件不存在不报错
-          },
-          {
-            from: 'sitemap.xml',
-            to: 'sitemap.xml',
-            noErrorOnMissing: true // 如果sitemap文件不存在不报错
-          },
-          // 如果您有其他静态资源（如字体等），也可以在这里添加
-          {
-            from: 'favicon.ico',
-            to: 'favicon.ico',
-            noErrorOnMissing: true
-          }
+          { from: 'index.html', to: '.' },
+          { from: 'og-image.png', to: '.' },
+          { from: 'robots.txt', to: '.' },
+          { from: 'sitemap.xml', to: '.' },
+          { from: 'favicon.ico', to: '.' }
         ]
       })
     ],

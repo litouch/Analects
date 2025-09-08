@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 指向sitemap位置
+Sitemap: https://lunyu.xyz/sitemap.xml
