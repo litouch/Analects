@@ -288,7 +288,7 @@
     try {
         sdk = new AnalectsSDK({
             supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-            supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczOTY5NjEsImV4cCI6MjA3Mjk3Mjk2MX0.KYkN_avXRhAwoeI1_UxBPph9kawCaz5qZsnANi1WUpY'
+            supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
         });
         sdk.renderDailyAnalect(document.getElementById('daily-analect'));
         sdk.renderSearchInterface(document.getElementById('analects-search'));
@@ -355,7 +355,7 @@
     function showEmbedModal(type) {
       const sdkUrl = 'https://lunyu.xyz';
       // Hardcoding credentials for robustness, as in the original file.
-      const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cWJ0aWJ2ZXZnbHdjcGlld3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczOTY5NjEsImV4cCI6MjA3Mjk3Mjk2MX0.KYkN_avXRhAwoeI1_UxBPph9kawCaz5qZsnANi1WUpY' }`;
+      const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' }`;
 
       if (type === 'daily') {
         modalTitle.textContent = '每日论语 - 嵌入代码';
