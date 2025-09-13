@@ -98,6 +98,12 @@ class AnalectsSDK {
           // [关键修复] 增加处理“刚刚登录成功”的逻辑，用于关闭弹窗
           const justLoggedIn = sessionStorage.getItem('justLoggedIn');
           if (session && justLoggedIn && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+			
+              // [核心新增] 清理 URL 中的认证令牌，提升安全性和用户体验
+              if (window.location.hash.includes('access_token')) {
+                history.replaceState(null, '', window.location.pathname);
+              }
+			
             this.closeAuthModal(); // 关闭登录/注册弹窗
             if (window.showToast) {
               window.showToast('登录成功，欢迎回来！');
