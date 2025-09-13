@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>我的收藏 - 论语SDK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/v2/analects.css">
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
+  </style>
+  <style>
+    /* 新增：只为收藏列表容器添加过渡效果 */
+    #favorites-list-container {
+      transition: opacity 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+  <div id="main-container" class="container mx-auto max-w-4xl px-4 py-8">
+    
+	<header class="text-center mb-8 border-b pb-4">
+	      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">我的收藏</h1>
+	      <p class="text-lg text-gray-500 mt-2">论语收藏，论语笔记</p>
+	      <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
+	      <div class="mt-6 max-w-lg mx-auto">
+	        <input type="text" id="favorites-search-input" placeholder="在收藏中搜索关键词..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+	      </div>
+	</header>
+
+	<main id="favorites-list-container" class="space-y-4">
+	      <div class="favorite-card-skeleton">
+	        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+	          <div class="skeleton-block" style="height: 20px; width: 30%;"></div>
+	          <div class="skeleton-block" style="height: 24px; width: 24px; border-radius: 50%;"></div>
+	        </div>
+	        <div class="skeleton-block" style="height: 18px; width: 90%; margin-bottom: 12px;"></div>
+	        <div class="skeleton-block" style="height: 18px; width: 70%;"></div>
+	      </div>
+	      <div class="favorite-card-skeleton">
+	        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+	          <div class="skeleton-block" style="height: 20px; width: 30%;"></div>
+	          <div class="skeleton-block" style="height: 24px; width: 24px; border-radius: 50%;"></div>
+	        </div>
+	        <div class="skeleton-block" style="height: 18px; width: 90%; margin-bottom: 12px;"></div>
+	        <div class="skeleton-block" style="height: 18px; width: 70%;"></div>
+	      </div>
+	</main>
+
+  </div>
+
+  <div id="analects-global-widget-container"></div>
+
+  <script src="/v2/analects.js"></script>
+  <script>
+   (async () => {
+      console.log("【诊断脚本】: 1. 开始执行...");
+      const sdk = new AnalectsSDK({
+          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+      });
+      console.log("【诊断脚本】: 2. SDK 实例已创建。");
+
+      console.log("【诊断脚本】: 3. 即将执行 await sdk.init()...");
+      try {
+          await sdk.init();
+          console.log("【诊断脚本】: 4. sdk.init() 已成功完成。");
+      } catch (error) {
+          console.error("【诊断脚本】: ❌ sdk.init() 执行失败:", error);
+          return; // 初始化失败，后续不再执行
+      }
+
+      console.log("【诊断脚本】: 5. 即将调用 sdk.renderGlobalWidget()...");
+      sdk.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
+      console.log("【诊断脚本】: 6. sdk.renderGlobalWidget() 已调用。");
+
+      const favoritesContainer = document.getElementById('favorites-list-container');
+      console.log("【诊断脚本】: 7. 即将执行 await sdk.renderMyFavoritesPage()...");
+      try {
+          await sdk.renderMyFavoritesPage(favoritesContainer);
+          console.log("【诊断脚本】: 8. sdk.renderMyFavoritesPage() 已成功完成。");
+      } catch (error) {
+          console.error("【诊断脚本】: ❌ sdk.renderMyFavoritesPage() 执行失败:", error);
+          return;
+      }
+
+      console.log("【诊断脚本】: 9. 即将调用 sdk.initializeFavoritesSearch()...");
+      sdk.initializeFavoritesSearch(
+          document.getElementById('favorites-search-input'),
+          favoritesContainer
+      );
+      console.log("【诊断脚本】: 10. sdk.initializeFavoritesSearch() 已调用。");
+      console.log("【诊断脚本】: 11. 脚本执行完毕。");
+
+    })();
+  </script>
+
+</body>
+</html>

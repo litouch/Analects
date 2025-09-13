@@ -309,10 +309,6 @@
   transform: translateY(-1px);
 }
 
-.analects-input::-moz-placeholder {
-  color: var(--light-gray);
-}
-
 .analects-input::placeholder {
   color: var(--light-gray);
 }
@@ -542,9 +538,7 @@
   transition: all 0.2s ease;
   font-size: 13px;
   font-weight: 500;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .analects-option-tag:hover {
@@ -874,28 +868,41 @@
 /* 回到顶部按钮 */
 .analects-scroll-indicator {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--blue);
-  color: white;
+  /* 【核心修改点】调整 bottom 值，让它位于浮动小部件的上方 */
+  bottom: 96px; /* (原按钮高度56px + 原bottom间距24px + 16px额外间距) */
+  right: 24px;  /* 与浮动小部件的 right 值保持一致 */
+  background: var(--card-bg); /* 可以用一个不那么显眼的背景色 */
+  color: var(--primary);
   width: 50px;
   height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 24px;
   box-shadow: var(--shadow-lg);
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.3s ease;
-  z-index: 1000;
+  transition: all 0.3s ease; /* 保证出现和消失的动画流畅 */
+  z-index: 999; /* z-index 比浮动小部件低一级即可 */
   cursor: pointer;
+  border: 1px solid var(--border);
 }
 
 .analects-scroll-indicator.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* 确保在小屏幕上也有合理的间距 */
+@media (max-width: 768px) {
+  .analects-scroll-indicator {
+    bottom: 80px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
 }
 
 /* ================================ */
@@ -1252,8 +1259,7 @@
   .analects-daily-card {
     box-shadow: none;
     border: 1px solid #ddd;
-    -moz-column-break-inside: avoid;
-         break-inside: avoid;
+    break-inside: avoid;
     margin-bottom: 20px;
   }
 
@@ -1297,5 +1303,444 @@
   box-sizing: border-box;
 }
   
+/* ================================ */
+/* 全局浮动小部件样式 */
+/* ================================ */
+#analects-global-widget-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+}
 
-/*# sourceMappingURL=analects.css.map*/
+.fab-main-button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.fab-main-button:hover {
+  transform: scale(1.05);
+  background: #2c5aa0;
+}
+
+.fab-main-button.logged-in {
+  background: var(--green);
+}
+.fab-main-button.logged-in:hover {
+  background: #2f855a;
+}
+
+.fab-menu {
+  position: absolute;
+  bottom: 68px; /* 按钮高度 + 间距 */
+  right: 0;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.fab-menu.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.fab-menu-item {
+  display: block;
+  padding: 12px 24px;
+  color: var(--primary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+}
+
+.fab-menu-item:hover {
+  background: var(--card-bg);
+}
+
+/* src/styles/analects.css */
+
+/* ================================ */
+/* 认证模态窗口样式 */
+/* ================================ */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.auth-modal-content {
+  background: var(--bg);
+  padding: 32px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  transform: scale(0.95);
+  animation: scaleUp 0.3s forwards;
+}
+
+.auth-modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--light-gray);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.auth-modal-close-btn:hover {
+  color: var(--primary);
+}
+
+.auth-modal-content h3 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--primary);
+}
+
+.auth-modal-content .auth-subtitle {
+  text-align: center;
+  margin: 0 0 24px 0;
+  color: var(--gray);
+}
+
+.auth-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-modal-content input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--card-bg);
+  box-sizing: border-box;
+}
+.auth-modal-content input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.auth-submit-btn, .auth-social-btn {
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auth-submit-btn {
+  background: var(--blue);
+  color: white;
+  margin-top: 0px;
+}
+.auth-submit-btn:hover {
+  background: #2c5aa0;
+}
+
+.auth-social-btn.google {
+  background: #4285F4;
+  color: white;
+}
+.auth-social-btn.google:hover {
+  background: #357ae8;
+}
+
+.auth-switcher {
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray);
+  margin-top: 20px;
+}
+
+.auth-switcher a {
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: none;
+}
+.auth-switcher a:hover {
+  text-decoration: underline;
+}
+
+.auth-error {
+  color: var(--red);
+  font-size: 13px;
+  text-align: center;
+  min-height: 1.2em;
+}
+.auth-success {
+  color: var(--green);
+  font-size: 13px;
+  text-align: center;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.95); } to { transform: scale(1); } }
+
+
+/* ================================ */
+/* 收藏按钮样式 */
+/* ================================ */
+
+/* 让卡片头部的章节信息和收藏按钮左右对齐 */
+.analects-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 每日论语卡片底部的引用和收藏按钮 */
+.analects-daily-reference-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* 收藏按钮本身 */
+.favorite-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--primary); /* SVG 描边的颜色 */
+  transition: all 0.2s ease-in-out;
+}
+
+.favorite-btn:hover {
+  color: var(--blue);
+  transform: scale(1.1);
+}
+
+/* [核心修改] 图标状态变化 */
+.favorite-btn svg {
+  fill: none; /* 默认：不填充 */
+  stroke: currentColor; /* 描边颜色继承自父元素 .favorite-btn */
+}
+
+.favorite-btn.favorited svg {
+  fill: currentColor; /* 已收藏：用当前颜色填充 */
+}
+
+.favorite-btn.favorited {
+  color: #ecc94b; /* 已收藏颜色：亮黄色 */
+}
+
+.favorite-btn.favorited:hover {
+  color: #d69e2e; /* 已收藏状态下的悬浮颜色 */
+}
+
+/* 隐藏 SVG 内部默认的路径描边，只用 fill 填充颜色 */
+.favorite-btn svg path {
+  stroke-width: 1.5;
+  stroke: var(--primary);
+}
+
+.favorite-btn.favorited svg path {
+  stroke: none; /* 已收藏时无描边 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .favorite-btn svg path {
+    stroke: var(--primary);
+  }
+  .favorite-btn.favorited svg path {
+    stroke: none;
+  }
+}
+
+/* 修改 .fab-main-button.logged-in 以支持内部元素 */
+.fab-main-button.logged-in {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 字母和箭头之间的间距 */
+  padding: 0 16px; /* 调整内边距以适应新内容 */
+  width: auto; /* 宽度自动 */
+}
+
+/* 箭头图标样式 */
+.fab-chevron {
+  transition: transform 0.2s ease-in-out;
+}
+
+/* 当菜单展开时，让箭头旋转180度 */
+.fab-menu.active + .fab-main-button .fab-chevron {
+  transform: rotate(180deg);
+}
+
+/* ================================ */
+/* 收藏按钮加载状态 */
+/* ================================ */
+
+.favorite-btn.is-loading {
+  cursor: wait; /* 鼠标变成等待状态 */
+  pointer-events: none; /* 防止在加载时重复点击 */
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ================================ */
+/* 收藏卡片移除动画 */
+/* ================================ */
+
+.analects-result-card.is-removing {
+  animation: fadeOutAndShrink 0.5s forwards ease-in-out;
+}
+
+@keyframes fadeOutAndShrink {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    margin-bottom: 1rem; /* space-y-4 */
+    height: var(--card-height, auto); /* 使用 CSS 变量记录初始高度 */
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: -1rem; /* 抵消 margin-bottom */
+    margin-bottom: 0;
+    height: 0;
+  }
+}
+
+/* ================================ */
+/* 登录界面优化样式 */
+/* ================================ */
+
+/* “或” 分隔符样式 */
+.auth-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.auth-separator-line {
+  flex-grow: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.auth-separator-text {
+  padding: 0 12px;
+  color: var(--light-gray);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* 优化 Google 登录按钮 */
+.auth-social-btn.google {
+  background: var(--bg);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.auth-social-btn.google:hover {
+  background: var(--card-bg);
+}
+
+
+.auth-messages {
+  /* 这个容器的作用是包裹错误和成功提示，让它们在布局上只占一个位置 */
+  /* 我们可以给它一个最小高度，防止按钮在消息出现时跳动 */
+  min-height: 1.5em;
+}
+
+
+/* ================================ */
+/* 注册成功视图样式 */
+/* ================================ */
+.auth-success-view {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.auth-success-icon {
+  color: var(--green);
+  margin: 0 auto 16px auto;
+}
+
+.auth-success-email {
+  font-weight: 600;
+  color: var(--primary);
+  margin: 4px 0 16px 0;
+  word-break: break-all;
+}
+
+#auth-close-success-btn {
+  margin-top: 24px;
+}
+
+/* ================================ */
+/* 卡片底部样式 */
+/* ================================ */
+.analects-card-footer {
+  border-top: 1px solid var(--border);
+  padding: 12px 24px;
+  margin-top: 20px;
+  text-align: right;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: var(--light-gray);
+  font-style: italic;
+}

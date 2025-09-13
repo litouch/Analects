@@ -1,4 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* 论语 SDK 样式文件 - V12.0 优化版 */
+
+body {
+  /* [新增] 为底部的浮动操作栏留出 80px 的空间 */
+  padding-bottom: 80px !important; 
+}
 
 /* ================================ */
 /* 基础变量 */
@@ -155,7 +164,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
-  margin-bottom: 32px;
+  margin-bottom: 0px;
 }
 
 .analects-daily-share {
@@ -868,28 +877,41 @@
 /* 回到顶部按钮 */
 .analects-scroll-indicator {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--blue);
-  color: white;
+  /* 【核心修改点】调整 bottom 值，让它位于浮动小部件的上方 */
+  bottom: 96px; /* (原按钮高度56px + 原bottom间距24px + 16px额外间距) */
+  right: 24px;  /* 与浮动小部件的 right 值保持一致 */
+  background: var(--card-bg); /* 可以用一个不那么显眼的背景色 */
+  color: var(--primary);
   width: 50px;
   height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 24px;
   box-shadow: var(--shadow-lg);
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.3s ease;
-  z-index: 1000;
+  transition: all 0.3s ease; /* 保证出现和消失的动画流畅 */
+  z-index: 999; /* z-index 比浮动小部件低一级即可 */
   cursor: pointer;
+  border: 1px solid var(--border);
 }
 
 .analects-scroll-indicator.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* 确保在小屏幕上也有合理的间距 */
+@media (max-width: 768px) {
+  .analects-scroll-indicator {
+    bottom: 80px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
 }
 
 /* ================================ */
@@ -1290,3 +1312,791 @@
   box-sizing: border-box;
 }
   
+/* ================================ */
+/* 全局浮动操作栏样式 */
+/* ================================ */
+#analects-global-widget-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  
+  /* 玻璃效果 - 更清晰一些 */
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  border-radius: 999px;
+  
+  /* [核心] 使用更收敛、清晰的阴影 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
+  
+  /* [核心] 轮廓感更强的边框 */
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+/* 操作栏内的按钮/链接样式 */
+.app-footer-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.app-footer-action:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 登录按钮的特殊样式（更突出） */
+.app-footer-action.login {
+  background-color: var(--blue);
+  color: white;
+}
+.app-footer-action.login:hover {
+  background-color: #2c5aa0;
+}
+
+
+/* --- 响应式布局：PC端 (更智能的检测) --- */
+@media (min-width: 768px) and (hover: hover) {
+  #analects-global-widget-container {
+    /* 在大屏幕且支持鼠标悬停的设备上，才移动到右侧 */
+    left: auto;
+    right: 24px;
+    transform: none;
+  }
+}
+
+/* 深色模式下的玻璃效果 */
+@media (prefers-color-scheme: dark) {
+  #analects-global-widget-container {
+    background: rgba(45, 55, 72, 0.7); /* var(--card-bg) with alpha */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .app-footer-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+
+/* ================================ */
+/* 认证模态窗口样式 */
+/* ================================ */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.auth-modal-content {
+  background: var(--bg);
+  padding: 32px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  transform: scale(0.95);
+  animation: scaleUp 0.3s forwards;
+}
+
+.auth-modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--light-gray);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.auth-modal-close-btn:hover {
+  color: var(--primary);
+}
+
+.auth-modal-content h3 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--primary);
+}
+
+.auth-modal-content .auth-subtitle {
+  text-align: center;
+  margin: 0 0 24px 0;
+  color: var(--gray);
+}
+
+.auth-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-modal-content input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--card-bg);
+  box-sizing: border-box;
+}
+.auth-modal-content input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.auth-submit-btn, .auth-social-btn {
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auth-submit-btn {
+  background: var(--blue);
+  color: white;
+  margin-top: 0px;
+}
+.auth-submit-btn:hover {
+  background: #2c5aa0;
+}
+
+.auth-social-btn.google {
+  background: #4285F4;
+  color: white;
+}
+.auth-social-btn.google:hover {
+  background: #357ae8;
+}
+
+.auth-switcher {
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray);
+  margin-top: 20px;
+}
+
+.auth-switcher a {
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: none;
+}
+.auth-switcher a:hover {
+  text-decoration: underline;
+}
+
+.auth-error {
+  color: var(--red);
+  font-size: 13px;
+  text-align: center;
+  min-height: 1.2em;
+}
+.auth-success {
+  color: var(--green);
+  font-size: 13px;
+  text-align: center;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.95); } to { transform: scale(1); } }
+
+
+/* ================================ */
+/* 收藏按钮样式 */
+/* ================================ */
+
+/* 让卡片头部的章节信息和收藏按钮左右对齐 */
+.analects-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 每日论语卡片底部的引用和收藏按钮 */
+.analects-daily-reference-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* 收藏按钮本身 */
+.favorite-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--primary); /* SVG 描边的颜色 */
+  transition: all 0.2s ease-in-out;
+}
+
+.favorite-btn:hover {
+  color: var(--blue);
+  transform: scale(1.1);
+}
+
+/* [核心修改] 图标状态变化 */
+.favorite-btn svg {
+  fill: none; /* 默认：不填充 */
+  stroke: currentColor; /* 描边颜色继承自父元素 .favorite-btn */
+}
+
+.favorite-btn.favorited svg {
+  fill: currentColor; /* 已收藏：用当前颜色填充 */
+}
+
+.favorite-btn.favorited {
+  color: #ecc94b; /* 已收藏颜色：亮黄色 */
+}
+
+.favorite-btn.favorited:hover {
+  color: #d69e2e; /* 已收藏状态下的悬浮颜色 */
+}
+
+/* 隐藏 SVG 内部默认的路径描边，只用 fill 填充颜色 */
+.favorite-btn svg path {
+  stroke-width: 1.5;
+  stroke: var(--primary);
+}
+
+.favorite-btn.favorited svg path {
+  stroke: none; /* 已收藏时无描边 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .favorite-btn svg path {
+    stroke: var(--primary);
+  }
+  .favorite-btn.favorited svg path {
+    stroke: none;
+  }
+}
+
+/* 修改 .fab-main-button.logged-in 以支持内部元素 */
+.fab-main-button.logged-in {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 字母和箭头之间的间距 */
+  padding: 0 16px; /* 调整内边距以适应新内容 */
+  width: auto; /* 宽度自动 */
+}
+
+/* 箭头图标样式 */
+.fab-chevron {
+  transition: transform 0.2s ease-in-out;
+}
+
+/* 当菜单展开时，让箭头旋转180度 */
+.fab-menu.active + .fab-main-button .fab-chevron {
+  transform: rotate(180deg);
+}
+
+/* ================================ */
+/* 收藏按钮加载状态 */
+/* ================================ */
+
+.favorite-btn.is-loading {
+  cursor: wait; /* 鼠标变成等待状态 */
+  pointer-events: none; /* 防止在加载时重复点击 */
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ================================ */
+/* 收藏卡片移除动画 */
+/* ================================ */
+
+.analects-result-card.is-removing {
+  animation: fadeOutAndShrink 0.5s forwards ease-in-out;
+}
+
+@keyframes fadeOutAndShrink {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    margin-bottom: 1rem; /* space-y-4 */
+    height: var(--card-height, auto); /* 使用 CSS 变量记录初始高度 */
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: -1rem; /* 抵消 margin-bottom */
+    margin-bottom: 0;
+    height: 0;
+  }
+}
+
+/* ================================ */
+/* 登录界面优化样式 */
+/* ================================ */
+
+/* “或” 分隔符样式 */
+.auth-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.auth-separator-line {
+  flex-grow: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.auth-separator-text {
+  padding: 0 12px;
+  color: var(--light-gray);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* 优化 Google 登录按钮 */
+.auth-social-btn.google {
+  background: var(--bg);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.auth-social-btn.google:hover {
+  background: var(--card-bg);
+}
+
+
+.auth-messages {
+  /* 这个容器的作用是包裹错误和成功提示，让它们在布局上只占一个位置 */
+  /* 我们可以给它一个最小高度，防止按钮在消息出现时跳动 */
+  min-height: 1.5em;
+}
+
+
+/* ================================ */
+/* 注册成功视图样式 */
+/* ================================ */
+.auth-success-view {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.auth-success-icon {
+  color: var(--green);
+  margin: 0 auto 16px auto;
+}
+
+.auth-success-email {
+  font-weight: 600;
+  color: var(--primary);
+  margin: 4px 0 16px 0;
+  word-break: break-all;
+}
+
+#auth-close-success-btn {
+  margin-top: 24px;
+}
+
+/* ================================ */
+/* 卡片底部样式 */
+/* ================================ */
+.analects-card-footer {
+  border-top: 1px solid var(--border);
+  padding: 12px 24px;
+  margin-top: 20px;
+  text-align: right;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: var(--light-gray);
+  font-style: italic;
+}
+
+
+/* ================================ */
+/* 心得笔记样式 */
+/* ================================ */
+.user-insight {
+  text-align: left;
+  padding: 16px;
+  background: rgba(237, 242, 247, 0.5); /* A very light gray */
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.insight-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--primary);
+  white-space: pre-wrap; /* 保留换行和空格 */
+}
+
+/* 底部元数据区域的 Flex 布局 */
+.footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-insight-btn {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.edit-insight-btn:hover {
+  background-color: rgba(49, 130, 206, 0.1);
+}
+
+/* ================================ */
+/* 笔记编辑弹窗样式 */
+/* ================================ */
+.note-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--card-bg);
+  box-sizing: border-box;
+  resize: vertical;
+  line-height: 1.6;
+}
+.note-textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+/* ================================ */
+/* 笔记截断样式 */
+/* ================================ */
+.insight-text.is-truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 最多显示3行 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.insight-toggle-btn {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* [优化] 笔记上方“收藏于”时间的样式 */
+.favorited-date-display {
+  font-size: 12px;
+  color: var(--light-gray);
+  font-style: italic;
+  text-align: left;
+  margin-bottom: 12px; /* 与下方笔记内容隔开 */
+}
+
+/* ================================ */
+/* 确认操作模态窗口样式 */
+/* ================================ */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  z-index: 3000; /* 确保在最顶层 */
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.confirm-modal-content {
+  background: var(--bg);
+  padding: 32px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  transform: scale(0.95);
+  animation: scaleUp 0.3s forwards;
+}
+
+.confirm-modal-content h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: var(--primary);
+}
+
+.confirm-modal-content p {
+  margin: 0 0 24px 0;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirm-modal-btn {
+  padding: 10px 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-modal-btn.confirm {
+  background: var(--red);
+  color: white;
+  border-color: var(--red);
+}
+.confirm-modal-btn.confirm:hover {
+  background: #c53030;
+  border-color: #c53030;
+}
+
+.confirm-modal-btn.cancel {
+  background: var(--bg);
+  color: var(--primary);
+}
+.confirm-modal-btn.cancel:hover {
+  background: var(--card-bg);
+}
+
+/* ================================ */
+/* [UI优化] 笔记卡片样式 */
+/* ================================ */
+
+/* 笔记卡片容器 */
+.user-insight-card {
+  background-color: #fffef5; /* 一个柔和的、类似羊皮纸的淡黄色 */
+  border: 1px solid #eeebe2; /* 配套的边框颜色 */
+  border-radius: var(--radius); /* 与整体UI一致的圆角 */
+  margin-top: 16px; /* 与上方内容隔开 */
+  margin-bottom: 12px; /* 与下方页脚隔开 */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03); /* 非常非常轻微的阴影，增加立体感 */
+  text-align: left; /* 确保内容左对齐 */
+}
+
+/* 笔记卡片标题 */
+.user-insight-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 8px 12px;
+  border-bottom: 1px solid #eeebe2; /* 标题和内容的分隔线 */
+  display: flex;
+  align-items: center;
+}
+
+/* 用::before伪元素给标题加一个小图标，增加专属感 */
+.user-insight-header::before {
+  content: '✏️'; /* 铅笔图标 */
+  margin-right: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* 笔记内容区域 */
+.user-insight-content {
+  padding: 12px;
+}
+
+/* 笔记文本本身 */
+.user-insight-content .insight-text {
+  font-size: 15px; /* 可以稍微调大一点，让笔记更易读 */
+  line-height: 1.7;
+  color: #333; /* 比默认灰色更深一点，突出内容 */
+}
+
+/* ================================ */
+/* [最终响应式版] 全局浮动操作栏样式 */
+/* ================================ */
+#analects-global-widget-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  padding: 6px; /* [恢复] 恢复到稍大的内边距 */
+  gap: 6px;     /* [恢复] 恢复到稍大的间距 */
+  transition: all 0.3s ease;
+}
+
+/* 基础按钮样式 (恢复典雅字体) */
+.app-footer-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px; /* [恢复] 恢复到更宽的内边距 */
+  border: none;
+  background: none;
+  border-radius: 999px;
+  color: var(--primary);
+  font-size: 14px;   /* [恢复] 恢复到原始的、更大的字体 */
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap; /* [新增] 确保文字本身不换行 */
+  transition: all 0.2s ease;
+}
+
+/* 未登录状态下的 "登录" 按钮样式 */
+#analects-global-widget-container.logged-out .app-footer-action.login {
+  background-color: var(--blue);
+  color: white;
+}
+#analects-global-widget-container.logged-out .app-footer-action.login:hover {
+  background-color: #2c5aa0;
+}
+
+/* 为激活状态(active)和悬停状态(hover)同时应用蓝色光晕效果 */
+#analects-global-widget-container.logged-in .app-footer-action.active,
+#analects-global-widget-container.logged-in .app-footer-action:hover {
+  background-color: rgba(49, 130, 206, 0.1);
+  color: #2c5aa0;
+}
+
+/* --- [核心新增] 专门为iPhone等小屏幕手机做的优化 --- */
+@media (max-width: 480px) {
+  #analects-global-widget-container {
+    padding: 4px;
+    gap: 4px;
+  }
+  .app-footer-action {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+/* --- PC端响应式布局 (保持不变) --- */
+@media (min-width: 768px) and (hover: hover) {
+  #analects-global-widget-container {
+    left: auto;
+    right: 24px;
+    transform: none;
+  }
+}
+
+/* --- 深色模式 (保持不变) --- */
+@media (prefers-color-scheme: dark) {
+  #analects-global-widget-container {
+    background: rgba(45, 55, 72, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  #analects-global-widget-container.logged-in .app-footer-action.active,
+  #analects-global-widget-container.logged-in .app-footer-action:hover {
+    background: rgba(49, 130, 206, 0.2);
+    color: #90cdf4;
+  }
+}
+
+/* ================================ */
+/* [UI优化] 骨架屏加载状态样式 */
+/* ================================ */
+
+/* 骨架屏脉冲动画 */
+@keyframes pulse-bg {
+  0% { background-color: #f0f2f5; }
+  50% { background-color: #e2e8f0; }
+  100% { background-color: #f0f2f5; }
+}
+
+/* 骨架屏基础块样式 */
+.skeleton-block {
+  background-color: #f0f2f5;
+  border-radius: 4px;
+  animation: pulse-bg 1.5s infinite ease-in-out;
+}
+
+/* “每日论语”的骨架屏容器 */
+.daily-analect-skeleton {
+  max-width: 800px; /* 与真实组件宽度保持一致 */
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* “我的收藏”页的骨架屏卡片 */
+.favorite-card-skeleton {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}

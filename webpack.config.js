@@ -6,24 +6,24 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // [新增] 1. 引入 package.json 文件
 const packageJson = require('./package.json');
-// [新增] 2. 从版本号中提取主版本号 (例如 "1.0.0" -> "v1")
+// [新增] 2. 从版本号中提取主版本号 (例如 "2.0.0" -> "v2")
 const majorVersion = `v${packageJson.version.split('.')[0]}`;
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
   
   return {
-    entry: {
-      analects: './src/index.js',
-      'analects.min': './src/index.js'
-    },
+	  entry: {
+	    analects: './src/index.js',
+	    'analects.min': './src/index.js'
+	  },
     
     output: {
       path: path.resolve(__dirname, 'dist'),
       // [修改] 3. 动态修改输出的 JS 文件名，为其加上版本目录前缀
       filename: (pathData) => {
         const name = pathData.chunk.name === 'analects.min' ? 'analects.min.js' : 'analects.js';
-        return `${majorVersion}/${name}`; // 修改后的效果: "v1/analects.js"
+        return `${majorVersion}/${name}`; // 修改后的效果: "v2/analects.js"
       },
       library: {
         name: 'AnalectsSDK',
@@ -54,23 +54,16 @@ module.exports = (env, argv) => {
             }
           }
         },
-        {
+		{
           test: /\.css$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            // [问题2修复] 无论开发还是生产环境，都使用 MiniCssExtractPlugin.loader
+            // 这可以确保始终生成独立的 CSS 文件，从根本上解决“无样式内容闪烁” (FOUC) 问题。
+            MiniCssExtractPlugin.loader,
             'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    ['autoprefixer']
-                  ]
-                }
-              }
-            }
+            'postcss-loader'
           ]
-        }
+        }		
       ]
     },
 
@@ -78,20 +71,22 @@ module.exports = (env, argv) => {
       new MiniCssExtractPlugin({
         // [修改] 4. 动态修改输出的 CSS 文件名
         filename: (pathData) => {
-          const name = pathData.chunk.name === 'analects.min' ? 'analects.min.css' : 'analects.css';
-          return `${majorVersion}/${name}`; // 修改后的效果: "v1/analects.min.css"
+          // 注意：由于我们统一了入口名称，这里不再需要检查 .min
+          // Webpack 的 optimization.minimizer 会处理压缩
+          return `${majorVersion}/analects.css`; // 修改后的效果: "v2/analects.css"
         }
       }),
 	  
       new CopyWebpackPlugin({
         // [修改] 5. 确保静态文件复制到 dist 根目录
         patterns: [
-          { from: 'index.html', to: '.' },
-          { from: 'og-image.png', to: '.' },
-          { from: 'robots.txt', to: '.' },
-          { from: 'sitemap.xml', to: '.' },
-          { from: 'favicon.ico', to: '.' }
-        ]
+		    { from: 'index.html', to: 'index.html', noErrorOnMissing: true },
+		    { from: 'og-image.png', to: 'og-image.png', noErrorOnMissing: true },
+		    { from: 'robots.txt', to: 'robots.txt', noErrorOnMissing: true },
+		    { from: 'sitemap.xml', to: 'sitemap.xml', noErrorOnMissing: true },
+		    { from: 'favicon.ico', to: 'favicon.ico', noErrorOnMissing: true },
+		    { from: 'my-favorites.html', to: 'my-favorites.html', noErrorOnMissing: true }
+		  ]
       })
     ],
 
@@ -112,7 +107,7 @@ module.exports = (env, argv) => {
           extractComments: false
         }),
         new CssMinimizerPlugin({
-          include: /\.min\.css$/
+           // 默认会压缩所有输出的 CSS，这里无需额外配置
         })
       ]
     },
