@@ -1772,7 +1772,7 @@ class AnalectsSDK {
 	            </div>
 	            `;
 	        } else {
-	            // 直接用真实数据替换掉HTML中的骨架屏
+	            // 先清空骨架屏，再渲染真实数据
 	            container.innerHTML = '';
 	            favorites.forEach(entry => {
 	                this.entryCache.set(entry.id, entry);
@@ -1783,6 +1783,13 @@ class AnalectsSDK {
 	                container.appendChild(cardWrapper);
 	                setTimeout(() => cardWrapper.classList.add('animate-in'), 10);
 	            });
+	            // [核心新增] 在所有卡片渲染完成后，添加“已全部显示完毕”的提示
+	            const allDisplayedMessage = document.createElement('div');
+	            // 复用与搜索结果页相同的样式，保持视觉一致
+	            allDisplayedMessage.className = 'analects-load-complete'; 
+	            allDisplayedMessage.style.display = 'block'; // 确保它可见
+	            allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
+	            container.appendChild(allDisplayedMessage);
 	        }
 	    } catch (error) {
 	        console.error('渲染收藏页面失败:', error);

@@ -681,7 +681,7 @@ body {
   color: var(--primary);
   margin-bottom: 16px;
   font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 500;
+  font-weight: 400;
   text-align: left;
 }
 
@@ -696,7 +696,7 @@ body {
 
 .analects-result-annotation {
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.7;
   color: var(--light-gray);
   text-align: left;
 }
@@ -2035,12 +2035,12 @@ body {
 /* --- [核心新增] 专门为iPhone等小屏幕手机做的优化 --- */
 @media (max-width: 480px) {
   #analects-global-widget-container {
-    padding: 4px;
-    gap: 4px;
+    padding: 8px;
+    gap: 8px;
   }
   .app-footer-action {
     padding: 6px 12px;
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 
