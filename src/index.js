@@ -95,6 +95,15 @@ class AnalectsSDK {
       // 步骤 2: 监听真正的“认证事件”（用户主动登录、登出）
       // 这个监听器现在只处理最核心的认证变化
       this.supabase.auth.onAuthStateChange(async (event, session) => {
+          // [关键修复] 增加处理“刚刚登录成功”的逻辑，用于关闭弹窗
+          const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+          if (session && justLoggedIn && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+            this.closeAuthModal(); // 关闭登录/注册弹窗
+            if (window.showToast) {
+              window.showToast('登录成功，欢迎回来！');
+            }
+            sessionStorage.removeItem('justLoggedIn'); // 用完后立即移除标志
+          }
           // 只有当登录状态发生根本性改变时（从无到有，或从有到无），才执行
           const isLoggedIn = !!session;
           const wasLoggedIn = !!this.currentUser;
