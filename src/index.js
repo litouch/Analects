@@ -122,9 +122,11 @@ class AnalectsSDK {
                   await this._loadUserFavorites();
               } else {
                   this.favoriteIds.clear();
+				  this.favoritesDataCache.clear();
               }
               // 发生变化后，更新所有UI
               this._updateFavoriteButtonsUI();
+			  this._refreshVisibleCardsUI();
               if (this.widgetContainer) {
                   this.renderGlobalWidget(this.widgetContainer);
               }
@@ -2429,6 +2431,23 @@ class AnalectsSDK {
       });
     }
 	
+    // [新增] 刷新页面上所有可见卡片的完整UI (用于登出后移除笔记等)
+    _refreshVisibleCardsUI() {
+      const allCards = document.querySelectorAll('.analects-result-card');
+      allCards.forEach(card => {
+        const entryId = parseInt(card.dataset.entryId, 10);
+        if (isNaN(entryId)) return;
+
+        // 从基础数据缓存中获取原始条目信息
+        const originalEntry = this.entryCache.get(entryId);
+        if (originalEntry) {
+          // 使用 generateResultCardHTML 重新生成卡片的内部HTML
+          // 因为此时 favoriteIds 和 favoritesDataCache 都已清空，
+          // 生成的HTML将不包含任何收藏信息或笔记内容。
+          card.innerHTML = this.generateResultCardHTML(originalEntry);
+        }
+      });
+    }
 
     // [新增] 渲染注册成功的视图
     _renderSignupSuccessView(container, email) {
