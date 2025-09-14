@@ -2055,15 +2055,19 @@ class AnalectsSDK {
           }
 
 		  if (result.error) {
-		    errorDiv.textContent = result.error.message;
-		  } else {
-		    if (view === 'signup') {
-		      // 注册成功的逻辑保持不变
-		      const formContainer = document.getElementById('auth-modal-form-container');
-		      this._renderSignupSuccessView(formContainer, email);
-		    }
-		    // 对于登录(login)成功的情况，我们在这里什么都不做。
-		    // 因为 onAuthStateChange 会自动处理关闭弹窗和显示提示。
+		              errorDiv.textContent = result.error.message;
+		            } else {
+		              // [核心修复] 对 Email 登录成功的情况进行处理
+		              if (view === 'login') {
+		                // 不再等待事件，立即关闭弹窗并显示提示
+		                this.closeAuthModal();
+		                if (window.showToast) {
+		                  window.showToast('登录成功，欢迎回来！');
+		                }
+		              } else { // view === 'signup'
+		                const formContainer = document.getElementById('auth-modal-form-container');
+		                this._renderSignupSuccessView(formContainer, email);
+		              }
 		  }
         });
       }
