@@ -1911,6 +1911,12 @@ class AnalectsSDK {
 	  sessionStorage.setItem('justLoggedIn', 'true');
 	  const { error } = await this.supabase.auth.signInWithOAuth({
 	    provider: 'google',
+		options: {
+		         // [核心修改] 动态指定重定向地址为当前页面的源地址
+		         // 在本地，它会是 http://localhost:3000
+		         // 在线上，它会是 https://lunyu.xyz
+		         redirectTo: window.location.origin
+		       }
 	  });
 	  if (error) {
 	    // 如果跳转失败，最好把标志移除，以防万一
