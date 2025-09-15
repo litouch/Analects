@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>论语SDK：每日论语、论语查询、开源SDK、论语收藏、我的论语笔记</title>
+  <title>論語SDK - 每日论语, 论语查询与学习笔记</title>
   <link rel="stylesheet" href="/v2/analects.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -78,6 +78,7 @@
     ]
   }
   </script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
   <style>
     /* Custom styles to complement Tailwind CSS */
     body {
@@ -284,6 +285,8 @@
     代码已复制到剪贴板！
   </div>
 
+  <header id="global-header" class="global-header"></header>
+
   <div id="analects-global-widget-container"></div>
 
   <script type="module" src="/v2/analects.js"></script>
@@ -301,7 +304,6 @@
         
         sdk.renderDailyAnalect(document.getElementById('daily-analect'));
         sdk.renderSearchInterface(document.getElementById('analects-search'));
-        sdk.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
 
       } catch (e) {
           console.error("AnalectsSDK failed to initialize.", e);

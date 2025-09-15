@@ -854,6 +854,44 @@ body {
   border-color: #e9ecef;
 }
 
+/* [优化] 确保头部是 flex 布局并有间距 */
+.analects-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px; /* 增加左右两边的安全间距 */
+}
+
+/* [新增] 为头部左侧信息添加容器 (可选，为了结构清晰) */
+.result-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* 确保章节信息过长时不会挤压右侧内容 */
+  min-width: 0; 
+}
+.analects-result-chapter, .analects-result-section {
+    white-space: nowrap;
+}
+
+
+/* [新增] 右侧容器，用于包裹时间和按钮 */
+.result-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 时间和收藏按钮之间的间距 */
+  color: var(--light-gray); /* 默认文字颜色 */
+  flex-shrink: 0; /* 防止被左侧文字挤压 */
+}
+
+/* [新增] 相对时间文字本身的样式 */
+.favorite-time-ago {
+  font-size: 12px;
+  white-space: nowrap; /* 防止文字换行 */
+  font-weight: 500;
+  color: var(--light-gray);
+}
+
 /* ================================ */
 /* 加载完成指示器 */
 /* ================================ */
@@ -2099,4 +2137,151 @@ body {
   padding: 24px;
   border: 1px solid var(--border);
   margin-bottom: 20px;
+}
+
+/* ================================ */
+/* [新增] 全局页头样式 */
+/* ================================ */
+
+/* 页头容器本身 */
+.global-header {
+  position: absolute; /* 使用绝对定位，不影响页面原有布局 */
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+/* 登录/注册按钮 (未登录状态) */
+.header-login-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background-color: var(--bg);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+}
+.header-login-btn:hover {
+  background-color: var(--card-bg);
+  transform: translateY(-1px);
+}
+
+/* 用户头像容器 (已登录状态) */
+.user-avatar-container {
+  position: relative; /* 用于定位下拉菜单 */
+}
+
+/* 用户头像按钮 */
+.user-avatar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background-color: var(--card-bg);
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.2s ease;
+  overflow: hidden; /* 确保图片不会超出圆形 */
+}
+.user-avatar-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.user-avatar-btn .initials {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* 下拉菜单 */
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px); /* 位于头像下方8px处 */
+  right: 0;
+  width: 200px;
+  background-color: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none; /* 隐藏时不可点击 */
+  transition: all 0.2s ease-out;
+}
+
+.user-dropdown-menu.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* 菜单顶部用户信息 */
+.dropdown-user-info {
+  padding: 8px 12px 12px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.dropdown-user-info .email {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 菜单项 */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--primary);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+}
+.dropdown-item:hover {
+  background-color: var(--card-bg);
+}
+.dropdown-item svg { /* 用于渲染图标 */
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  color: var(--gray);
+}
+
+/* 登出按钮的特殊颜色 */
+.dropdown-item.logout:hover {
+  background-color: rgba(229, 62, 62, 0.1);
+  color: var(--red);
+}
+.dropdown-item.logout:hover svg {
+  color: var(--red);
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .user-avatar-btn {
+    border-color: var(--card-bg);
+  }
 }

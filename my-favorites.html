@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/v2/analects.css">
   <link rel="preconnect" href="https://fonts.loli.net">
   <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <script defer src="https://unpkg.com/lucide@latest"></script>
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
     h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
@@ -65,46 +65,41 @@
 
   </div>
 
+  <header id="global-header" class="global-header"></header>
+
   <div id="analects-global-widget-container"></div>
 
   <script type="module" src="/v2/analects.js"></script>
-  <script type="module">
-   // --- [修正版] 同样使用 async IIFE ---
-   (async () => {
-    let sdk;
-    try {
-      sdk = new AnalectsSDK({
-        supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-        supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
-      });
-	  
-      // [核心] 等待 SDK 初始化完成
-      await sdk.init();
+<script type="module">
+ (async () => {
+  let sdk;
+  try {
+    sdk = new AnalectsSDK({
+      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+      supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+    });
+    
+    // [核心] sdk.init() 会自动处理会话、页头和全局小部件的渲染。
+    await sdk.init();
 
-      // 渲染全局小部件，让用户能看到自己的登录状态
-     // setTimeout(() => {
-     //   sdk.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
-        
-        // ---- 初始化完成后，再开始渲染组件 ----
-        sdk.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
-        // 我们将在下一步创建 renderMyFavoritesPage 方法
-		// 我们需要等待收藏列表渲染完成后，再初始化搜索功能
-        await sdk.renderMyFavoritesPage(document.getElementById('favorites-list-container'));
-		
-		sdk.initializeFavoritesSearch(
-		          document.getElementById('favorites-search-input'),
-		          document.getElementById('favorites-list-container')
-		        );
+    // ---- 初始化完成后，只调用此页面专属的组件和功能 ----
+    
+    // 1. 渲染“我的收藏”列表
+    await sdk.renderMyFavoritesPage(document.getElementById('favorites-list-container'));
+    
+    // 2. 初始化“我的收藏”页面的搜索功能
+    sdk.initializeFavoritesSearch(
+      document.getElementById('favorites-search-input'),
+      document.getElementById('favorites-list-container')
+    );
 
-    //  }, 100);
-
-    } catch (e) {
-      console.error("AnalectsSDK failed to initialize.", e);
-      document.getElementById('favorites-list-container').innerHTML = '<div class="text-center text-red-500 py-8">SDK 初始化失败，请检查配置。</div>';
-    }
-	
-	    })();
-  </script>
+  } catch (e) {
+    console.error("AnalectsSDK failed to initialize.", e);
+    document.getElementById('favorites-list-container').innerHTML = '<div class="text-center text-red-500 py-8">SDK 初始化失败，请检查配置。</div>';
+  }
+  
+  })();
+</script>
 
 </body>
 </html>

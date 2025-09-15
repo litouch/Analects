@@ -127,9 +127,8 @@ class AnalectsSDK {
               // 发生变化后，更新所有UI
               this._updateFavoriteButtonsUI();
 			  this._refreshVisibleCardsUI();
-              if (this.widgetContainer) {
-                  this.renderGlobalWidget(this.widgetContainer);
-              }
+              this.renderGlobalHeader(document.getElementById('global-header')); 
+			  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
           }
       });
 
@@ -146,19 +145,18 @@ class AnalectsSDK {
 
               // 3.2 [关键] 不再依赖其他事件，自己主动完成所有状态和UI的同步
               this.currentUser = data.session.user;   // 同步用户状态
+			  this.headers.Authorization = `Bearer ${data.session.access_token}`; // <-- 确保headers也更新
               await this._loadUserFavorites();       // 同步收藏状态
               this._updateFavoriteButtonsUI();       // 刷新收藏按钮UI
-              if (this.widgetContainer) {            // 刷新全局UI（如登出按钮）
-                  this.renderGlobalWidget(this.widgetContainer);
-              }
+              this.renderGlobalHeader(document.getElementById('global-header')); 
+			  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
           }
       });
 
       // 步骤 4: 确保页面首次加载时，UI完全渲染正确
       this._updateFavoriteButtonsUI();
-      if (this.widgetContainer) {
-          this.renderGlobalWidget(this.widgetContainer);
-      }
+      this.renderGlobalHeader(document.getElementById('global-header'));
+	  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
   }
 
 
@@ -671,6 +669,51 @@ class AnalectsSDK {
     };
   }
 
+  // [新增] 格式化为相对时间 (例如 “3小时前”)
+  formatTimeAgo(dateString) {
+      if (!dateString) return '';
+    
+      const now = new Date();
+      const past = new Date(dateString);
+      // 计算两个日期相差的秒数
+      const seconds = Math.floor((now - past) / 1000);
+
+      // [新增] 获取当前年份和收藏年份
+      const yearNow = now.getFullYear();
+      const yearPast = past.getFullYear();
+
+      // 如果小于1分钟
+      if (seconds < 60) {
+          return '刚刚';
+      }
+      // 如果小于1小时
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) {
+          return `${minutes}分钟前`;
+      }
+      // 如果小于1天
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) {
+          return `${hours}小时前`;
+      }
+      // 如果小于1个月 (简化为30天)
+      const days = Math.floor(hours / 24);
+      if (days < 30) {
+          return `${days}天前`;
+      }
+    
+      // [核心优化] 如果在同一年，则显示月和日
+      if (yearNow === yearPast) {
+          // toLocaleDateString 在不同浏览器和操作系统下表现可能略有差异
+          // 但 'short' 格式通常是 'M/D' 或 'MM/DD'
+          return past.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+      } else {
+          // 如果跨年了，则显示完整的年月日
+          return past.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+  }
+  
+  
   // 生成分享链接
   generateShareLinks(entry, currentUrl = window.location.href) {
     const text = `每日论语：${entry.original_text}`;
@@ -761,6 +804,7 @@ class AnalectsSDK {
     const highlightedAnnotation = entry.annotation ? this.highlightKeywords(entry.annotation, currentKeyword) : '';
 
     const isFavorited = this.favoriteIds.has(entry.id);
+	const timeAgo = isFavorited && entry.favorited_at ? this.formatTimeAgo(entry.favorited_at) : '';
     const favoriteButtonHTML = `
       <button 
         class="favorite-btn ${isFavorited ? 'favorited' : ''}" 
@@ -772,9 +816,6 @@ class AnalectsSDK {
       </button>
     `;
     
-    const favoritedDateHTML = entry.favorited_at 
-      ? `<div class="favorited-date-display">收藏于 ${new Date(entry.favorited_at).toLocaleDateString()}</div>` 
-      : '';
 
 	  let insightHTML = '';
 	      if (isFavorited && entry.user_insight) {
@@ -799,13 +840,16 @@ class AnalectsSDK {
       : '<div class="footer-text"></div>';
 
     return `
-      <div class="analects-result-header">
-        <div>
-          <span class="analects-result-chapter">${this.escapeHtml(entry.chapter || '')}</span>
-          <span class="analects-result-section">第${this.escapeHtml(entry.section_number || '')}节</span>
-        </div>
-        ${favoriteButtonHTML} 
-      </div>
+  <div class="analects-result-header">
+    <div class="result-header-left">
+      <span class="analects-result-chapter">${this.escapeHtml(entry.chapter || '')}</span>
+      <span class="analects-result-section">第${this.escapeHtml(entry.section_number || '')}节</span>
+    </div>
+    <div class="result-header-right">
+      ${timeAgo ? `<span class="favorite-time-ago">${timeAgo}</span>` : ''}
+      ${favoriteButtonHTML}
+    </div>
+  </div>
     
       <div class="analects-result-content">
         <div class="analects-result-original">${highlightedOriginal}</div>
@@ -821,7 +865,6 @@ class AnalectsSDK {
 
       ${isFavorited ? `
         <div class="analects-card-footer">
-          ${favoritedDateHTML}
           ${insightHTML}
           <div class="footer-meta">
             ${updatedDateHTML}
@@ -1752,6 +1795,147 @@ class AnalectsSDK {
   }
 
 
+// [新增] 根据 email 生成带背景色的首字母头像 HTML
+    _generateInitialsAvatar(email) {
+      if (!email) return `<div class="initials">?</div>`;
+
+      const initial = email[0].toUpperCase();
+      
+      // 根据 email 字符串生成一个简单的哈希值，用于分配颜色
+      let hash = 0;
+      for (let i = 0; i < email.length; i++) {
+        hash = email.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      
+      // 定义一个漂亮的颜色数组
+      const colors = ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#4ade80', '#34d399', '#22d3ee', '#60a5fa', '#818cf8', '#c084fc'];
+      const color = colors[Math.abs(hash % colors.length)];
+
+      return `<div class="initials" style="background-color: ${color}; color: white; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">${initial}</div>`;
+    }
+
+    // [新增] 统一获取用户头像的 HTML (Google 或首字母)
+    _getAvatarHTML(user) {
+      if (!user) return this._generateInitialsAvatar('?');
+
+      const metadata = user.user_metadata;
+      // 1. 优先使用 Google 等第三方提供商的头像
+      if (metadata && metadata.avatar_url) {
+        return `<img src="${metadata.avatar_url}" alt="用户头像">`;
+      }
+      // 2. 否则，回退到使用 Email 生成首字母头像
+      return this._generateInitialsAvatar(user.email);
+    }
+	
+	
+// [新增] 渲染全局页头的核心函数
+    renderGlobalHeader(container) {
+      if (!container) return;
+
+      let headerHTML = '';
+      if (this.currentUser) {
+        // --- 已登录状态 ---
+        const avatarHTML = this._getAvatarHTML(this.currentUser);
+        headerHTML = `
+          <div class="user-avatar-container">
+            <button id="user-avatar-btn" class="user-avatar-btn" title="用户菜单">
+              ${avatarHTML}
+            </button>
+            <div id="user-dropdown-menu" class="user-dropdown-menu">
+              <div class="dropdown-user-info">
+                <span class="email">${this.escapeHtml(this.currentUser.email)}</span>
+              </div>
+              <a href="/my-favorites.html" class="dropdown-item">
+                <i data-lucide="bookmark"></i>
+                <span>我的收藏</span>
+              </a>
+              <a href="/account.html" class="dropdown-item"> <i data-lucide="settings"></i>
+                <span>账户设置</span>
+              </a>
+              <button id="header-logout-btn" class="dropdown-item logout">
+                <i data-lucide="log-out"></i>
+                <span>登出</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // --- 未登录状态 ---
+        headerHTML = `
+          <button id="header-login-btn" class="header-login-btn">登录 / 注册</button>
+        `;
+      }
+      container.innerHTML = headerHTML;
+      this._attachHeaderEvents(); // 绑定事件
+      
+      // [核心修改] 调用我们新的、更可靠的图标渲染函数
+      this._ensureIconsRendered();
+      
+    }
+
+    // [新增] 为全局页头绑定所有必要的事件
+    _attachHeaderEvents() {
+	  // [新增这一行] 在这里立即调用一次图标渲染，确保新添加的HTML中的图标能被正确处理
+	    if (window.lucide) {
+	      window.lucide.createIcons();
+	    }
+      // 登录按钮
+      const loginBtn = document.getElementById('header-login-btn');
+      if (loginBtn) {
+        loginBtn.addEventListener('click', () => this.showAuthModal('login'));
+      }
+
+      // 头像按钮和下拉菜单
+      const avatarBtn = document.getElementById('user-avatar-btn');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      if (avatarBtn && dropdownMenu) {
+        avatarBtn.addEventListener('click', (e) => {
+          e.stopPropagation(); // 防止点击事件冒泡到document
+          dropdownMenu.classList.toggle('active');
+        });
+        
+        // 点击页面其他地方，关闭菜单
+        document.addEventListener('click', (e) => {
+          if (!avatarBtn.contains(e.target) && dropdownMenu.classList.contains('active')) {
+            dropdownMenu.classList.remove('active');
+          }
+        });
+      }
+
+      // 登出按钮
+      const logoutBtn = document.getElementById('header-logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => this.signOut());
+      }
+    }
+
+// [新增] 一个更可靠的、确保 Lucide 图标被渲染的函数
+    _ensureIconsRendered() {
+      // 立即尝试第一次
+      if (window.lucide) {
+        window.lucide.createIcons();
+        return; // 成功渲染，任务结束
+      }
+
+      // 如果 lucide 还没准备好，启动一个“轮询器”来等待它
+      let attempts = 0;
+      const maxAttempts = 20; // 最多尝试20次 (2秒)
+      
+      const interval = setInterval(() => {
+        attempts++;
+        if (window.lucide) {
+          // 成功等到，立即渲染并停止轮询
+          window.lucide.createIcons();
+          clearInterval(interval);
+        } else if (attempts >= maxAttempts) {
+          // 超过2秒还未加载成功，判定为失败并停止
+          console.error('Lucide.js failed to load after 2 seconds.');
+          clearInterval(interval);
+        }
+      }, 100); // 每100毫秒检查一次
+    }
+
+
 // [最终修正版] 渲染“我的收藏”页面
   async renderMyFavoritesPage(container) {
     if (!container) {
@@ -1947,6 +2131,49 @@ class AnalectsSDK {
         }
       }
     }
+	
+	
+    // [新增] 更新用户密码
+    async updatePassword(newPassword) {
+      if (!this.currentUser) {
+        return { error: new Error('用户未登录') };
+      }
+      const { data, error } = await this.supabase.auth.updateUser({
+        password: newPassword
+      });
+      if (error) {
+        return { error };
+      }
+      return { data };
+    }
+
+    // [新增] 删除当前用户账户
+    // 注意：这是一个敏感操作，在生产环境中建议通过一个自定义的 Edge Function 来执行
+    // 这里我们先实现一个客户端版本，未来可以再加固
+    async deleteCurrentUser() {
+      if (!this.currentUser) {
+        return { error: new Error('用户未登录') };
+      }
+      
+      // Supabase 不允许在客户端直接删除用户，这是一个安全策略。
+      // 正确的做法是调用一个您自己编写的、具有管理员权限的云函数。
+      // 我们在这里模拟这个调用，并给出提示。
+      console.warn('此为模拟删除。生产环境请替换为安全的 Edge Function 调用。');
+      
+      // 示例：如何调用一个名为 'delete-user' 的 Edge Function
+      const { data, error } = await this.supabase.functions.invoke('delete-user', {
+        method: 'POST',
+      });
+
+      if (error) {
+        return { error };
+      }
+
+      // 如果云函数成功删除了用户，我们需要手动登出
+      await this.signOut(); 
+      return { data };
+    }
+	
   
     // [新增] 显示模态窗口的主方法
     showAuthModal(view = 'login') {
