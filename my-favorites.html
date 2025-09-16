@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/v2/analects.css">
   <link rel="preconnect" href="https://fonts.loli.net">
-  <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&family=Zen+Antique+Soft&display=swap" rel="stylesheet">
   <script defer src="https://unpkg.com/lucide@latest"></script>
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
@@ -16,7 +16,7 @@
     }
   </style>
 </head>
-<body class="text-gray-800 antialiased">
+<body class="page-with-sticky-header text-gray-800 antialiased">
   <header id="global-header-wrapper"></header>
   <div class="container mx-auto max-w-4xl px-4 py-8">
     
@@ -80,13 +80,15 @@
       supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
       supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
     });
-    
+ 
+    // 立即渲染一次页头，此时会显示骨架屏
+    sdk.renderGlobalHeader();   
+	
     // [核心] sdk.init() 会自动处理会话、页头和全局小部件的渲染。
     await sdk.init();
 
-    // --- [新增] 在这里手动渲染全局页头 ---
-    sdk.renderGlobalHeader();
-    
+
+    //sdk._initializeHeaderAnimation();
     // 1. 渲染“我的收藏”列表
     await sdk.renderMyFavoritesPage(document.getElementById('favorites-list-container'));
     

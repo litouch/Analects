@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/v2/analects.css">
   <link rel="preconnect" href="https://fonts.loli.net">
-  <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&family=Zen+Antique+Soft&display=swap" rel="stylesheet">
   <script defer src="https://unpkg.com/lucide@latest"></script>
   <style>
       /* 基础字体和背景，保持和全站一致 */
@@ -15,25 +15,6 @@
       /* [优化] 统一 h1 和 h2 的字体来源 */
       h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
 
-      /* [优化] 减小主标题尺寸，更符合设置页的风格 */
-	  .container > header h1 {
-	      font-size: 1.875rem; /* text-3xl */
-	      font-weight: 700;    /* font-bold */
-	  }
-    
-      /* [优化] 减小副标题字体，增加与主标题的对比 */
-	  .container > header p {
-	      font-size: 1.125rem; /* text-lg */
-	      color: #6b7280;     /* text-gray-500 */
-	      margin-top: 0.5rem;  /* mt-2 */
-	  }
-	  
-	  /* [新增] 响应式字体大小，与 my-favorites.html 保持一致 */
-	  @media (min-width: 768px) {
-	      .container > header h1 {
-	          font-size: 2.25rem; /* md:text-4xl */
-	      }
-	  }
 
       /* --- 表单样式核心优化 --- */
     
@@ -120,7 +101,7 @@
       }
   </style>
 </head>
-<body class="text-gray-800 antialiased">
+<body class="page-with-sticky-header text-gray-800 antialiased">
 
   <header id="global-header-wrapper"></header>
 
@@ -177,13 +158,14 @@
         supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
         supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
-      
+
+      // 立即渲染一次页头，此时会显示骨架屏
+      sdk.renderGlobalHeader();
+	        
       // 初始化并渲染通用组件
       await sdk.init();
 	  
-      // --- [新增] 在这里手动渲染全局页头 ---
-      sdk.renderGlobalHeader();
-
+      //sdk._initializeHeaderAnimation();
       // --- [核心修改] 账户页面的专属JS逻辑 ---
       const user = sdk.currentUser;
       const accountContainer = document.getElementById('account-settings-container');

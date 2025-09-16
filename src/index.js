@@ -32,6 +32,9 @@ class AnalectsSDK {
 	this.favoriteIds = new Set(); // [新增] 用于存储用户已收藏条目的ID
 	this.entryCache = new Map();
 	this.favoritesDataCache = new Map();
+	
+    // [核心新增] 添加一个标志，用于跟踪初始会话是否已加载
+    this.sessionInitialized = false; 
     
     // 缓存数据
     this.cache = {
@@ -83,6 +86,8 @@ class AnalectsSDK {
     
       // 步骤 1: 页面首次加载时，完整地获取并应用初始状态
       const { data: { session: initialSession } } = await this.supabase.auth.getSession();
+      // [核心新增] 无论登录与否，只要首次检查完成，就更新标志
+      this.sessionInitialized = true; 
       if (initialSession) {
           this.currentUser = initialSession.user;
           this.headers.Authorization = `Bearer ${initialSession.access_token}`;
@@ -113,8 +118,9 @@ class AnalectsSDK {
           // 只有当登录状态发生根本性改变时（从无到有，或从有到无），才执行
           const isLoggedIn = !!session;
           const wasLoggedIn = !!this.currentUser;
-
-          if (isLoggedIn !== wasLoggedIn) {
+          // [核心修正] 在这里添加了对 "INITIAL_SESSION" 事件的判断
+          // 它的意思是：如果登录状态变了，或者这是页面加载后的第一次会话检查，就执行更新
+          if (isLoggedIn !== wasLoggedIn || event === 'INITIAL_SESSION') {
               this.currentUser = session ? session.user : null;
               this.headers.Authorization = session ? `Bearer ${session.access_token}` : `Bearer ${this.supabaseKey}`;
 
@@ -235,6 +241,13 @@ class AnalectsSDK {
         insightToggleButton.textContent = insightText.classList.contains('is-truncated') ? '展开阅读' : '收起';
       }
     }
+	
+    // [核心新增] 处理点击页面其他地方关闭下拉菜单的逻辑
+    const activeDropdown = document.querySelector('.user-dropdown-menu.active');
+    if (activeDropdown && !event.target.closest('.user-avatar-container')) {
+        activeDropdown.classList.remove('active');
+    }	
+	
   }
   
 
@@ -1826,114 +1839,130 @@ class AnalectsSDK {
     }
 	
 	
-	// [全新升级版] 渲染粘性页头的核心函数
+// [最终骨架屏版] 渲染全局页头
 	renderGlobalHeader() {
-	    // [核心修改] 渲染目标改为新的外层容器
-	    const container = document.getElementById('global-header-wrapper');
-	    if (!container) return;
+	    const headerWrapper = document.getElementById('global-header-wrapper');
+	    if (!headerWrapper) return;
 
-	    let welcomeMessageHTML = '';
-	    let userAreaHTML = '';
+	    let innerHTML = '';
 
-	    if (this.currentUser) {
-	        // --- 已登录状态 ---
+	    // 状态一：如果初始会话还未确认，则显示骨架屏
+	    if (!this.sessionInitialized) {
+	        innerHTML = `
+	            <div class="global-header-inner">
+	                <div class="header-left-area"><div class="header-skeleton text"></div></div>
+	                <a href="/" class="header-mini-logo">論語SDK</a>
+	                <div class="header-right-area"><div class="header-skeleton avatar"></div></div>
+	            </div>
+	        `;
+	    } 
+	    // 状态二：会话已确认，且用户已登录
+	    else if (this.currentUser) {
 	        const avatarHTML = this._getAvatarHTML(this.currentUser);
 	        const userEmail = this.escapeHtml(this.currentUser.email);
-        
-	        welcomeMessageHTML = `
-	            <div class="header-welcome-message">
-	              欢迎, <span class="email">${userEmail}</span>
+	        innerHTML = `
+	            <div class="global-header-inner">
+	                <div class="header-left-area"><div class="header-welcome-message">欢迎, <span class="email">${userEmail}</span></div></div>
+	                <a href="/" class="header-mini-logo">論語SDK</a>
+	                <div class="header-right-area">
+	                    <div class="user-avatar-container">
+	                        <button class="user-menu-button" title="用户菜单"><i data-lucide="menu" class="menu-icon"></i><div class="user-avatar-display">${avatarHTML}</div></button>
+	                        <div class="user-dropdown-menu">
+	                            <div class="dropdown-user-info"><span class="email">${userEmail}</span></div>
+	                            <a href="/my-favorites.html" class="dropdown-item"><i data-lucide="bookmark"></i><span>我的收藏</span></a>
+	                            <a href="/account.html" class="dropdown-item"><i data-lucide="settings"></i><span>账户设置</span></a>
+	                            <button class="dropdown-item logout"><i data-lucide="log-out"></i><span>登出</span></button>
+	                        </div>
+	                    </div>
+	                </div>
 	            </div>
 	        `;
-
-	userAreaHTML = `
-	  <div class="user-avatar-container">
-	    <button id="user-avatar-btn" class="user-menu-button" title="用户菜单">
-	      <i data-lucide="menu" class="menu-icon"></i>
-	      <div class="user-avatar-display">
-	        ${avatarHTML}
-	      </div>
-	    </button>
-	    <div id="user-dropdown-menu" class="user-dropdown-menu">
-	      <div class="dropdown-user-info">
-	        <span class="email">${userEmail}</span>
-	      </div>
-	      <a href="/my-favorites.html" class="dropdown-item">
-	        <i data-lucide="bookmark"></i>
-	        <span>我的收藏</span>
-	      </a>
-	      <a href="/account.html" class="dropdown-item">
-	        <i data-lucide="settings"></i>
-	        <span>账户设置</span>
-	      </a>
-	      <button id="header-logout-btn" class="dropdown-item logout">
-	        <i data-lucide="log-out"></i>
-	        <span>登出</span>
-	      </button>
-	    </div>
-	  </div>
-	`;
-	    } else {
-	        // --- 未登录状态 ---
-	        welcomeMessageHTML = `
-	            <div class="header-welcome-message">
-	              欢迎访问论语 SDK
+	    } 
+	    // 状态三：会话已确认，但用户未登录
+	    else {
+	        innerHTML = `
+	            <div class="global-header-inner">
+	                <div class="header-left-area"><div class="header-welcome-message">欢迎访问论语 SDK</div></div>
+	                <a href="/" class="header-mini-logo">論語SDK</a>
+	                <div class="header-right-area"><div class="header-user-area"><button id="header-login-btn" class="header-login-btn">登录 / 注册</button></div></div>
 	            </div>
-	        `;
-	        userAreaHTML = `
-	          <div class="header-user-area">
-	            <button id="header-login-btn" class="header-login-btn">登录 / 注册</button>
-	          </div>
 	        `;
 	    }
 
-	    // [核心修改] 生成包含内层容器的完整 HTML
-	    container.innerHTML = `
-	        <div class="global-header-inner">
-	            ${welcomeMessageHTML}
-	            ${userAreaHTML}
-	        </div>
-	    `;
-
-	    this._attachHeaderEvents(); // 重新绑定事件
-	    this._ensureIconsRendered(); // 确保图标渲染
+	    headerWrapper.innerHTML = innerHTML;
+	    
+	    // 只有在渲染真实内容后才需要绑定事件和图标
+	    if (this.sessionInitialized) {
+	        this._attachHeaderEvents();
+	    }
 	}
 
-    // [新增] 为全局页头绑定所有必要的事件
+// [最终修正版] 为全局页头绑定所有必要的事件
     _attachHeaderEvents() {
-	  // [新增这一行] 在这里立即调用一次图标渲染，确保新添加的HTML中的图标能被正确处理
-	    if (window.lucide) {
-	      window.lucide.createIcons();
-	    }
-      // 登录按钮
+      // 1. 为登录按钮绑定事件 (这部分不变)
       const loginBtn = document.getElementById('header-login-btn');
       if (loginBtn) {
         loginBtn.addEventListener('click', () => this.showAuthModal('login'));
       }
 
-      // 头像按钮和下拉菜单
-      const avatarBtn = document.getElementById('user-avatar-btn');
-      const dropdownMenu = document.getElementById('user-dropdown-menu');
-      if (avatarBtn && dropdownMenu) {
-        avatarBtn.addEventListener('click', (e) => {
-          e.stopPropagation(); // 防止点击事件冒泡到document
-          dropdownMenu.classList.toggle('active');
-        });
-        
-        // 点击页面其他地方，关闭菜单
-        document.addEventListener('click', (e) => {
-          if (!avatarBtn.contains(e.target) && dropdownMenu.classList.contains('active')) {
-            dropdownMenu.classList.remove('active');
+      // 2. [核心修正] 为页面上“所有”的用户菜单按钮绑定事件
+      document.querySelectorAll('.user-menu-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation(); // 阻止事件冒泡，防止触发下面的全局点击事件
+          
+          // 找到紧跟在当前被点击按钮后面的那个下拉菜单
+          const dropdown = button.nextElementSibling;
+          
+          if (dropdown && dropdown.classList.contains('user-dropdown-menu')) {
+            const wasActive = dropdown.classList.contains('active');
+            
+            // 为保险起见，先关闭页面上所有可能已打开的下拉菜单
+            document.querySelectorAll('.user-dropdown-menu').forEach(d => d.classList.remove('active'));
+            
+            // 如果刚才这个菜单不是打开状态，现在就打开它
+            if (!wasActive) {
+              dropdown.classList.add('active');
+            }
           }
         });
-      }
+      });
 
-      // 登出按钮
-      const logoutBtn = document.getElementById('header-logout-btn');
-      if (logoutBtn) {
+      // 3. [核心修正] 为页面上“所有”的登出按钮绑定事件
+      // 注意：之前的代码只会为第一个登出按钮绑定事件，现在修正为所有
+      document.querySelectorAll('.dropdown-item.logout').forEach(logoutBtn => {
         logoutBtn.addEventListener('click', () => this.signOut());
-      }
+      });
+      
+      // 4. [核心修正] 修改全局点击事件，用于关闭“任何”已打开的菜单
+      // 我们在 _initializeGlobalEventListeners 中统一处理这个逻辑
+      // 此处无需重复添加 document.addEventListener
+      
+      // 5. 确保图标被正确渲染 (这部分不变)
+      this._ensureIconsRendered();
     }
+	
+	
+	// [最终统一版] 初始化页头动态效果
+	_initializeHeaderAnimation() {
+	    const sentinel = document.getElementById('header-sentinel');
+	    const headerWrapper = document.getElementById('global-header-wrapper');
+
+	    // 现在只操作一个页头，逻辑非常清晰
+	    if (!sentinel || !headerWrapper) return;
+
+	    const observer = new IntersectionObserver(
+	        ([entry]) => {
+	            const isScrolled = !entry.isIntersecting;
+	            headerWrapper.classList.toggle('is-scrolled', isScrolled);
+	        },
+	        {
+	            root: null,
+	            threshold: 0,
+	        }
+	    );
+
+	    observer.observe(sentinel);
+	}
 
 // [新增] 一个更可靠的、确保 Lucide 图标被渲染的函数
     _ensureIconsRendered() {
@@ -2135,7 +2164,7 @@ class AnalectsSDK {
 	  }
 	}
 	
-    // [最终优化版] 登出方法
+// [最终优化版] 登出方法
     async signOut() {
       const { error } = await this.supabase.auth.signOut();
       if (error) {
@@ -2148,8 +2177,9 @@ class AnalectsSDK {
           window.showToast('您已成功登出');
         }
       
-        // [新增] 检查当前页面路径，如果是收藏页，则跳转回首页
-        if (window.location.pathname.includes('/my-favorites.html')) {
+        // [核心修正] 增加对 account.html 页面的判断
+        const currentPage = window.location.pathname;
+        if (currentPage.includes('/my-favorites.html') || currentPage.includes('/account.html')) {
           // 等待短暂延迟，让用户能看到 Toast 提示，然后再跳转
           setTimeout(() => {
             window.location.href = '/'; 

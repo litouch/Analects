@@ -125,7 +125,7 @@
         每日论语、论语查询、我的论语笔记
       </p>
     </header>
-    <div id="header-sentinel"></div>
+    <div id="header-sentinel" style="height: 1px;"></div>
     <!-- Introduction Section (Updated Text) -->
     <section class="mb-8 bg-white/80 backdrop-blur-sm border border-gray-200/80 p-6 rounded-xl shadow-md">
        <div class="max-w-3xl mx-auto text-left text-gray-600 space-y-4 text-sm md:text-base leading-relaxed">
@@ -306,7 +306,7 @@
 		
         // --- [新增] 在这里手动渲染全局页头 ---
         sdk.renderGlobalHeader(); 
-        
+        sdk._initializeHeaderAnimation(); // <-- [新增] 启动页头动画
         sdk.renderDailyAnalect(document.getElementById('daily-analect'));
         sdk.renderSearchInterface(document.getElementById('analects-search'));
 
