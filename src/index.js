@@ -125,9 +125,9 @@ class AnalectsSDK {
 				  this.favoritesDataCache.clear();
               }
               // 发生变化后，更新所有UI
+			  this.renderGlobalHeader();
               this._updateFavoriteButtonsUI();
 			  this._refreshVisibleCardsUI();
-              this.renderGlobalHeader(document.getElementById('global-header')); 
 			  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
           }
       });
@@ -148,14 +148,12 @@ class AnalectsSDK {
 			  this.headers.Authorization = `Bearer ${data.session.access_token}`; // <-- 确保headers也更新
               await this._loadUserFavorites();       // 同步收藏状态
               this._updateFavoriteButtonsUI();       // 刷新收藏按钮UI
-              this.renderGlobalHeader(document.getElementById('global-header')); 
 			  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
           }
       });
 
       // 步骤 4: 确保页面首次加载时，UI完全渲染正确
       this._updateFavoriteButtonsUI();
-      this.renderGlobalHeader(document.getElementById('global-header'));
 	  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
   }
 
@@ -1828,50 +1826,78 @@ class AnalectsSDK {
     }
 	
 	
-// [新增] 渲染全局页头的核心函数
-    renderGlobalHeader(container) {
-      if (!container) return;
+	// [全新升级版] 渲染粘性页头的核心函数
+	renderGlobalHeader() {
+	    // [核心修改] 渲染目标改为新的外层容器
+	    const container = document.getElementById('global-header-wrapper');
+	    if (!container) return;
 
-      let headerHTML = '';
-      if (this.currentUser) {
-        // --- 已登录状态 ---
-        const avatarHTML = this._getAvatarHTML(this.currentUser);
-        headerHTML = `
-          <div class="user-avatar-container">
-            <button id="user-avatar-btn" class="user-avatar-btn" title="用户菜单">
-              ${avatarHTML}
-            </button>
-            <div id="user-dropdown-menu" class="user-dropdown-menu">
-              <div class="dropdown-user-info">
-                <span class="email">${this.escapeHtml(this.currentUser.email)}</span>
-              </div>
-              <a href="/my-favorites.html" class="dropdown-item">
-                <i data-lucide="bookmark"></i>
-                <span>我的收藏</span>
-              </a>
-              <a href="/account.html" class="dropdown-item"> <i data-lucide="settings"></i>
-                <span>账户设置</span>
-              </a>
-              <button id="header-logout-btn" class="dropdown-item logout">
-                <i data-lucide="log-out"></i>
-                <span>登出</span>
-              </button>
-            </div>
-          </div>
-        `;
-      } else {
-        // --- 未登录状态 ---
-        headerHTML = `
-          <button id="header-login-btn" class="header-login-btn">登录 / 注册</button>
-        `;
-      }
-      container.innerHTML = headerHTML;
-      this._attachHeaderEvents(); // 绑定事件
-      
-      // [核心修改] 调用我们新的、更可靠的图标渲染函数
-      this._ensureIconsRendered();
-      
-    }
+	    let welcomeMessageHTML = '';
+	    let userAreaHTML = '';
+
+	    if (this.currentUser) {
+	        // --- 已登录状态 ---
+	        const avatarHTML = this._getAvatarHTML(this.currentUser);
+	        const userEmail = this.escapeHtml(this.currentUser.email);
+        
+	        welcomeMessageHTML = `
+	            <div class="header-welcome-message">
+	              欢迎, <span class="email">${userEmail}</span>
+	            </div>
+	        `;
+
+	userAreaHTML = `
+	  <div class="user-avatar-container">
+	    <button id="user-avatar-btn" class="user-menu-button" title="用户菜单">
+	      <i data-lucide="menu" class="menu-icon"></i>
+	      <div class="user-avatar-display">
+	        ${avatarHTML}
+	      </div>
+	    </button>
+	    <div id="user-dropdown-menu" class="user-dropdown-menu">
+	      <div class="dropdown-user-info">
+	        <span class="email">${userEmail}</span>
+	      </div>
+	      <a href="/my-favorites.html" class="dropdown-item">
+	        <i data-lucide="bookmark"></i>
+	        <span>我的收藏</span>
+	      </a>
+	      <a href="/account.html" class="dropdown-item">
+	        <i data-lucide="settings"></i>
+	        <span>账户设置</span>
+	      </a>
+	      <button id="header-logout-btn" class="dropdown-item logout">
+	        <i data-lucide="log-out"></i>
+	        <span>登出</span>
+	      </button>
+	    </div>
+	  </div>
+	`;
+	    } else {
+	        // --- 未登录状态 ---
+	        welcomeMessageHTML = `
+	            <div class="header-welcome-message">
+	              欢迎访问论语 SDK
+	            </div>
+	        `;
+	        userAreaHTML = `
+	          <div class="header-user-area">
+	            <button id="header-login-btn" class="header-login-btn">登录 / 注册</button>
+	          </div>
+	        `;
+	    }
+
+	    // [核心修改] 生成包含内层容器的完整 HTML
+	    container.innerHTML = `
+	        <div class="global-header-inner">
+	            ${welcomeMessageHTML}
+	            ${userAreaHTML}
+	        </div>
+	    `;
+
+	    this._attachHeaderEvents(); // 重新绑定事件
+	    this._ensureIconsRendered(); // 确保图标渲染
+	}
 
     // [新增] 为全局页头绑定所有必要的事件
     _attachHeaderEvents() {

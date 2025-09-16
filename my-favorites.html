@@ -11,10 +11,13 @@
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
     h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
+    #toast {
+      z-index: 2000 !important;
+    }
   </style>
 </head>
 <body class="text-gray-800 antialiased">
-
+  <header id="global-header-wrapper"></header>
   <div class="container mx-auto max-w-4xl px-4 py-8">
     
 	<header class="text-center mb-8 border-b pb-4">
@@ -65,7 +68,6 @@
 
   </div>
 
-  <header id="global-header" class="global-header"></header>
 
   <div id="analects-global-widget-container"></div>
 
@@ -82,7 +84,8 @@
     // [核心] sdk.init() 会自动处理会话、页头和全局小部件的渲染。
     await sdk.init();
 
-    // ---- 初始化完成后，只调用此页面专属的组件和功能 ----
+    // --- [新增] 在这里手动渲染全局页头 ---
+    sdk.renderGlobalHeader();
     
     // 1. 渲染“我的收藏”列表
     await sdk.renderMyFavoritesPage(document.getElementById('favorites-list-container'));

@@ -105,11 +105,14 @@
     .chapter-item {
         @apply bg-gray-50/80 border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:border-blue-300 hover:bg-white;
     }
+    #toast {
+      z-index: 2000 !important;
+    }
   </style>
 
 </head>
 <body class="text-gray-800 antialiased">
-
+  <header id="global-header-wrapper"></header>
   <!-- Main Container -->
   <div class="container mx-auto max-w-5xl px-4 py-8">
 
@@ -122,7 +125,7 @@
         每日论语、论语查询、我的论语笔记
       </p>
     </header>
-
+    <div id="header-sentinel"></div>
     <!-- Introduction Section (Updated Text) -->
     <section class="mb-8 bg-white/80 backdrop-blur-sm border border-gray-200/80 p-6 rounded-xl shadow-md">
        <div class="max-w-3xl mx-auto text-left text-gray-600 space-y-4 text-sm md:text-base leading-relaxed">
@@ -285,7 +288,6 @@
     代码已复制到剪贴板！
   </div>
 
-  <header id="global-header" class="global-header"></header>
 
   <div id="analects-global-widget-container"></div>
 
@@ -301,6 +303,9 @@
         });
         
         await sdk.init(); // 等待 SDK 准备就绪
+		
+        // --- [新增] 在这里手动渲染全局页头 ---
+        sdk.renderGlobalHeader(); 
         
         sdk.renderDailyAnalect(document.getElementById('daily-analect'));
         sdk.renderSearchInterface(document.getElementById('analects-search'));

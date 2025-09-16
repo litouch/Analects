@@ -122,7 +122,7 @@
 </head>
 <body class="text-gray-800 antialiased">
 
-  <header id="global-header" class="global-header"></header>
+  <header id="global-header-wrapper"></header>
 
   <div class="container mx-auto max-w-2xl px-4 py-8">
     
@@ -180,6 +180,9 @@
       
       // 初始化并渲染通用组件
       await sdk.init();
+	  
+      // --- [新增] 在这里手动渲染全局页头 ---
+      sdk.renderGlobalHeader();
 
       // --- [核心修改] 账户页面的专属JS逻辑 ---
       const user = sdk.currentUser;
