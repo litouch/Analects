@@ -131,7 +131,7 @@
           <div>
             <label for="new-password" class="form-label">新密码</label>
             <input type="password" id="new-password" name="new-password" class="form-input" required minlength="6">
-            <p class="text-xs text-gray-500 mt-1">至少6位字符。</p>
+            <p class="text-xs text-gray-500 mt-1">至少6位字符，不允许纯数字或者字母。</p>
           </div>
           <div class="mt-4">
             <button type="submit" class="form-submit-btn">更新密码</button>
@@ -139,11 +139,11 @@
         </form>
       </section>
 
-      <section class="form-section delete-section">
+      <!-- <section class="form-section delete-section">
         <h2 class="text-xl font-semibold mb-2">删除账户</h2>
         <p class="text-sm text-gray-600 mb-4">此操作不可逆，您的所有收藏和笔记都将被永久删除。</p>
         <button id="delete-account-btn" class="form-submit-btn delete-btn">删除我的账户</button>
-      </section>
+      </section> -->
 
     </main>
 
@@ -205,7 +205,8 @@
         }
       });
 
-      // --- 2. 删除账户按钮事件 ---
+      // --- 2. 删除账户按钮事件 (功能暂未上线) ---
+	  /*
       const deleteBtn = document.getElementById('delete-account-btn');
       deleteBtn.addEventListener('click', async () => {
         // 使用一个简单的浏览器确认框
@@ -225,6 +226,7 @@
             alert('邮箱地址不匹配，操作已取消。');
         }
       });
+	  */
 
     })();
   </script>
