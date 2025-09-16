@@ -114,6 +114,20 @@ class AnalectsSDK {
               window.showToast('登录成功，欢迎回来！');
             }
             sessionStorage.removeItem('justLoggedIn'); // 用完后立即移除标志
+	        // --- [核心功能新增] ---
+	        // 登录成功后，检查当前页面路径
+	        const currentPage = window.location.pathname;
+	        if (currentPage.includes('/my-favorites.html')) {
+	          // 如果在收藏页，则重新渲染收藏列表
+	          const container = document.getElementById('favorites-list-container');
+	          if (container) {
+	            // 先显示一个加载提示，提升体验
+	            container.innerHTML = '<div class="text-center text-gray-500 py-8">正在加载您的收藏...</div>';
+	            // 异步执行渲染函数
+	            await this.renderMyFavoritesPage(container);
+	          }
+	        }
+	        // --- [功能新增结束] ---
           }
           // 只有当登录状态发生根本性改变时（从无到有，或从有到无），才执行
           const isLoggedIn = !!session;
@@ -206,49 +220,53 @@ class AnalectsSDK {
       document.addEventListener('keydown', this._handleGlobalKeyPress);
     }
 
-  // [新增/修改] 独立的事件处理方法，现在包含了“编辑笔记”的逻辑
-  _handleGlobalClick(event) {
-    // 处理收藏按钮的点击
-    const favoriteButton = event.target.closest('.favorite-btn');
-    if (favoriteButton) {
-      const entryId = parseInt(favoriteButton.dataset.entryId, 10);
-      if (!isNaN(entryId)) {
-        this.toggleFavorite(entryId, favoriteButton);
-      }
-      return; // 处理完后结束
-    }
+	// [新增/修改] 独立的事件处理方法，现在包含了“编辑笔记”的逻辑
+	_handleGlobalClick(event) {
+	  // 处理收藏按钮的点击
+	  const favoriteButton = event.target.closest('.favorite-btn');
+	  if (favoriteButton) {
+	    const entryId = parseInt(favoriteButton.dataset.entryId, 10);
+	    if (!isNaN(entryId)) {
+	      this.toggleFavorite(entryId, favoriteButton);
+	    }
+	    return; // 处理完后结束
+	  }
 
-    // 处理编辑笔记按钮的点击
-    const editInsightButton = event.target.closest('.edit-insight-btn');
-    if (editInsightButton) {
-      const entryId = parseInt(editInsightButton.dataset.entryId, 10);
-      
-      const card = editInsightButton.closest('.analects-result-card');
-      const insightTextEl = card ? card.querySelector('.insight-text') : null;
-      const currentInsight = insightTextEl ? insightTextEl.textContent : '';
-      
-      if (!isNaN(entryId)) {
-        this.showNoteEditorModal(entryId, currentInsight);
-      }
-    }
-	
-    // [新增] 处理笔记展开/收起按钮的点击
-    const insightToggleButton = event.target.closest('.insight-toggle-btn');
-    if (insightToggleButton) {
-      const insightText = insightToggleButton.previousElementSibling;
-      if (insightText && insightText.classList.contains('insight-text')) {
-        insightText.classList.toggle('is-truncated');
-        insightToggleButton.textContent = insightText.classList.contains('is-truncated') ? '展开阅读' : '收起';
-      }
-    }
-	
-    // [核心新增] 处理点击页面其他地方关闭下拉菜单的逻辑
-    const activeDropdown = document.querySelector('.user-dropdown-menu.active');
-    if (activeDropdown && !event.target.closest('.user-avatar-container')) {
-        activeDropdown.classList.remove('active');
-    }	
-	
-  }
+	  // 处理编辑笔记按钮的点击
+	  const editInsightButton = event.target.closest('.edit-insight-btn');
+	  if (editInsightButton) {
+	    const entryId = parseInt(editInsightButton.dataset.entryId, 10);
+
+	    const card = editInsightButton.closest('.analects-result-card');
+	    const insightTextEl = card ? card.querySelector('.insight-text') : null;
+	    const currentInsight = insightTextEl ? insightTextEl.textContent : '';
+
+	    if (!isNaN(entryId)) {
+	      this.showNoteEditorModal(entryId, currentInsight);
+	    }
+	  }
+
+	  // [新增] 处理笔记展开/收起按钮的点击
+	  const insightToggleButton = event.target.closest('.insight-toggle-btn');
+	  if (insightToggleButton) {
+	    const insightText = insightToggleButton.previousElementSibling;
+	    if (insightText && insightText.classList.contains('insight-text')) {
+	      insightText.classList.toggle('is-truncated');
+	      insightToggleButton.textContent = insightText.classList.contains('is-truncated') ? '展开阅读' : '收起';
+	    }
+	  }
+
+	  // [核心修改] 处理点击页面其他地方关闭【顶部】和【底部】菜单的逻辑
+	  const activeHeaderDropdown = document.querySelector('.user-dropdown-menu.active');
+	  if (activeHeaderDropdown && !event.target.closest('.user-avatar-container')) {
+	      activeHeaderDropdown.classList.remove('active');
+	  }
+
+	  const activeFooterMenu = document.querySelector('.app-footer-submenu.active');
+	  if (activeFooterMenu && !event.target.closest('.app-footer-menu-container')) {
+	      activeFooterMenu.classList.remove('active');
+	  }
+	}
   
 
   // 验证配置
@@ -2079,17 +2097,35 @@ class AnalectsSDK {
       container.classList.add('logged-in');
       container.classList.remove('logged-out');
       
-      // 判断“首页”和“我的收藏”哪个应该有'active' class
       const isHomeActive = (currentPage === '/' || currentPage.includes('/index.html'));
       const isFavoritesActive = currentPage.includes('/my-favorites.html');
 
+      // [核心修改] 生成包含弹出式菜单的新HTML结构
       widgetHTML = `
-        <a href="/" class="app-footer-action ${isHomeActive ? 'active' : ''}">首页</a>
-        <a href="/my-favorites.html" class="app-footer-action ${isFavoritesActive ? 'active' : ''}">我的收藏</a>
-        <button id="global-logout-btn" class="app-footer-action">登出</button>
+        <a href="/" class="app-footer-action ${isHomeActive ? 'active' : ''}">
+          <i data-lucide="home"></i><span>首页</span>
+        </a>
+        <a href="/my-favorites.html" class="app-footer-action ${isFavoritesActive ? 'active' : ''}">
+          <i data-lucide="bookmark"></i><span>我的收藏</span>
+        </a>
+        
+        <div class="app-footer-menu-container">
+          <button id="global-account-btn" class="app-footer-action">
+            <i data-lucide="user"></i><span>我的账号</span>
+          </button>
+          <div id="global-account-menu" class="app-footer-submenu">
+            <a href="/account.html" class="app-footer-submenu-item">
+              <i data-lucide="settings"></i><span>账户设置</span>
+            </a>
+            <button id="global-logout-btn" class="app-footer-submenu-item logout">
+              <i data-lucide="log-out"></i><span>登出</span>
+            </button>
+          </div>
+        </div>
       `;
+
     } else {
-      // --- 未登录状态 ---
+      // --- 未登录状态 (保持不变) ---
       container.classList.add('logged-out');
       container.classList.remove('logged-in');
       
@@ -2106,6 +2142,8 @@ class AnalectsSDK {
   _attachGlobalWidgetEvents() {
     const loginBtn = this.widgetContainer.querySelector('#global-login-btn');
     const logoutBtn = this.widgetContainer.querySelector('#global-logout-btn');
+    const accountBtn = this.widgetContainer.querySelector('#global-account-btn');
+    const accountMenu = this.widgetContainer.querySelector('#global-account-menu');
 
     if (loginBtn) {
       loginBtn.addEventListener('click', () => this.showAuthModal('login')); 
@@ -2114,8 +2152,19 @@ class AnalectsSDK {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => this.signOut());
     }
-  }
 
+    // [核心新增] 为“我的账号”按钮和菜单添加交互
+    if (accountBtn && accountMenu) {
+      accountBtn.addEventListener('click', (e) => {
+        // 阻止事件冒泡，防止触发下面的全局点击事件而立即关闭
+        e.stopPropagation();
+        accountMenu.classList.toggle('active');
+      });
+    }
+
+    // 确保我们新添加的 Lucide 图标能被渲染
+    this._ensureIconsRendered();
+  }
 
     // [新增] 注册方法
     async signUp(email, password) {

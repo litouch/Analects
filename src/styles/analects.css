@@ -915,10 +915,10 @@ body {
 /* 回到顶部按钮 */
 .analects-scroll-indicator {
   position: fixed;
-  /* 【核心修改点】调整 bottom 值，让它位于浮动小部件的上方 */
-  bottom: 96px; /* (原按钮高度56px + 原bottom间距24px + 16px额外间距) */
-  right: 24px;  /* 与浮动小部件的 right 值保持一致 */
-  background: var(--card-bg); /* 可以用一个不那么显眼的背景色 */
+  /* PC端默认值，让它位于浮动小部件的上方 */
+  bottom: 96px; 
+  right: 24px;
+  background: var(--card-bg);
   color: var(--primary);
   width: 50px;
   height: 50px;
@@ -930,8 +930,8 @@ body {
   box-shadow: var(--shadow-lg);
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.3s ease; /* 保证出现和消失的动画流畅 */
-  z-index: 999; /* z-index 比浮动小部件低一级即可 */
+  transition: all 0.3s ease;
+  z-index: 999;
   cursor: pointer;
   border: 1px solid var(--border);
 }
@@ -944,7 +944,8 @@ body {
 /* 确保在小屏幕上也有合理的间距 */
 @media (max-width: 768px) {
   .analects-scroll-indicator {
-    bottom: 80px;
+    /* [核心修改] 增大bottom值，为底部浮动栏留出更多空间 */
+    bottom: 88px;
     right: 16px;
     width: 40px;
     height: 40px;
@@ -1148,13 +1149,6 @@ body {
     width: 20px;
   }
 
-  .analects-scroll-indicator {
-    bottom: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -2017,40 +2011,50 @@ body {
 /* ================================ */
 /* [最终响应式版] 全局浮动操作栏样式 */
 /* ================================ */
+
+/* 默认样式 (移动端优先)：恢复为悬浮胶囊样式 */
 #analects-global-widget-container {
   position: fixed;
+  z-index: 1000;
+  
+  /* [核心修改] 恢复为悬浮胶囊定位 */
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  
+  /* [核心修改] 恢复圆角和原始边框/阴影 */
   border-radius: 999px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  
   display: flex;
   align-items: center;
-  padding: 6px; /* [恢复] 恢复到稍大的内边距 */
-  gap: 6px;     /* [恢复] 恢复到稍大的间距 */
+  
+  /* [核心修改] 恢复原始内边距和间距 */
+  padding: 6px;
+  gap: 6px;
   transition: all 0.3s ease;
 }
 
-/* 基础按钮样式 (恢复典雅字体) */
+/* 基础按钮样式 */
 .app-footer-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px; /* [恢复] 恢复到更宽的内边距 */
+  padding: 8px 16px;
   border: none;
   background: none;
   border-radius: 999px;
   color: var(--primary);
-  font-size: 14px;   /* [恢复] 恢复到原始的、更大的字体 */
+  font-size: 14px;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  white-space: nowrap; /* [新增] 确保文字本身不换行 */
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -2070,40 +2074,24 @@ body {
   color: #2c5aa0;
 }
 
-/* --- [核心新增] 专门为iPhone等小屏幕手机做的优化 --- */
-@media (max-width: 480px) {
+
+/* --- PC端响应式布局 --- */
+@media (min-width: 1100px) {
+  /* [核心修改] 在PC端，直接隐藏底部的浮动栏 */
   #analects-global-widget-container {
-    padding: 8px;
-    gap: 8px;
-  }
-  .app-footer-action {
-    padding: 6px 12px;
-    font-size: 14px;
+    display: none;
   }
 }
 
-/* --- PC端响应式布局 (保持不变) --- */
-@media (min-width: 768px) and (hover: hover) {
+/* --- [废弃] PC端右下角定位的规则不再需要，因为整个栏都隐藏了 --- */
+/* @media (min-width: 768px) and (hover: hover) {
   #analects-global-widget-container {
     left: auto;
     right: 24px;
     transform: none;
   }
-}
-
-/* --- 深色模式 (保持不变) --- */
-@media (prefers-color-scheme: dark) {
-  #analects-global-widget-container {
-    background: rgba(45, 55, 72, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  #analects-global-widget-container.logged-in .app-footer-action.active,
-  #analects-global-widget-container.logged-in .app-footer-action:hover {
-    background: rgba(49, 130, 206, 0.2);
-    color: #90cdf4;
-  }
-}
+} 
+*/
 
 /* ================================ */
 /* [UI优化] 骨架屏加载状态样式 */
@@ -2327,4 +2315,125 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   .header-skeleton {
     animation-name: pulse-bg-dark;
   }
+}
+
+/* ================================ */
+/* [新增] 浮动栏弹出式菜单样式 */
+/* ================================ */
+
+/* 菜单按钮和其弹出菜单的相对定位容器 */
+.app-footer-menu-container {
+  position: relative;
+  display: flex;
+}
+
+/* 弹出式子菜单本身 */
+.app-footer-submenu {
+  position: absolute;
+  bottom: calc(100% + 8px); /* 定位在父按钮上方，并有8px间距 */
+  left: 50%;
+  
+  width: 180px;
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  /* 向上投影的阴影 */
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1), 0 -1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  padding: 8px;
+  
+  /* 默认隐藏，并为动画做准备 */
+  opacity: 0;
+  transform: translate(-50%, 10px); /* 水平居中，并从略微靠下的位置开始动画 */
+  pointer-events: none; /* 隐藏时不可交互 */
+  transition: all 0.2s ease-out;
+  z-index: -1; /* 默认在浮动栏下方 */
+}
+
+/* 子菜单激活时的状态 */
+.app-footer-submenu.active {
+  opacity: 1;
+  transform: translateX(-50%); /* 移动到最终位置 */
+  pointer-events: auto; /* 激活时可交互 */
+  z-index: 999; /* 显示在浮动栏上方 */
+}
+
+/* 子菜单内的项目（链接或按钮） */
+.app-footer-submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--primary);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.app-footer-submenu-item:hover {
+  background-color: var(--card-bg);
+}
+
+.app-footer-submenu-item svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  color: var(--gray);
+}
+
+/* 登出按钮的特殊悬停效果 */
+.app-footer-submenu-item.logout:hover {
+  background-color: rgba(229, 62, 62, 0.1);
+  color: var(--red);
+}
+
+.app-footer-submenu-item.logout:hover svg {
+  color: var(--red);
+}
+
+
+/* 为浮动栏主按钮添加图标样式 */
+.app-footer-action {
+  gap: 8px; /* 图标和文字之间的间距 */
+}
+.app-footer-action svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+/* ========================================= */
+/* [UI优化] 移动端长邮件显示 & 图标重叠问题 */
+/* ========================================= */
+
+/* 使用媒体查询，仅在宽度小于480px的设备上应用这些样式 */
+@media (max-width: 480px) {
+
+  /* --- 1. 解决顶部页头左侧欢迎语的Email过长问题 --- */
+
+  /* 强制左侧区域收缩，为文本截断创造条件 */
+  .header-left-area {
+    min-width: 0;
+  }
+  
+  /* 欢迎语容器，确保它不会换行 */
+  .header-welcome-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* --- 2. 解决顶部页头下拉菜单中Email过长问题 --- */
+  
+  .dropdown-user-info .email {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 }
