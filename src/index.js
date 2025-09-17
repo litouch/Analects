@@ -2,6 +2,7 @@
 // 1. 在文件顶部引入 Supabase 的 createClient 方法
 import { createClient } from '@supabase/supabase-js';
 import './styles/analects.css';
+import './styles/fonts.css';
 
 // 论语 SDK - 优化清理版
 class AnalectsSDK {
