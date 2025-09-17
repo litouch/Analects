@@ -925,7 +925,7 @@ class AnalectsSDK {
     return `
       <div class="analects-search">
         <div class="analects-search-header">
-          <h1 class="analects-search-title">论语搜索</h1>
+          <h2 class="analects-search-title">论语搜索</h2>
           <p class="analects-search-subtitle">Search in the Analects of Confucius</p>
         </div>
 
@@ -1058,7 +1058,7 @@ class AnalectsSDK {
     return `
       <div class="analects-daily">
         <div class="analects-daily-header">
-          <h1 class="analects-daily-title">每日论语</h1>
+          <h2 class="analects-daily-title">每日论语</h2>
           <p class="analects-daily-subtitle">Daily Analects of Confucius</p>
           <div class="analects-daily-date">${dateInfo.full} · ${dateInfo.weekday}</div>
         </div>
