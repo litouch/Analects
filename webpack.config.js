@@ -20,6 +20,8 @@ module.exports = (env, argv) => {
     
     output: {
       path: path.resolve(__dirname, 'dist'),
+      // [新增] 确保所有资源路径都从根目录 / 开始
+      publicPath: '/',
       // [修改] 3. 动态修改输出的 JS 文件名，为其加上版本目录前缀
       filename: (pathData) => {
         const name = pathData.chunk.name === 'analects.min' ? 'analects.min.js' : 'analects.js';
@@ -63,6 +65,16 @@ module.exports = (env, argv) => {
             'css-loader',
             'postcss-loader'
           ]
+        },
+        // [新增] 在这里添加下面的字体处理规则
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            // [核心] 定义字体文件的输出位置和名称
+            // 这会把字体文件输出到 'dist/v2/fonts/' 文件夹下
+            filename: `${majorVersion}/fonts/[name][ext]`
+          }
         }		
       ]
     },
