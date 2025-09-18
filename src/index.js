@@ -808,7 +808,7 @@ class AnalectsSDK {
   }
 
 
-  // [FINAL VERSION V5] Generates the HTML for the card with the definitive minimalist design
+  // [FINAL VERSION V6 - LOGIC REFINED] Decouples share/more actions from the favorite state
   generateResultCardHTML(entry) {
       if (!entry) return '';
 
@@ -818,7 +818,7 @@ class AnalectsSDK {
         (items || []).map(item => item[field]?.name || item[field]?.title || item[field]?.content).filter(Boolean);
   
       const characters = getRelatedData(entry.entry_characters, 'characters');
-      const argumentsList = getRelatedData(entry.entry_guments, 'arguments');
+      const argumentsList = getRelatedData(entry.entry_arguments, 'arguments');
       const proverbs = getRelatedData(entry.entry_proverbs, 'proverbs');
 
       const createTagGroup = (label, items, className) => 
@@ -846,10 +846,9 @@ class AnalectsSDK {
         </button>
       `;
     
-      // [最终版] 笔记区域HTML：恢复“展开/收起”功能
+      // 笔记区域HTML的生成逻辑不变
       let noteHTML = '';
       if (isFavorited && entry.user_insight) {
-          // [功能恢复] 重新加入判断笔记长度的逻辑
           const lineCount = (entry.user_insight || '').split('\n').length;
           const characterCount = (entry.user_insight || '').length;
           const isLongInsight = lineCount > 4 || characterCount > 150;
@@ -869,21 +868,31 @@ class AnalectsSDK {
           `;
       }
 
-      // [最终版] 底部操作区HTML：恢复胶囊按钮
-      const footerHTML = isFavorited ? `
+      // [核心逻辑优化]
+      // 1. “笔记”按钮现在只在收藏后出现
+      const editNoteButtonHTML = isFavorited ? `
+        <button class="edit-insight-btn pill-style" data-entry-id="${entry.id}">
+          <span>${entry.user_insight ? '编辑笔记' : '添加笔记'}</span>
+        </button>
+      ` : '<div></div>'; // 未收藏时，用一个空div占位，确保flex布局中“…”按钮能正确靠右
+
+      // 2. “更多”按钮永远显示
+      const moreOptionsButtonHTML = `
+        <button class="more-options-btn" title="更多选项">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
+      `;
+
+      // 3. 组装始终显示的底部操作区
+      const footerHTML = `
         <div class="analects-card-footer">
           <div class="footer-actions">
-              <button class="edit-insight-btn pill-style" data-entry-id="${entry.id}">
-                <span>${entry.user_insight ? '编辑笔记' : '添加笔记'}</span>
-              </button>
-            
-              <button class="more-options-btn" title="更多选项">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-              </button>
+              ${editNoteButtonHTML}
+              ${moreOptionsButtonHTML}
           </div>
           ${noteHTML}
         </div>
-      ` : '';
+      `;
 
 
       return `
