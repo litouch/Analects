@@ -2437,3 +2437,86 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   }
 
 }
+
+/* ================================================= */
+/* [MODERNIZATION FINAL V5.1] 修正文本对齐 */
+/* ================================================= */
+
+/* 1. 卡片底部总容器: 移除所有线条，仅用内外边距控制间距 */
+.analects-card-footer {
+  border-top: none;
+  margin-top: 24px;
+  padding: 0 4px 4px 4px;
+}
+
+/* 2. 操作按钮区 */
+.footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 3. '添加/编辑笔记' 胶囊按钮 */
+.edit-insight-btn.pill-style {
+  background-color: #f1f5f9; /* 一个非常柔和的灰色 */
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 999px; /* 实现胶囊形状 */
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+.edit-insight-btn.pill-style:hover {
+  background-color: #e2e8f0; /* 悬浮时颜色加深 */
+  transform: translateY(-1px);
+}
+/* 确保按钮内的旧SVG图标不显示 */
+.edit-insight-btn svg {
+  display: none;
+}
+
+/* 4. '更多选项' 按钮 */
+.more-options-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  color: var(--light-gray);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.more-options-btn:hover {
+  background-color: #f1f5f9; /* 悬浮时出现圆形背景 */
+}
+
+
+/* 5. 笔记区域总容器: 使用中性灰背景 */
+.user-insight-wrapper {
+  margin-top: 16px;
+  background-color: #f8fafc; /* 中性、现代的浅灰色 */
+  border: none; /* 确保无边框 */
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* 6. 笔记头部 (仅含时间戳) */
+.user-insight-header {
+  text-align: right;
+  padding: 0 0 8px 0;
+  margin: 0;
+  background: none;
+}
+
+/* 7. 笔记内容 */
+.user-insight-content .insight-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569; /* slate-600 */
+  text-align: left; /* [修正] 强制笔记内容左对齐 */
+}
