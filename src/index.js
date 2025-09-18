@@ -928,7 +928,7 @@ class AnalectsSDK {
     this.isSearchInitialized = true;
   }
 
-  // 获取搜索界面HTML
+// 获取搜索界面HTML
   getSearchInterfaceHTML() {
     return `
       <div class="analects-search">
@@ -954,14 +954,16 @@ class AnalectsSDK {
           <div class="analects-advanced-filters">
             <h3 class="analects-advanced-title">高级搜索</h3>
             
-            ${this.createSearchSection('chapter', '章节', 'single-column')}
+            <div class="analects-filters-grid single-column">
+              ${this.createSearchSection('chapter', '章节')}
+            </div>
             
             <div class="analects-filters-grid">
               ${this.createSearchSection('character', '人物')}
               ${this.createSearchSection('argument', '论点')}
             </div>
 
-            <div class="analects-filters-grid" style="margin-top: 24px;">
+            <div class="analects-filters-grid">
               ${this.createSearchSection('proverb', '谚语', 'full-width')}
             </div>
           </div>
@@ -998,24 +1000,21 @@ class AnalectsSDK {
       proverb: 'proverbs'
     };
     
-    const containerClass = className === 'single-column' ? 'analects-filters-grid single-column' : 
-                          className === 'full-width' ? 'analects-filter-section' : 
-                          'analects-filter-section';
+    // [核心修正] 仅在需要时（如“谚语”部分）添加内联样式以撑满整行
     const wrapperStyle = className === 'full-width' ? 'style="grid-column: 1 / -1;"' : '';
 
+    // [核心修正] 移除了外层的div，现在函数只返回一个带样式的区块
     return `
-      <div class="${containerClass}" ${wrapperStyle}>
-        <div class="analects-filter-section">
-          <div class="analects-filter-header">
-            <h4 class="analects-filter-title ${types[type]}">${title}</h4>
-            <span class="analects-filter-count" id="${type}-count">0</span>
-          </div>
-          <div class="analects-filter-search">
-            <input type="text" id="${type}-search" placeholder="搜索${title.replace('搜索', '')}...">
-          </div>
-          <div id="${type}-filters" class="analects-filter-options">
-            <div class="analects-loading">加载中...</div>
-          </div>
+      <div class="analects-filter-section" ${wrapperStyle}>
+        <div class="analects-filter-header">
+          <h4 class="analects-filter-title ${types[type]}">${title}</h4>
+          <span class="analects-filter-count" id="${type}-count">0</span>
+        </div>
+        <div class="analects-filter-search">
+          <input type="text" id="${type}-search" placeholder="搜索${title.replace('搜索', '')}...">
+        </div>
+        <div id="${type}-filters" class="analects-filter-options">
+          <div class="analects-loading">加载中...</div>
         </div>
       </div>
     `;

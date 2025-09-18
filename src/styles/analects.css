@@ -2520,3 +2520,9 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   color: #475569; /* slate-600 */
   text-align: left; /* [修正] 强制笔记内容左对齐 */
 }
+
+
+/* [微调] 为高级搜索中的筛选区块之间添加垂直间距 */
+.analects-filters-grid + .analects-filters-grid {
+  margin-top: 24px;
+}
