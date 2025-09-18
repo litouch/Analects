@@ -2526,3 +2526,76 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
 .analects-filters-grid + .analects-filters-grid {
   margin-top: 24px;
 }
+
+/* ================================================= */
+/* [新增] 卡片操作区下拉菜单样式                     */
+/* ================================================= */
+
+/* 1. 菜单容器，用于相对定位 */
+.card-actions-container {
+  position: relative;
+}
+
+/* 2. 下拉菜单本身 */
+.card-actions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px); /* 定位在按钮下方，有4px间距 */
+  right: 0;
+  width: 180px;
+  background-color: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  padding: 6px;
+  z-index: 10;
+
+  /* 默认隐藏，并为动画做准备 */
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+/* 3. 菜单激活时的状态 */
+.card-actions-dropdown.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  z-index: 50; /* [修正1] 提高层级，防止被遮挡 */
+}
+
+/* 4. 菜单内的项目（链接或按钮） */
+.dropdown-share-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--primary);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.dropdown-share-item:hover {
+  background-color: var(--card-bg);
+}
+
+.dropdown-share-item svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  color: var(--gray);
+  flex-shrink: 0; /* 防止图标被挤压 */
+}
+
+/* [最终修正] 当卡片内的菜单激活时，提升整张卡片的层级来防止遮挡 */
+.analects-result-card:has(.card-actions-dropdown.active) {
+  z-index: 25;
+  position: relative; /* position是z-index生效的前提 */
+}

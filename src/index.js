@@ -221,7 +221,7 @@ class AnalectsSDK {
       document.addEventListener('keydown', this._handleGlobalKeyPress);
     }
 
-	// [新增/修改] 独立的事件处理方法，现在包含了“编辑笔记”的逻辑
+// [新增/修改] 独立的事件处理方法，现在包含了“编辑笔记”的逻辑
 	_handleGlobalClick(event) {
 	  // 处理收藏按钮的点击
 	  const favoriteButton = event.target.closest('.favorite-btn');
@@ -230,24 +230,40 @@ class AnalectsSDK {
 	    if (!isNaN(entryId)) {
 	      this.toggleFavorite(entryId, favoriteButton);
 	    }
-	    return; // 处理完后结束
+	    return;
 	  }
 
 	  // 处理编辑笔记按钮的点击
 	  const editInsightButton = event.target.closest('.edit-insight-btn');
 	  if (editInsightButton) {
 	    const entryId = parseInt(editInsightButton.dataset.entryId, 10);
-
 	    const card = editInsightButton.closest('.analects-result-card');
 	    const insightTextEl = card ? card.querySelector('.insight-text') : null;
 	    const currentInsight = insightTextEl ? insightTextEl.textContent : '';
-
 	    if (!isNaN(entryId)) {
 	      this.showNoteEditorModal(entryId, currentInsight);
 	    }
+        return;
 	  }
 
-	  // [新增] 处理笔记展开/收起按钮的点击
+	  // [新增] 处理卡片上“更多选项”按钮的点击
+	  const moreOptionsButton = event.target.closest('.more-options-btn');
+	  if (moreOptionsButton) {
+		event.stopPropagation();
+		const dropdown = moreOptionsButton.nextElementSibling;
+		const wasActive = dropdown.classList.contains('active');
+		
+		// 先关闭所有其他已打开的卡片下拉菜单
+		document.querySelectorAll('.card-actions-dropdown.active').forEach(d => d.classList.remove('active'));
+
+		// 如果当前菜单是关闭的，则打开它
+		if (!wasActive) {
+			dropdown.classList.add('active');
+		}
+		return;
+	  }
+
+	  // 处理笔记展开/收起按钮的点击
 	  const insightToggleButton = event.target.closest('.insight-toggle-btn');
 	  if (insightToggleButton) {
 	    const insightText = insightToggleButton.previousElementSibling;
@@ -255,9 +271,10 @@ class AnalectsSDK {
 	      insightText.classList.toggle('is-truncated');
 	      insightToggleButton.textContent = insightText.classList.contains('is-truncated') ? '展开阅读' : '收起';
 	    }
+        return;
 	  }
 
-	  // [核心修改] 处理点击页面其他地方关闭【顶部】和【底部】菜单的逻辑
+	  // [核心修改] 处理点击页面其他地方关闭【所有类型】菜单的逻辑
 	  const activeHeaderDropdown = document.querySelector('.user-dropdown-menu.active');
 	  if (activeHeaderDropdown && !event.target.closest('.user-avatar-container')) {
 	      activeHeaderDropdown.classList.remove('active');
@@ -266,6 +283,11 @@ class AnalectsSDK {
 	  const activeFooterMenu = document.querySelector('.app-footer-submenu.active');
 	  if (activeFooterMenu && !event.target.closest('.app-footer-menu-container')) {
 	      activeFooterMenu.classList.remove('active');
+	  }
+
+	  const activeCardDropdown = document.querySelector('.card-actions-dropdown.active');
+	  if (activeCardDropdown && !event.target.closest('.card-actions-container')) {
+		  activeCardDropdown.classList.remove('active');
 	  }
 	}
   
@@ -808,7 +830,7 @@ class AnalectsSDK {
   }
 
 
-  // [FINAL VERSION V6 - LOGIC REFINED] Decouples share/more actions from the favorite state
+  // [FINAL VERSION V7.2 - Stacking Context & Icon Fixes]
   generateResultCardHTML(entry) {
       if (!entry) return '';
 
@@ -846,7 +868,6 @@ class AnalectsSDK {
         </button>
       `;
     
-      // 笔记区域HTML的生成逻辑不变
       let noteHTML = '';
       if (isFavorited && entry.user_insight) {
           const lineCount = (entry.user_insight || '').split('\n').length;
@@ -868,27 +889,44 @@ class AnalectsSDK {
           `;
       }
 
-      // [核心逻辑优化]
-      // 1. “笔记”按钮现在只在收藏后出现
       const editNoteButtonHTML = isFavorited ? `
         <button class="edit-insight-btn pill-style" data-entry-id="${entry.id}">
           <span>${entry.user_insight ? '编辑笔记' : '添加笔记'}</span>
         </button>
-      ` : '<div></div>'; // 未收藏时，用一个空div占位，确保flex布局中“…”按钮能正确靠右
+      ` : '<div></div>';
 
-      // 2. “更多”按钮永远显示
-      const moreOptionsButtonHTML = `
-        <button class="more-options-btn" title="更多选项">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-        </button>
+      const shareLinks = this.generateShareLinks(entry);
+      const shareMenuHTML = `
+        <div class="card-actions-container">
+          <button class="more-options-btn" title="更多选项">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+          <div class="card-actions-dropdown">
+            <a href="${shareLinks.twitter}" target="_blank" rel="noopener noreferrer" class="dropdown-share-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+              <span>分享到 Twitter</span>
+            </a>
+            <a href="${shareLinks.facebook}" target="_blank" rel="noopener noreferrer" class="dropdown-share-item" onclick="return window.open(this.href, 'facebook-share', 'width=626,height=436,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span>分享到 Facebook</span>
+            </a>
+            <button onclick="window.AnalectsSDK.copyText('${this.escapeHtml(shareLinks.copy).replace(/'/g, "\\'")}', this)" class="dropdown-share-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              <span>复制内容</span>
+            </button>
+            <a href="${shareLinks.email}" class="dropdown-share-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              <span>邮件分享</span>
+            </a>
+          </div>
+        </div>
       `;
 
-      // 3. 组装始终显示的底部操作区
       const footerHTML = `
         <div class="analects-card-footer">
           <div class="footer-actions">
               ${editNoteButtonHTML}
-              ${moreOptionsButtonHTML}
+              ${shareMenuHTML}
           </div>
           ${noteHTML}
         </div>
