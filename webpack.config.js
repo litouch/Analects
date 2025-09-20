@@ -100,6 +100,7 @@ module.exports = (env, argv) => {
 		    { from: 'my-favorites.html', to: 'my-favorites.html', noErrorOnMissing: true },
 		    { from: 'account.html', to: 'account.html', noErrorOnMissing: true },
 			{ from: 'public', to: '.', noErrorOnMissing: true }, 
+			{ from: 'chapters', to: 'chapters', noErrorOnMissing: true },
 		  ]
       })
     ],

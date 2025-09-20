@@ -97,9 +97,6 @@
     .card {
       @apply bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200/80;
     }
-    .chapter-item {
-        @apply bg-gray-50/80 border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:border-blue-300 hover:bg-white;
-    }
     #toast {
       z-index: 2000 !important;
     }
@@ -211,6 +208,7 @@
       <section id="books" class="card">
         <div class="p-6 md:p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语著作推荐</h2>
+			<p class="text-center text-gray-500 mb-8">书香四溢 · 尽在纸书</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div>
                     <h3 class="font-semibold text-lg text-gray-800">论语译注</h3>
@@ -311,43 +309,57 @@
 
       // --- 2. 页面动态内容和事件监听 (原 DOMContentLoaded 的内容) ---
       document.getElementById('year').textContent = new Date().getFullYear();
-      const chapters = [
-          { name: "学而第一", desc: "主要讲“务本”的道理" }, { name: "为政第二", desc: "主要讲治理国家的道理" },
-          { name: "八佾第三", desc: "主要记录孔子谈论礼乐" }, { name: "里仁第四", desc: "主要讲仁德的道理" },
-          { name: "公冶长第五", desc: "主要讲评价古今人物" }, { name: "雍也第六", desc: "记录孔子和弟子们的言行" },
-          { name: "述而第七", desc: "主要记录孔子的容貌和言行" }, { name: "泰伯第八", desc: "主要记孔子和曾子的言论" },
-          { name: "子罕第九", desc: "主要记孔子言论，重点为行事风格" }, { name: "乡党第十", desc: "主要记录孔子言谈举止" },
-          { name: "先进第十一", desc: "主要记录孔子教育言论" }, { name: "颜渊第十二", desc: "主要讲如何实行仁德" },
-          { name: "子路第十三", desc: "主要记录孔子论述为人和为政" }, { name: "宪问第十四", desc: "主要记录论修身为人之道" },
-          { name: "卫灵公第十五", desc: "主要记录关于仁德治国" }, { name: "季氏第十六", desc: "主要记孔子论君子修身" },
-          { name: "阳货第十七", desc: "主要记录孔子论述仁德" }, { name: "微子第十八", desc: "主要记录古代圣贤事迹" },
-          { name: "子张第十九", desc: "主要记录探讨求学为道" }, { name: "尧曰第二十", desc: "主要记录古代圣贤的言论" }
-      ];
-      const grid = document.getElementById('chapter-grid');
-      if (grid) {
-        chapters.forEach((chapter, index) => {
-            const item = document.createElement('div');
-            item.className = 'chapter-item';
-            if (index >= 6) { item.classList.add('hidden'); }
-            item.innerHTML = `<h4 class="font-semibold text-gray-900 text-base mb-1">${chapter.name}</h4><p class="text-gray-500">${chapter.desc}</p>`;
-            grid.appendChild(item);
-        });
-      }
-      const toggleBtn = document.getElementById('toggle-chapters-btn');
-      if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const hiddenItems = grid.querySelectorAll('.hidden');
-            if (hiddenItems.length > 0) {
-                hiddenItems.forEach(item => item.classList.remove('hidden'));
-                toggleBtn.textContent = '收起列表';
-            } else {
-                Array.from(grid.children).forEach((item, index) => {
-                    if (index >= 6) item.classList.add('hidden');
-                });
-                toggleBtn.textContent = '展开全部';
-            }
-        });
-      }
+	  const chapters = [
+	        { name: "学而第一", desc: "主要讲“务本”的道理", slug: "xue-er-1" },
+	        { name: "为政第二", desc: "主要讲治理国家的道理", slug: "wei-zheng-2" },
+	        { name: "八佾第三", desc: "主要记录孔子谈论礼乐", slug: "ba-yi-3" },
+	        { name: "里仁第四", desc: "主要讲仁德的道理", slug: "li-ren-4" },
+	        { name: "公冶长第五", desc: "主要讲评价古今人物", slug: "gong-ye-chang-5" },
+	        { name: "雍也第六", desc: "记录孔子和弟子们的言行", slug: "yong-ye-6" },
+	        { name: "述而第七", desc: "主要记录孔子的容貌和言行", slug: "shu-er-7" },
+	        { name: "泰伯第八", desc: "主要记孔子和曾子的言论", slug: "tai-bo-8" },
+	        { name: "子罕第九", desc: "主要记孔子言论，重点为行事风格", slug: "zi-han-9" },
+	        { name: "乡党第十", desc: "主要记录孔子言谈举止", slug: "xiang-dang-10" },
+	        { name: "先进第十一", desc: "主要记录孔子教育言论", slug: "xian-jin-11" },
+	        { name: "颜渊第十二", desc: "主要讲如何实行仁德", slug: "yan-yuan-12" },
+	        { name: "子路第十三", desc: "主要记录孔子论述为人和为政", slug: "zi-lu-13" },
+	        { name: "宪问第十四", desc: "主要记录论修身为人之道", slug: "xian-wen-14" },
+	        { name: "卫灵公第十五", desc: "主要记录关于仁德治国", slug: "wei-ling-gong-15" },
+	        { name: "季氏第十六", desc: "主要记孔子论君子修身", slug: "ji-shi-16" },
+	        { name: "阳货第十七", desc: "主要记录孔子论述仁德", slug: "yang-huo-17" },
+	        { name: "微子第十八", desc: "主要记录古代圣贤事迹", slug: "wei-zi-18" },
+	        { name: "子张第十九", desc: "主要记录探讨求学为道", slug: "zi-zhang-19" },
+	        { name: "尧曰第二十", desc: "主要记录古代圣贤的言论", slug: "yao-yue-20" }
+	    ];
+        const grid = document.getElementById('chapter-grid');
+        if (grid) {
+          chapters.forEach((chapter, index) => {
+              const item = document.createElement('a');
+              item.href = `/chapters/${chapter.slug}.html`;
+              item.className = 'chapter-item block';
+              if (index >= 6) { item.classList.add('hidden'); }
+              item.innerHTML = `<h4 class="font-semibold text-gray-900 text-base mb-1">${chapter.name}</h4><p class="text-gray-500">${chapter.desc}</p>`;
+              grid.appendChild(item);
+          });
+        }
+
+        const toggleBtn = document.getElementById('toggle-chapters-btn');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', () => {
+              const hiddenItems = grid.querySelectorAll('.hidden');
+              if (hiddenItems.length > 0) {
+                  // 展开
+                  hiddenItems.forEach(item => item.classList.remove('hidden'));
+                  toggleBtn.textContent = '收起列表';
+              } else {
+                  // 收起
+                  Array.from(grid.children).forEach((item, index) => {
+                      if (index >= 6) item.classList.add('hidden');
+                  });
+                  toggleBtn.textContent = '展开全部';
+              }
+          });
+        }
 
       // --- 3. 模态窗口等全局函数 ---
       const embedModal = document.getElementById('embedModal');
