@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>论语典故：孔融“小时了了”的智慧 - 論語SDK</title>
+  <link rel="stylesheet" href="/v2/analects.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="年仅十岁的孔融，如何凭借“祖先之交”的机智言辞，赢得与大名士李膺的会面？又如何用一句“想君小时，必当了了”反击非议，名声大噪？">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .story-content p { font-family: 'Noto Serif SC', serif; font-size: 1.125rem; line-height: 2.2; color: #334155; margin-bottom: 2rem; }
+  </style>
+</head>
+<body class="page-with-sticky-header">
+  <header id="global-header-wrapper"></header>
+
+  <div class="container mx-auto max-w-3xl px-4">
+    <header class="chapter-page-header">
+      <h1>高谈阔论：孔融的智慧</h1>
+      <p class="subtitle">机智应对，名声大噪</p>
+      <a href="/stories.html" class="back-link">&larr; 返回典故列表</a>
+    </header>
+
+    <main class="chapter-content-wrapper">
+      <article class="p-8 md:p-12 story-content">
+        <p>东汉末年，名士李膺声望极高，拜访他的人非当代名流或世家宗亲不能入内。年仅十岁的孔融，为了见他一面，便独闯李府门前，对门吏说：“我是李府君的亲戚。”</p>
+        <p>被带入堂上后，李膺好奇地问：“你与我有什么亲戚关系呢？”孔融不慌不忙地回答：“我的祖先孔子，曾拜您的祖先老子（李耳）为师。因此，我和您也算是世交了。” 在座的宾客无不为他的机智称奇。</p>
+        <p>这时，一位名叫陈韪的官员后到，听闻此事后不以为然地说：“小时了了，大未必佳。”（小时候聪明，长大了未必有出息。）孔融立刻反唇相讥：“想君小时，必当了了。”（这么说来，想必您小时候一定很聪明吧？）一句话让陈韪尴尬不已，也让孔融的才思敏捷传为佳话。这个故事不仅展现了孔融的聪慧，也体现了古人对知识传承与人际关系的巧妙理解。</p>
+      </article>
+	  
+      <section class="p-8 md:p-12">
+  <h2 class="text-xl font-bold text-gray-800 mb-6">典故来源</h2>
+  <div class="flex items-start gap-4 bg-gray-50/80 p-6 rounded-lg border border-gray-200/80">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 w-6 h-6 text-gray-500 mt-1">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+      <path d="m9 12 2 2 4-4"/>
+    </svg>
+    <div class="text-gray-700 leading-relaxed">
+      <p>
+        <strong>主要来源：</strong>《世说新语·言语》<br>
+        <strong>次要参考：</strong>《后汉书·孔融传》
+      </p>
+    </div>
+  </div>
+      </section>
+
+      <section class="mt-8 p-8 md:p-12 border-t border-gray-200">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">相关《论语》章句</h2>
+        <div class="verse-card bg-gray-50/80 !p-6">
+          <blockquote class="verse-original text-lg">子曰：“三人行，必有我师焉。择其善者而从之，其不善者而改之。”</blockquote>
+          <p class="verse-translation mt-4 text-base">【译文】孔子说：“几个人同行，其中必定有我的老师。我选择他善的方面向他学习，看到他不善的方面就对照自己改正。”</p>
+          <a href="/chapters/shu-er-7.html" class="text-blue-600 text-sm font-semibold mt-4 inline-block">——《述而篇 第七》</a>
+        </div>
+      </section>
+    </main>
+    
+    <nav class="chapter-navigation">
+        <span class="text-gray-400">没有上一篇了</span>
+        <a href="/stories/zhao-pu-analects.html" class="nav-next">
+            <div class="text">
+                <span class="label">下一篇</span>
+                <span class="title">半部论语治天下</span>
+            </div>
+            <span class="arrow">&rarr;</span>
+        </a>
+    </nav>
+  </div>
+
+  <div id="analects-global-widget-container"></div>
+
+  <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="/v2/analects.js"></script>
+  <script type="module">
+      const sdk = new AnalectsSDK({
+          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+      });
+      sdk.init().then(() => {
+          sdk.renderGlobalHeader();
+          const yearEl = document.getElementById('year');
+          if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+      });
+  </script>
+</body>
+</html>
