@@ -2843,3 +2843,56 @@ a.chapter-item p {
 .chapter-item p {
   color: #6b7280; /* text-gray-500 */
 }
+
+/* ================================================= */
+/* [最终整合版] 移动端样式 (@media)                  */
+/* ================================================= */
+
+/* 仅在屏幕宽度小于767px时生效 */
+@media (max-width: 767px) {
+
+  /* -- 1. 首页初始状态大Logo与按钮对齐微调 -- */
+  body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) {
+    top: 28px; /* 将绝对定位的页头向上微调，以实现视觉居中 */
+  }
+
+  /* -- 2. 粘性页头绝对垂直居中 -- */
+  #global-header-wrapper.is-scrolled .global-header-inner,
+  body:not(:has(#header-sentinel)) .global-header-inner {
+    height: 56px;
+  }
+  .global-header-inner {
+    height: 100%;
+    align-items: center;
+  }
+  .header-left-area, .header-right-area {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .header-right-area {
+     justify-content: flex-end;
+  }
+  .header-login-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+  .user-menu-button {
+    padding: 2px;
+  }
+  .user-avatar-display {
+    width: 28px;
+    height: 28px;
+  }
+  .user-avatar-display .initials {
+    font-size: 14px;
+  }
+
+  /* -- 3. 每日论语收藏按钮仅在“竖屏”时换行 -- */
+  @media (orientation: portrait) {
+    .analects-daily-reference-wrapper {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}
