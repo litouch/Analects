@@ -177,6 +177,21 @@
 
       // 填充邮箱信息
       document.getElementById('email').value = user.email;
+	  
+      // --- [核心修改] 检查用户是否通过 Google 登录 ---
+      if (user.app_metadata.provider === 'google') {
+        const passwordInput = document.getElementById('new-password');
+        const passwordSubmitBtn = document.querySelector('#password-form button[type="submit"]');
+        const passwordHelperText = document.getElementById('password-helper-text');
+
+        // 禁用输入框和按钮
+        passwordInput.disabled = true;
+        passwordSubmitBtn.disabled = true;
+        
+        // 更新提示文字
+        passwordHelperText.textContent = '您通过 Google 登录，无需在此设置密码。';
+        passwordHelperText.style.color = '#6b7280'; // 可以给一个更柔和的颜色
+      }
 
       // --- 1. 修改密码表单事件 ---
       const passwordForm = document.getElementById('password-form');
