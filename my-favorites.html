@@ -16,11 +16,11 @@
 </head>
 <body class="page-with-sticky-header text-gray-800 antialiased">
   <header id="global-header-wrapper"></header>
-  <div class="container mx-auto max-w-4xl px-4 py-8">
+  <div class="container mx-auto max-w-3xl px-4 py-8">
     
 	<header class="text-center mb-8 border-b pb-4">
 	      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">我的收藏</h1>
-	      <p class="text-lg text-gray-500 mt-2">论语收藏，论语笔记</p>
+	      <p class="text-lg text-gray-500 mt-2">温故而知新，可以为师矣</p>
 	      <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
 
 	      <div class="mt-6 max-w-lg mx-auto">
@@ -35,37 +35,30 @@
 	                 placeholder="在您的收藏和笔记中搜索...">
 	        </div>
 	      </div>
-	      </header>
+	</header>
 
-	<main id="favorites-list-container" class="space-y-4">
-	    <div class="favorite-card-skeleton">
-	        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-	            <div class="skeleton-block" style="height: 20px; width: 30%;"></div>
-	            <div class="skeleton-block" style="height: 24px; width: 24px; border-radius: 50%;"></div>
-	        </div>
-	        <div class="skeleton-block" style="height: 18px; width: 90%; margin-bottom: 12px;"></div>
-	        <div class="skeleton-block" style="height: 18px; width: 70%;"></div>
-	    </div>
-	    <div class="favorite-card-skeleton">
-	        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-	            <div class="skeleton-block" style="height: 20px; width: 30%;"></div>
-	            <div class="skeleton-block" style="height: 24px; width: 24px; border-radius: 50%;"></div>
-	        </div>
-	        <div class="skeleton-block" style="height: 18px; width: 90%; margin-bottom: 12px;"></div>
-	        <div class="skeleton-block" style="height: 18px; width: 70%;"></div>
-	    </div>
-	    <div class="favorite-card-skeleton">
-	        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-	            <div class="skeleton-block" style="height: 20px; width: 30%;"></div>
-	            <div class="skeleton-block" style="height: 24px; width: 24px; border-radius: 50%;"></div>
-	        </div>
-	        <div class="skeleton-block" style="height: 18px; width: 90%; margin-bottom: 12px;"></div>
-	        <div class="skeleton-block" style="height: 18px; width: 70%;"></div>
-	    </div>
+	<main id="favorites-list-container" class="space-y-8">
+	    <div class="verse-card-skeleton">
+            <div class="skeleton-block" style="height: 32px; width: 80%; margin-bottom: 24px;"></div>
+            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 12px;"></div>
+            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 24px;"></div>
+            <div class="skeleton-block" style="height: 40px; width: 100%;"></div>
+        </div>
+        <div class="verse-card-skeleton">
+            <div class="skeleton-block" style="height: 32px; width: 70%; margin-bottom: 24px;"></div>
+            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 12px;"></div>
+            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 24px;"></div>
+            <div class="skeleton-block" style="height: 40px; width: 100%;"></div>
+        </div>
 	</main>
 
   </div>
 
+  <footer class="container mx-auto max-w-3xl px-4 mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
 
   <div id="analects-global-widget-container"></div>
 
@@ -79,22 +72,21 @@
       supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
     });
  
-    // 立即渲染一次页头，此时会显示骨架屏
     sdk.renderGlobalHeader();   
-	
-    // [核心] sdk.init() 会自动处理会话、页头和全局小部件的渲染。
     await sdk.init();
 
-
-    //sdk._initializeHeaderAnimation();
-    // 1. 渲染“我的收藏”列表
     await sdk.renderMyFavoritesPage(document.getElementById('favorites-list-container'));
     
-    // 2. 初始化“我的收藏”页面的搜索功能
     sdk.initializeFavoritesSearch(
       document.getElementById('favorites-search-input'),
       document.getElementById('favorites-list-container')
     );
+    
+    // [核心修改] 2. 为新加入的页脚初始化年份
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
 
   } catch (e) {
     console.error("AnalectsSDK failed to initialize.", e);

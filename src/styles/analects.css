@@ -783,23 +783,6 @@ body {
   color: #333;
 }
 
-/* 已全部显示完毕提示 */
-/* .analects-load-complete { */
-/*   margin: 24px 0; */
-/*   text-align: center; */
-/*   font-size: 14px; */
-/*   color: #888; */
-/* } */
-
-.analects-load-complete-text {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: #fafafa;
-  color: #666;
-  border: 1px solid #eee;
-}
-
 /* ===== 关键字高亮样式 ===== */
 
 /* 基础高亮样式 */
@@ -897,20 +880,16 @@ body {
 /* 加载完成指示器 */
 /* ================================ */
 
-
 .analects-load-complete {
   text-align: center;
   margin: 32px 0;
-  padding: 24px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
 }
 
 .analects-load-complete-text {
   font-size: 14px;
-  color: var(--light-gray);
+  color: #a0aec0; /* var(--light-gray) */
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 /* 回到顶部按钮 */
@@ -1964,52 +1943,6 @@ body {
 }
 
 /* ================================ */
-/* [UI优化] 笔记卡片样式 */
-/* ================================ */
-
-/* 笔记卡片容器 */
-.user-insight-card {
-  background-color: #fffef5; /* 一个柔和的、类似羊皮纸的淡黄色 */
-  border: 1px solid #eeebe2; /* 配套的边框颜色 */
-  border-radius: var(--radius); /* 与整体UI一致的圆角 */
-  margin-top: 16px; /* 与上方内容隔开 */
-  margin-bottom: 12px; /* 与下方页脚隔开 */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03); /* 非常非常轻微的阴影，增加立体感 */
-  text-align: left; /* 确保内容左对齐 */
-}
-
-/* 笔记卡片标题 */
-.user-insight-header {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  padding: 8px 12px;
-  border-bottom: 1px solid #eeebe2; /* 标题和内容的分隔线 */
-  display: flex;
-  align-items: center;
-}
-
-/* 用::before伪元素给标题加一个小图标，增加专属感 */
-.user-insight-header::before {
-  content: '✏️'; /* 铅笔图标 */
-  margin-right: 8px;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-/* 笔记内容区域 */
-.user-insight-content {
-  padding: 12px;
-}
-
-/* 笔记文本本身 */
-.user-insight-content .insight-text {
-  font-size: 15px; /* 可以稍微调大一点，让笔记更易读 */
-  line-height: 1.7;
-  color: #333; /* 比默认灰色更深一点，突出内容 */
-}
-
-/* ================================ */
 /* [最终响应式版] 全局浮动操作栏样式 */
 /* ================================ */
 
@@ -2500,8 +2433,8 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
 /* 5. 笔记区域总容器: 使用中性灰背景 */
 .user-insight-wrapper {
   margin-top: 16px;
-  background-color: #f8fafc; /* 中性、现代的浅灰色 */
-  border: none; /* 确保无边框 */
+  background-color: #f1f5f9; /* [新] 极淡的蓝灰色 (Tailwind Slate-100) */
+  border: 1px solid #e2e8f0; /* [新] 与之匹配的浅灰色边框 (Tailwind Slate-200) */
   border-radius: var(--radius);
   padding: 16px;
 }
@@ -2896,4 +2829,263 @@ a.chapter-item p {
       gap: 12px;
     }
   }
+}
+
+/* ========================================= */
+/* 收藏/章节页卡片样式 V3 (头部元数据)     */
+/* ========================================= */
+
+.verse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem; /* 24px */
+  padding-bottom: 0.75rem; /* 12px */
+  border-bottom: 1px solid #f1f5f9; /* slate-100 */
+}
+
+.verse-header-left, .verse-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* 12px */
+}
+
+.verse-chapter {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: #3182ce; /* var(--blue) */
+}
+
+.verse-section {
+  font-size: 0.8125rem; /* 13px */
+  color: #718096; /* var(--gray) */
+}
+
+.verse-time-ago {
+  font-size: 0.8125rem; /* 13px */
+  color: #a0aec0; /* var(--light-gray) */
+  white-space: nowrap;
+}
+
+/* 确保收藏按钮和时间戳紧密对齐 */
+.verse-header-right .favorite-btn {
+  /* 移除可能存在的额外边距 */
+  margin: 0;
+  padding: 2px;
+}
+
+/* ================================================= */
+/* [UI优化] 统一卡片 - 注释和标签区样式            */
+/* ================================================= */
+
+/* --- 注释区样式 --- */
+.verse-annotation-wrapper {
+  margin-top: 1.5rem; /* 24px */
+  padding-left: 1.25rem; /* 20px, 与译文对齐 */
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.7;
+  color: #64748b; /* var(--slate-500) */
+}
+.verse-annotation-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem; /* 4px */
+}
+
+/* --- 页脚标签区样式 --- */
+.card-tags-section {
+  padding: 1rem 0;
+  margin-top: 1rem;
+  border-top: 1px solid #f1f5f9; /* slate-100 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* 12px */
+}
+.card-tag-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem; /* 12px */
+}
+.card-tag-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px */
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 600;
+  color: #475569; /* slate-600 */
+  flex-shrink: 0;
+  width: 50px; /* 固定宽度，让标签对齐 */
+}
+.card-tag-label [data-lucide] {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8; /* slate-400 */
+}
+.card-tag-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* 8px */
+}
+.card-tag {
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  padding: 2px 8px;
+  background-color: #f1f5f9; /* slate-100 */
+  border-radius: 4px;
+  color: #64748b; /* slate-500 */
+}
+
+/* 确保新的 verse-card 在搜索结果页有合适的动画和间距 */
+.analects-results-container .verse-card {
+  opacity: 0;
+  transform: translateY(20px);
+  margin-bottom: 1.25rem; /* 20px */
+}
+.analects-results-container .verse-card.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================= */
+/* [UI优化] 标签颜色方案 (最终修复版)            */
+/* ================================================= */
+
+.card-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* 为不同类型的标签添加专属的柔和颜色 */
+.card-tag.character {
+  background-color: #ecfdf5; /* 极淡的绿色 */
+  color: #065f46; /* 深绿色文字 */
+}
+
+.card-tag.argument {
+  background-color: #eff6ff; /* 极淡的蓝色 */
+  color: #1e40af; /* 深蓝色文字 */
+}
+
+.card-tag.proverb {
+  background-color: #fefce8; /* 极淡的黄色 */
+  color: #854d0e; /* 深黄色文字 */
+}
+
+/* ================================================= */
+/* [BUG FIX] 修正分享菜单层级问题                   */
+/* ================================================= */
+
+/* 当卡片内的下拉菜单激活时，提升整张卡片的层级，确保菜单显示在最上层 */
+.verse-card:has(.card-actions-dropdown.active) {
+  position: relative; /* position是z-index生效的前提 */
+  z-index: 20;
+}
+
+/* ================================================= */
+/* [UI优化] 统一“已选择的搜索条件”标签颜色 (最终版) */
+/* ================================================= */
+
+/* 基础样式微调 */
+.analects-selected-tag {
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* 人物标签 (绿色系) */
+.analects-selected-tag.character { 
+  background-color: #ecfdf5;
+  color: #065f46;
+  border-color: #d1fae5;
+}
+.analects-selected-tag.character:hover { 
+  background-color: #d1fae5; 
+  border-color: #a7f3d0;
+}
+
+/* 论点标签 (蓝色系) */
+.analects-selected-tag.argument { 
+  background-color: #eff6ff;
+  color: #1e40af;
+  border-color: #dbeafe;
+}
+.analects-selected-tag.argument:hover { 
+  background-color: #dbeafe; 
+  border-color: #bfdbfe;
+}
+
+/* 谚语标签 (黄色系) */
+.analects-selected-tag.proverb { 
+  background-color: #fefce8;
+  color: #854d0e;
+  border-color: #fef9c3;
+}
+.analects-selected-tag.proverb:hover { 
+  background-color: #fef9c3; 
+  border-color: #fef08a;
+}
+
+/* [核心修改] 章节标签 (中性灰色系) */
+.analects-selected-tag.chapter { 
+  background-color: #f1f5f9; /* 淡灰色背景 (Slate-100) */
+  color: #475569; /* 深灰色文字 (Slate-600) */
+  border-color: #e2e8f0; /* 配套边框色 (Slate-200) */
+}
+.analects-selected-tag.chapter:hover { 
+  background-color: #e2e8f0; 
+  border-color: #cbd5e1;
+}
+
+/* ================================================= */
+/* [最终修复版] 卡片页脚和笔记区域样式 V7.0        */
+/* ================================================= */
+
+/* 1. 卡片页脚总容器 */
+.analects-card-footer {
+  border-top: none;
+  margin-top: 24px;
+  padding: 0;
+}
+
+/* 2. 顶部的操作栏 */
+.footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 3. 笔记区域 (在操作栏下方) */
+.user-insight-wrapper {
+  margin-top: 16px;
+  background-color: #f1f5f9; /* 淡灰色背景 */
+  border: 1px solid #e2e8f0; /* 配套边框 */
+  border-radius: var(--radius);
+}
+
+/* 4. 笔记区域的头部 (现在只包含标题和时间戳) */
+.user-insight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.user-insight-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.insight-timestamp {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* 5. 笔记内容区 */
+.user-insight-content {
+  padding: 16px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
 }
