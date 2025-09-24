@@ -97,6 +97,7 @@ module.exports = (env, argv) => {
 		    { from: 'robots.txt', to: 'robots.txt', noErrorOnMissing: true },
 		    { from: 'sitemap.xml', to: 'sitemap.xml', noErrorOnMissing: true },
 		    { from: 'favicon.ico', to: 'favicon.ico', noErrorOnMissing: true },
+			{ from: 'logo.png', to: 'logo.png', noErrorOnMissing: true },
 		    { from: 'my-favorites.html', to: 'my-favorites.html', noErrorOnMissing: true },
 		    { from: 'account.html', to: 'account.html', noErrorOnMissing: true },
 			{ from: 'stories.html', to: 'stories.html', noErrorOnMissing: true },
