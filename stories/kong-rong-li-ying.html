@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>论语典故：孔融“小时了了”的智慧 - 論語SDK</title>
   <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="年仅十岁的孔融，如何凭借“祖先之交”的机智言辞，赢得与大名士李膺的会面？又如何用一句“想君小时，必当了了”反击非议，名声大噪？">
   <style>
@@ -80,11 +81,11 @@
           supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
           supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
-      sdk.init().then(() => {
-          sdk.renderGlobalHeader();
-          const yearEl = document.getElementById('year');
-          if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
-      });
+	  sdk.renderGlobalHeader();
+	  sdk.init().then(() => {
+	      const yearEl = document.getElementById('year');
+	      if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+	  });
   </script>
 </body>
 </html>

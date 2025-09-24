@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>论语典故：半部论语治天下 - 論語SDK</title>
   <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="北宋名相赵普，据传仅凭半部《论语》便辅佐太祖平定天下。这一典故背后，蕴含着怎样的为政智慧与实践力量？">
   <style>
@@ -85,11 +86,11 @@
           supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
           supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
-      sdk.init().then(() => {
-          sdk.renderGlobalHeader();
-          const yearEl = document.getElementById('year');
-          if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
-      });
+	  sdk.renderGlobalHeader();
+	  sdk.init().then(() => {
+	      const yearEl = document.getElementById('year');
+	      if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+	  });
   </script>
 </body>
 </html>

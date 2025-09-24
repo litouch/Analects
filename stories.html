@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>论语典故 - 探索论语背后的故事与智慧 - 論語SDK</title>
   <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="探索《论语》背后的经典故事、历史背景与人物轶事。从“半部论语治天下”到孔子为何厌恶“乡愿”，深入理解儒家思想的魅力。">
   <style>
@@ -76,11 +77,12 @@
           supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
           supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
-      sdk.init().then(() => {
-          sdk.renderGlobalHeader();
-          const yearEl = document.getElementById('year');
-          if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
-      });
+	  sdk.renderGlobalHeader();
+	  sdk.init().then(() => {
+	      const yearEl = document.getElementById('year');
+	      if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+	  });
+	  
   </script>
 </body>
 </html>

@@ -2612,17 +2612,6 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
 }
 
-.verse-card {
-  padding: 2rem 1.5rem; /* 恢复为紧凑的内边距 */
-  border-bottom: 1px solid #e2e8f0;
-  transition: background-color 0.3s;
-}
-.verse-card:last-child {
-  border-bottom: none;
-}
-.verse-card:hover {
-  background-color: #fafcff;
-}
 .verse-original {
   font-family: 'Noto Serif SC', serif;
   font-size: 1.6rem; /* 恢复为紧凑的字号 (25.6px) */
@@ -3117,4 +3106,24 @@ a.chapter-item p {
   to {
     transform: rotate(360deg);
   }
+}
+
+.verse-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px; /* 卡片式的紧凑间距 */
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.verse-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  background-color: #fafcff; /* 保留原本的 hover 背景效果 */
+}
+
+.verse-card:last-child {
+  margin-bottom: 0; /* 保证最后一个卡片底部没有额外空隙 */
 }
