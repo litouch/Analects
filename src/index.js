@@ -1040,15 +1040,16 @@ class AnalectsSDK {
     // [新增] 收藏按钮的核心逻辑
     const isFavorited = this.favoriteIds.has(entry.id);
     const favoriteButtonHTML = `
-      <button 
-        class="favorite-btn ${isFavorited ? 'favorited' : ''}" 
-        data-entry-id="${entry.id}" 
-        title="${isFavorited ? '取消收藏' : '收藏此条'}">
-	<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-	  <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-	</svg>
-      </button>
-    `;
+  <button 
+    class="favorite-btn ${isFavorited ? 'favorited' : ''}" 
+    data-entry-id="${entry.id}" 
+    title="${isFavorited ? '取消收藏' : '收藏此条'}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+    </svg>
+    <div class="spinner"></div>
+  </button>
+`;
 
     return `
       <div class="analects-daily">
@@ -2199,12 +2200,16 @@ class AnalectsSDK {
   }
 
 	  const favoriteButtonHTML = `
-	    <button class="favorite-btn ${isFavorited ? 'favorited' : ''}" data-entry-id="${entry.id}" title="${isFavorited ? '取消收藏' : '收藏此条'}">
-	      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-	        <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-	      </svg>
-	    </button>
-	  `;
+  <button 
+    class="favorite-btn ${isFavorited ? 'favorited' : ''}" 
+    data-entry-id="${entry.id}" 
+    title="${isFavorited ? '取消收藏' : '收藏此条'}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+    </svg>
+    <div class="spinner"></div>
+  </button>
+`;
 
 	  const editNoteButtonHTML = isFavorited ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>${entry.user_insight ? '编辑笔记' : '添加笔记'}</span></button>` : '<div></div>';
   
@@ -2719,7 +2724,7 @@ class AnalectsSDK {
     }
 
 
-	// [最终修复版 V4] 收藏或取消收藏
+	// [最终修复版 V2] 收藏或取消收藏 (恢复了收藏页的移除动画)
 	async toggleFavorite(entryId, targetButton) {
 	  if (!this.currentUser) {
 	    this.showAuthModal('login');
@@ -2730,11 +2735,13 @@ class AnalectsSDK {
 	  }
 
 	  targetButton.classList.add('is-loading');
+	  targetButton.disabled = true;
 	  const isFavorited = this.favoriteIds.has(entryId);
   
 	  try {
 	    let error;
 	    if (isFavorited) {
+	      // --- 取消收藏 ---
 	      const hasNote = this.favoritesDataCache.get(entryId)?.user_insight;
 	      if (hasNote) {
 	        const confirmed = await this.showConfirmationModal('确认取消收藏？', '此条目包含您的笔记，取消收藏将会永久删除这条笔记。您确定要继续吗？');
@@ -2747,21 +2754,39 @@ class AnalectsSDK {
 	      error = result.error;
 	      if (!error && window.showToast) window.showToast('已取消收藏');
 	    } else {
-	      const { error: insertError } = await this.supabase.from('user_favorites').insert({ user_id: this.currentUser.id, entry_id: entryId });
+	      // --- 收藏 ---
+	      const { data: insertedData, error: insertError } = await this.supabase.from('user_favorites').insert({ user_id: this.currentUser.id, entry_id: entryId }).select().single();
 	      error = insertError;
 	      if (!error && window.showToast) window.showToast('收藏成功！');
 	    }
 	    if (error) throw error;
     
-	    // [核心] 操作成功后，重新加载最新的收藏状态，然后调用统一的刷新函数
+	    // 操作成功后，重新加载最新的收藏状态
 	    await this._loadUserFavorites();
-	    await this._refreshCardUI(entryId);
+
+	    // [核心修正] 判断当前页面并执行不同的UI更新策略
+	    if (isFavorited && window.location.pathname.includes('/my-favorites.html')) {
+	        // 如果是在收藏页取消收藏，则执行移除动画
+	        const card = document.querySelector(`.verse-card[data-entry-id="${entryId}"]`);
+	        if (card) {
+	            // 为了动画效果，先记录卡片高度
+	            card.style.setProperty('--card-height', `${card.offsetHeight}px`);
+	            card.classList.add('is-removing');
+	            setTimeout(() => {
+	                card.remove();
+	            }, 500); // 动画时长为0.5秒
+	        }
+	    } else {
+	        // 在其他页面，或者在执行“收藏”操作时，正常刷新卡片状态
+	        await this._refreshCardUI(entryId);
+	    }
 
 	  } catch (error) {
 	    console.error('收藏操作失败:', error);
 	    if (window.showToast) window.showToast('操作失败，请稍后重试', true);
 	  } finally {
 	    targetButton.classList.remove('is-loading');
+		targetButton.disabled = false;
 	  }
 	}
 	

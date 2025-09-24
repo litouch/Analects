@@ -1661,7 +1661,8 @@ body {
 /* 收藏卡片移除动画 */
 /* ================================ */
 
-.analects-result-card.is-removing {
+.analects-result-card.is-removing,
+.verse-card.is-removing {
   animation: fadeOutAndShrink 0.5s forwards ease-in-out;
 }
 
@@ -3088,4 +3089,32 @@ a.chapter-item p {
   font-size: 15px;
   line-height: 1.7;
   color: #475569;
+}
+
+/* ================================ */
+/* [UI优化] 收藏按钮加载动画 (Spinner) */
+/* ================================ */
+
+.favorite-btn .spinner {
+  display: none; /* Hidden by default */
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+.favorite-btn.is-loading svg {
+  display: none; /* Hide the bookmark icon when loading */
+}
+
+.favorite-btn.is-loading .spinner {
+  display: block; /* Show the spinner when loading */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
