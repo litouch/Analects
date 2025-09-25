@@ -36,23 +36,31 @@
 
 ## 🚀 快速开始
 
-#### 1. 引入 SDK
-在您的 HTML 文件中引入 `analects.js` 和 `analects.css`。
-```html
-<link rel="stylesheet" href="[https://lunyu.xyz/v2/analects.css](https://lunyu.xyz/v2/analects.css)">
+#### 1. 引入 SDK (两种模式)
 
-<script type="module" src="[https://lunyu.xyz/v2/analects.js](https://lunyu.xyz/v2/analects.js)"></script>
+**方案A：完整功能版 (适用于Web应用)**
+如果您希望使用包括用户登录、收藏、笔记在内的所有功能，请引入 `v2` 版本。
+
+```html
+<link rel="stylesheet" href="https://lunyu.xyz/v2/analects.css">
+<script defer src="https://unpkg.com/lucide@latest"></script>
+<script type="module" src="https://lunyu.xyz/v2/analects.js"></script>
+```
+
+**方案B：轻量嵌入版 (适用于博客、静态网站)**
+如果您只想在自己的网站上嵌入“每日论语”或“论语查询”等基础组件，且不需要用户功能，推荐使用更轻量的 `v1` 版本。
+
+```html
+<link rel="stylesheet" href="https://lunyu.xyz/v1/analects.css">
+<script defer src="https://unpkg.com/lucide@latest"></script>
+<script type="module" src="https://lunyu.xyz/v1/analects.js"></script>
 ```
 
 #### 2. 基本使用
 ```html
 <div id="daily-analect"></div>
-
 <div id="analects-search"></div>
-
-<div id="analects-global-widget-container"></div>
-
-<script type="module">
+<div id="analects-global-widget-container"></div> <script type="module">
   (async () => {
     // 1. 初始化 SDK
     const sdk = new AnalectsSDK({
@@ -64,8 +72,11 @@
     await sdk.init();
 
     // 3. 渲染各个组件
+    //    - V1 和 V2 版本都支持
     sdk.renderDailyAnalect(document.getElementById('daily-analect'));
     sdk.renderSearchInterface(document.getElementById('analects-search'));
+    
+    //    - 仅 V2 版本支持
     sdk.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
   })();
 </script>
@@ -76,6 +87,7 @@
 #### `new AnalectsSDK(config)`
 创建 SDK 实例。
 - `config`: 包含 `supabaseUrl` 和 `supabaseKey` 的配置对象。
+- *注意：v1嵌入版只包含核心渲染方法，不包含用户认证相关功能。*
 
 #### `async sdk.init()`
 异步初始化 SDK，建立会话并绑定全局事件。**必须在调用其他渲染方法前完成**。
@@ -87,16 +99,22 @@
 渲染“论语查询”组件。
 
 #### `sdk.renderGlobalWidget(container)`
-渲染全局浮动操作栏（登录/收藏等）。
+渲染全局浮动操作栏（登录/收藏等）。(仅限 V2 版本)
 
 #### `sdk.showAuthModal(view)`
-显示登录或注册模态窗口。
+显示登录或注册模态窗口。(仅限 V2 版本)
 - `view` (string): `'login'` 或 `'signup'`。
 
 #### `async sdk.signOut()`
-登出当前用户。
+登出当前用户。(仅限 V2 版本)
 
 ## 📝 更新日志
+
+### v2.1.0 (2025-09-25)
+- ✨ **新增轻量嵌入版SDK**：将SDK拆分为 `v2` (完整版) 和 `v1` (嵌入版)，方便第三方网站轻松集成核心功能。
+- 🔧 **架构重构**：采用基类与扩展类的模式，提升代码的可维护性和复用性。
+- ⭐ **全新UI**：更加统一、现代化的UI，更利于阅读的章节和收藏页面。
+- 🐞 **修复多项Bug**：解决了静态页面笔记丢失、页头加载延迟、弹窗交互等多项UI和逻辑问题。
 
 ### v2.0.0 (2025-09-13)
 - ✨ **发布 V2.0**：项目重构，增加强大的用户功能。

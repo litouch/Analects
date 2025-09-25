@@ -234,11 +234,11 @@
         supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
         supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
-      await sdk.init();
       
       // 渲染与此页面相关的动态组件
       sdk.renderGlobalHeader();
-
+      await sdk.init();
+      
       // [核心] 调用我们之前编写的函数，来“激活”页面上的所有动态功能
       sdk.initializeChapterPage();
       

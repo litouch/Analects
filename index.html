@@ -285,7 +285,9 @@
             <div>
                 <h4 class="font-semibold text-base text-gray-800 mb-3">📚 开源项目</h4>
                 <a href="https://github.com/litouch/Analects" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">GitHub 仓库</a>
-                <p class="text-sm text-gray-500 mt-1">查看源码、提交 Issue 或贡献代码。</p>
+                <p class="text-sm text-gray-500 mt-1">
+                查看源码、提交 Issue 或贡献代码。或直接邮件至 <a href="mailto:contact@lunyu.xyz" class="text-blue-600 hover:underline">contact@lunyu.xyz</a> 提出建议。
+              </p>
             </div>
             <div>
                 <h4 class="font-semibold text-base text-gray-800 mb-3">👨‍💻 作者博客</h4>
@@ -305,7 +307,7 @@
   </div>
 
   <!-- Embed Code Modal -->
-  <div id="embedModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+  <div id="embedModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-[2000] transition-opacity duration-300 opacity-0 pointer-events-none">
     <div id="modalContent" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform scale-95 transition-all duration-300">
       <div class="flex justify-between items-center p-5 border-b border-gray-200">
         <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">嵌入代码</h3>
@@ -408,35 +410,47 @@
           });
         }
 
-      // --- 3. 模态窗口等全局函数 ---
+      // --- 3. 模态窗口等全局函数 (更新版) ---
       const embedModal = document.getElementById('embedModal');
       const modalContent = document.getElementById('modalContent');
       const modalTitle = document.getElementById('modalTitle');
       const embedCodeEl = document.getElementById('embedCode');
       let codeToCopy = '';
 
-	  function showEmbedModal(type) {
+          function showEmbedModal(type) {
 	          const sdkUrl = 'https://www.lunyu.xyz';
 	          const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' }`;
+            const lucideScript = `<script defer src="https://unpkg.com/lucide@latest"><\/script>\n`;
 
-	          // 为每日论语v1版本准备的骨架屏HTML (内联样式，无外部依赖)
-	          const dailySkeletonHTML = `
-	            <div class="daily-analect-skeleton">
-	              <div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div>
-	              <div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div>
-	              <div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div>
-	              <div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div>
-	            </div>
-	          `;
+	          // [核心修正] 将骨架屏的HTML代码压缩成一行，避免因换行符导致的JS解析问题
+	          const dailySkeletonHTML = `<div class="daily-analect-skeleton"><div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div></div>`;
 
 	          if (type === 'daily') {
 	            modalTitle.textContent = '每日论语 - 嵌入代码';
-	            // [核心修正] 使用 v1 路径，并保留您原始的 DOMContentLoaded 写法, 同时加入骨架屏HTML
-	            codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n<script src="${sdkUrl}/v1/analects.js"><\/script>\n\n<div id="daily-analect-embed" style="background-color:#f9fafb; padding:1rem; border-radius:0.5rem; min-height:100px;">${dailySkeletonHTML}<\/div>\n\n<script>\n  document.addEventListener('DOMContentLoaded', function() {\n    const sdk = new AnalectsSDK(${supabaseCreds});\n    sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));\n  });\n<\/script>`;
+	            codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
+                           `${lucideScript}` +
+                           `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
+                           `<div id="daily-analect-embed" style="background-color:#f9fafb; padding:1rem; border-radius:0.5rem; min-height:100px;">${dailySkeletonHTML}<\/div>\n\n` +
+                           `<script>\n` +
+                           `  document.addEventListener('DOMContentLoaded', async function() {\n` +
+                           `    const sdk = new AnalectsSDK(${supabaseCreds});\n` +
+                           `    await sdk.init();\n` +
+                           `    sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));\n` +
+                           `  });\n` +
+                           `<\/script>`;
 	          } else {
 	            modalTitle.textContent = '论语查询 - 嵌入代码';
-	            // [核心修正] 同样使用 v1 路径
-	            codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n<script src="${sdkUrl}/v1/analects.js"><\/script>\n\n<div id="analects-search-embed"></div>\n\n<script>\n  document.addEventListener('DOMContentLoaded', function() {\n    const sdk = new AnalectsSDK(${supabaseCreds});\n    sdk.renderSearchInterface(document.getElementById('analects-search-embed'));\n  });\n<\/script>`;
+	            codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
+                           `${lucideScript}` +
+                           `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
+                           `<div id="analects-search-embed"></div>\n\n` +
+                           `<script>\n` +
+                           `  document.addEventListener('DOMContentLoaded', async function() {\n` +
+                           `    const sdk = new AnalectsSDK(${supabaseCreds});\n` +
+                           `    await sdk.init();\n` +
+                           `    sdk.renderSearchInterface(document.getElementById('analects-search-embed'));\n` +
+                           `  });\n` +
+                           `<\/script>`;
 	          }
         
 	          embedCodeEl.textContent = codeToCopy;
