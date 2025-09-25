@@ -1,12 +1,11 @@
+
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// [新增] 1. 引入 package.json 文件
 const packageJson = require('./package.json');
-// [新增] 2. 从版本号中提取主版本号 (例如 "1.0.0" -> "v1")
 const majorVersion = `v${packageJson.version.split('.')[0]}`;
 
 module.exports = (env, argv) => {
@@ -14,16 +13,18 @@ module.exports = (env, argv) => {
   
   return {
     entry: {
-      analects: './src/index.js',
-      'analects.min': './src/index.js'
+      'analects': './src/index.js',
+      'analects-embed': './src/embed.js'
     },
     
     output: {
       path: path.resolve(__dirname, 'dist'),
-      // [修改] 3. 动态修改输出的 JS 文件名，为其加上版本目录前缀
+      publicPath: '/',
       filename: (pathData) => {
-        const name = pathData.chunk.name === 'analects.min' ? 'analects.min.js' : 'analects.js';
-        return `${majorVersion}/${name}`; // 修改后的效果: "v1/analects.js"
+        if (pathData.chunk.name === 'analects-embed') {
+          return 'v1/analects.js';
+        }
+        return `${majorVersion}/analects.js`;
       },
       library: {
         name: 'AnalectsSDK',
@@ -33,7 +34,6 @@ module.exports = (env, argv) => {
       globalObject: 'typeof self !== \'undefined\' ? self : this',
       clean: true
     },
-
 
     module: {
       rules: [
@@ -47,51 +47,59 @@ module.exports = (env, argv) => {
                 ['@babel/preset-env', {
                   targets: {
                     browsers: ['> 1%', 'last 2 versions', 'ie >= 11']
-                  },
-                  modules: false
+                  }
                 }]
               ]
             }
           }
         },
-        {
+		    {
           test: /\.css$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            MiniCssExtractPlugin.loader,
             'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    ['autoprefixer']
-                  ]
-                }
-              }
-            }
+            'postcss-loader'
           ]
-        }
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            // [核心修正] 将所有字体文件统一输出到 dist/fonts/ 目录下。
+            // Webpack会自动处理 v1/analects.css 和 v2/analects.css 中
+            // 对这些字体文件的相对路径引用，这个方法更简洁、更可靠。
+            filename: 'fonts/[name][ext]'
+          }
+        }		
       ]
     },
 
     plugins: [
       new MiniCssExtractPlugin({
-        // [修改] 4. 动态修改输出的 CSS 文件名
         filename: (pathData) => {
-          const name = pathData.chunk.name === 'analects.min' ? 'analects.min.css' : 'analects.css';
-          return `${majorVersion}/${name}`; // 修改后的效果: "v1/analects.min.css"
+          if (pathData.chunk.name === 'analects-embed') {
+            return 'v1/analects.css';
+          }
+          return `${majorVersion}/analects.css`;
         }
       }),
 	  
       new CopyWebpackPlugin({
-        // [修改] 5. 确保静态文件复制到 dist 根目录
         patterns: [
-          { from: 'index.html', to: '.' },
-          { from: 'og-image.png', to: '.' },
-          { from: 'robots.txt', to: '.' },
-          { from: 'sitemap.xml', to: '.' },
-          { from: 'favicon.ico', to: '.' }
-        ]
+		    { from: 'index.html', to: 'index.html', noErrorOnMissing: true },
+        { from: 'test.html', to: 'test.html', noErrorOnMissing: true },
+		    { from: 'og-image.png', to: 'og-image.png', noErrorOnMissing: true },
+		    { from: 'robots.txt', to: 'robots.txt', noErrorOnMissing: true },
+		    { from: 'sitemap.xml', to: 'sitemap.xml', noErrorOnMissing: true },
+		    { from: 'favicon.ico', to: 'favicon.ico', noErrorOnMissing: true },
+			  { from: 'logo.png', to: 'logo.png', noErrorOnMissing: true },
+		    { from: 'my-favorites.html', to: 'my-favorites.html', noErrorOnMissing: true },
+		    { from: 'account.html', to: 'account.html', noErrorOnMissing: true },
+			  { from: 'stories.html', to: 'stories.html', noErrorOnMissing: true },
+			  { from: 'public', to: '.', noErrorOnMissing: true }, 
+			  { from: 'chapters', to: 'chapters', noErrorOnMissing: true },
+			  { from: 'stories', to: 'stories', noErrorOnMissing: true },
+		  ]
       })
     ],
 
@@ -99,7 +107,6 @@ module.exports = (env, argv) => {
       minimize: isProduction,
       minimizer: [
         new TerserPlugin({
-          include: /\.min\.js$/,
           terserOptions: {
             compress: {
               drop_console: true,
@@ -111,9 +118,7 @@ module.exports = (env, argv) => {
           },
           extractComments: false
         }),
-        new CssMinimizerPlugin({
-          include: /\.min\.css$/
-        })
+        new CssMinimizerPlugin()
       ]
     },
 
@@ -130,11 +135,7 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.js', '.css']
     },
-
-    externals: {
-      // 如果需要排除某些依赖，可以在这里配置
-    },
-
+    
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'eval-source-map'
   };

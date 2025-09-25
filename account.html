@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>账户设置 - 论语SDK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+      /* 基础字体和背景，保持和全站一致 */
+      body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    
+      /* [优化] 统一 h1 和 h2 的字体来源 */
+      h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
+
+
+      /* --- 表单样式核心优化 --- */
+    
+      .form-section {
+          background-color: white;
+          padding: 24px;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0; /* var(--slate-200) */
+          margin-bottom: 24px;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+      }
+
+      /* [优化] 减小区块标题尺寸 */
+      .form-section h2 {
+          font-size: 1.125rem; /* text-lg */
+          font-weight: 600; /* 保持semibold */
+          margin-bottom: 1rem;
+          padding-bottom: 0.75rem;
+          border-bottom: 1px solid #f1f5f9; /* var(--slate-100) */
+      }
+
+      .form-label {
+          display: block;
+          font-weight: 500;
+          margin-bottom: 8px;
+          color: #475569; /* var(--slate-600) */
+          font-size: 0.875rem; /* text-sm */
+      }
+
+      /* [优化] 减小输入框的内边距，使其更紧凑 */
+      .form-input {
+          width: 100%;
+          padding: 8px 12px; /* 原为 10px 14px */
+          border: 1px solid #cbd5e1; /* var(--slate-300) */
+          border-radius: 8px;
+          transition: all 0.2s ease;
+          background-color: white;
+      }
+
+      .form-input:focus {
+          outline: none;
+          border-color: #3b82f6; /* var(--blue-500) */
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      }
+    
+      /* [新增] 为禁用的输入框（如邮箱）添加样式，使其看起来不可用 */
+      .form-input:disabled, .form-input[readonly] {
+          background-color: #f1f5f9; /* var(--slate-100) */
+          cursor: not-allowed;
+          color: #64748b;
+      }
+
+      /* [优化] 减小按钮内边距，并增加禁用状态的样式 */
+      .form-submit-btn {
+          padding: 9px 18px; /* 原为 12px 24px */
+          border: none;
+          border-radius: 8px;
+          background-color: #3b82f6;
+          color: white;
+          font-weight: 500;
+          font-size: 0.875rem; /* text-sm */
+          cursor: pointer;
+          transition: all 0.2s;
+      }
+
+      .form-submit-btn:hover {
+          background-color: #2563eb; /* var(--blue-600) */
+      }
+
+      .form-submit-btn:disabled {
+          background-color: #94a3b8; /* var(--slate-400) */
+          cursor: not-allowed;
+      }
+
+      .delete-section {
+          border-color: #ef4444; /* var(--red-500) */
+      }
+    
+      .delete-btn {
+          background-color: #ef4444;
+      }
+      .delete-btn:hover {
+          background-color: #dc2626; /* var(--red-600) */
+      }
+  </style>
+</head>
+<body class="page-with-sticky-header text-gray-800 antialiased">
+
+  <header id="global-header-wrapper"></header>
+
+  <div class="container mx-auto max-w-2xl px-4 py-8">
+    
+    <header class="text-center mb-8 border-b pb-4">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">账户设置</h1>
+      <p class="text-lg text-gray-500 mt-2">管理您的个人资料、密码和账户</p>
+      <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
+    </header>
+
+    <main id="account-settings-container">
+      
+      <section class="form-section">
+        <h2 class="text-xl font-semibold mb-4">个人资料</h2>
+        <form id="profile-form">
+          <div>
+            <label for="email" class="form-label">邮箱地址</label>
+            <input type="email" id="email" name="email" class="form-input bg-gray-100" readonly>
+          </div>
+          </form>
+      </section>
+
+      <section class="form-section">
+        <h2 class="text-xl font-semibold mb-4">修改密码</h2>
+        <form id="password-form">
+          <div>
+            <label for="new-password" class="form-label">新密码</label>
+            <input type="password" id="new-password" name="new-password" class="form-input" required minlength="6">
+            <p class="text-xs text-gray-500 mt-1">至少6位字符，不允许纯数字或者字母。</p>
+          </div>
+          <div class="mt-4">
+            <button type="submit" class="form-submit-btn">更新密码</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- <section class="form-section delete-section">
+        <h2 class="text-xl font-semibold mb-2">删除账户</h2>
+        <p class="text-sm text-gray-600 mb-4">此操作不可逆，您的所有收藏和笔记都将被永久删除。</p>
+        <button id="delete-account-btn" class="form-submit-btn delete-btn">删除我的账户</button>
+      </section> -->
+
+    </main>
+
+  </div>
+  
+  <div id="analects-global-widget-container"></div>
+
+  <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
+  
+  <script type="module" src="/v2/analects.js"></script>
+<script type="module">
+    (async () => {
+      const sdk = new AnalectsSDK({
+        supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+        supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+      });
+
+      // 立即渲染一次页头，此时会显示骨架屏
+      sdk.renderGlobalHeader();
+	        
+      // 初始化并渲染通用组件
+      await sdk.init();
+	  
+      //sdk._initializeHeaderAnimation();
+      // --- [核心修改] 账户页面的专属JS逻辑 ---
+      const user = sdk.currentUser;
+      const accountContainer = document.getElementById('account-settings-container');
+
+      if (!user) {
+        // 如果用户未登录，显示提示并禁用所有表单
+        accountContainer.innerHTML = 
+          '<div class="text-center text-gray-500 py-8"><p class="text-lg">请先登录以管理您的账户。</p><a href="/" class="text-blue-600 hover:underline mt-4 inline-block">去首页登录</a></div>';
+        return; // 中断后续代码执行
+      }
+
+      // 填充邮箱信息
+      document.getElementById('email').value = user.email;
+	  
+      // --- [核心修改] 检查用户是否通过 Google 登录 ---
+      if (user.app_metadata.provider === 'google') {
+        const passwordInput = document.getElementById('new-password');
+        const passwordSubmitBtn = document.querySelector('#password-form button[type="submit"]');
+        const passwordHelperText = document.getElementById('password-helper-text');
+
+        // 禁用输入框和按钮
+        passwordInput.disabled = true;
+        passwordSubmitBtn.disabled = true;
+        
+        // 更新提示文字
+        passwordHelperText.textContent = '您通过 Google 登录，无需在此设置密码。';
+        passwordHelperText.style.color = '#6b7280'; // 可以给一个更柔和的颜色
+      }
+
+      // --- 1. 修改密码表单事件 ---
+      const passwordForm = document.getElementById('password-form');
+      passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPassword = document.getElementById('new-password').value;
+        const submitBtn = passwordForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '更新中...';
+
+        const { error } = await sdk.updatePassword(newPassword);
+
+        if (error) {
+          alert(`密码更新失败: ${error.message}`);
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        } else {
+          alert('密码更新成功！');
+          passwordForm.reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        }
+      });
+
+      // --- 2. 删除账户按钮事件 (功能暂未上线) ---
+	  /*
+      const deleteBtn = document.getElementById('delete-account-btn');
+      deleteBtn.addEventListener('click', async () => {
+        // 使用一个简单的浏览器确认框
+        const confirmation = prompt('这是一个危险操作！为确认删除，请输入您的邮箱地址:');
+        
+        if (confirmation === user.email) {
+            alert('正在删除账户... (此为模拟操作)');
+            // 注意：在您创建了 Edge Function 后，这里的调用才会真实生效
+            const { error } = await sdk.deleteCurrentUser();
+            if (error) {
+                alert(`删除账户失败: ${error.message}`);
+            } else {
+                alert('账户已成功删除，您将返回首页。');
+                window.location.href = '/';
+            }
+        } else if (confirmation !== null) { // 用户输入了但内容不匹配
+            alert('邮箱地址不匹配，操作已取消。');
+        }
+      });
+	  */
+
+    })();
+  </script>
+
+</body>
+</html>

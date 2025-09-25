@@ -1,8 +1,10 @@
 .DS_Store
 **/.DS_Store
 *.DS_Store
-node_modules/
+/node_modules
+/dist
 *.log
+test.html
 .env
 .env.local
 .env.development.local

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>论语典故：半部论语治天下 - 論語SDK</title>
+  <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="北宋名相赵普，据传仅凭半部《论语》便辅佐太祖平定天下。这一典故背后，蕴含着怎样的为政智慧与实践力量？">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .story-content p { font-family: 'Noto Serif SC', serif; font-size: 1.125rem; line-height: 2.2; color: #334155; margin-bottom: 2rem; }
+  </style>
+</head>
+<body class="page-with-sticky-header">
+  <header id="global-header-wrapper"></header>
+
+  <div class="container mx-auto max-w-3xl px-4">
+    <header class="chapter-page-header">
+      <h1>半部论语治天下</h1>
+      <p class="subtitle">赵普的为政秘诀</p>
+      <a href="/stories.html" class="back-link">&larr; 返回典故列表</a>
+    </header>
+
+    <main class="chapter-content-wrapper">
+      <article class="p-8 md:p-12 story-content">
+        <p>北宋开国名相赵普，为人深沉持重，他辅佐太祖赵匡胤、太宗赵光义两位皇帝，成就了一代伟业。据传，赵普虽然读书不多，但手边总有一部《论语》，日夜诵读。</p>
+        <p>有人好奇，私下问他，他抚摸着书卷，从容答道：“我平生所知，都来自这部书。过去我用半部《论语》辅佐太祖平定了天下，如今我再用剩下半部辅佐陛下，足以使天下太平。”</p>
+        <p>“半部论语治天下”的典故由此流传，它并非说《论语》是简单的治国手册，而是象征着儒家思想中“修身、齐家、治国、平天下”的实践智慧。它告诉我们，将圣贤的道理真正内化于心，并应用于实际，便能产生无穷的力量。</p>
+      </article>
+	  
+      <section class="p-8 md:p-12">
+  <h2 class="text-xl font-bold text-gray-800 mb-6">典故来源</h2>
+  <div class="flex items-start gap-4 bg-gray-50/80 p-6 rounded-lg border border-gray-200/80">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 w-6 h-6 text-gray-500 mt-1">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+      <path d="m9 12 2 2 4-4"/>
+    </svg>
+    <div class="text-gray-700 leading-relaxed">
+      <p>
+        <strong>主要来源：</strong>宋代·王明清《挥麈录》
+      </p>
+    </div>
+  </div>
+      </section>
+
+      <section class="mt-8 p-8 md:p-12 border-t border-gray-200">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">相关《论语》章句</h2>
+        <div class="verse-card bg-gray-50/80 !p-6">
+          <blockquote class="verse-original text-lg">子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”</blockquote>
+          <p class="verse-translation mt-4 text-base">【译文】孔子说：“治理具有一千辆兵车的国家，就要严肃认真地对待工作，信实无欺，节约费用，爱护官吏，役使老百姓要在农闲时间。”</p>
+          <a href="/chapters/xue-er-1.html" class="text-blue-600 text-sm font-semibold mt-4 inline-block">——《学而篇 第一》</a>
+        </div>
+      </section>
+    </main>
+
+    <nav class="chapter-navigation">
+        <a href="/stories/kong-rong-li-ying.html" class="nav-prev">
+            <span class="arrow">&larr;</span>
+            <div class="text">
+                <span class="label">上一篇</span>
+                <span class="title">高谈阔论：孔融的智慧</span>
+            </div>
+        </a>
+        <a href="/stories/lord-ye.html" class="nav-next">
+            <div class="text">
+                <span class="label">下一篇</span>
+                <span class="title">两个“叶公”</span>
+            </div>
+            <span class="arrow">&rarr;</span>
+        </a>
+    </nav>
+  </div>
+  
+  <div id="analects-global-widget-container"></div>
+
+  <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="/v2/analects.js"></script>
+  <script type="module">
+      const sdk = new AnalectsSDK({
+          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+      });
+	  sdk.renderGlobalHeader();
+	  sdk.init().then(() => {
+	      const yearEl = document.getElementById('year');
+	      if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+	  });
+  </script>
+</body>
+</html>
