@@ -6,17 +6,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
   constructor(config = {}) {
     super(config); // [核心修改] 调用父类的构造函数
 
-    // [保留] 以下是完整版独有的属性
-    // 2. [新增] 初始化 Supabase 客户端，并将其作为类的属性
-    //    这样我们就可以在 SDK 的任何地方调用 this.supabase 了
-	this.supabase = createClient(this.supabaseUrl, this.supabaseKey, {
-	    auth: {
-	      persistSession: true,
-	      storage: window.localStorage,
-	      autoRefreshToken: true
-	    }
-	});
-
     // 3. [新增] 增加一个属性来存储当前用户信息
     this.currentUser = null;
 	this.favoriteIds = new Set(); // [新增] 用于存储用户已收藏条目的ID
@@ -29,6 +18,19 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     this._handleGlobalClick = this._handleGlobalClick.bind(this);
 	this._handleNoteFormSubmit = this._handleNoteFormSubmit.bind(this);
 	this._handleGlobalKeyPress = this._handleGlobalKeyPress.bind(this);
+  }
+  
+  // [新增] 重写父类的客户端初始化方法
+  // 这个版本会创建带有持久化认证功能的、功能完备的客户端。
+  // 这也是现在项目中唯一一处创建完整版客户端的地方。
+  _initializeSupabaseClient() {
+    this.supabase = createClient(this.supabaseUrl, this.supabaseKey, {
+	    auth: {
+	      persistSession: true,
+	      storage: window.localStorage,
+	      autoRefreshToken: true
+	    }
+	});
   }
   
   // [新增] 公开的、异步的初始化方法

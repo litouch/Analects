@@ -7,7 +7,8 @@ export default class CoreSDK {
   constructor(config = {}) {
     this.supabaseUrl = config.supabaseUrl || 'https://your-project.supabase.co';
     this.supabaseKey = config.supabaseKey || 'your-anon-key';
-	this.supabase = createClient(this.supabaseUrl, this.supabaseKey);
+	this.supabase = null; // 初始化为 null
+	this._initializeSupabaseClient(); // 调用新的初始化方法
 
     this.apiBaseUrl = `${this.supabaseUrl}/rest/v1`;
     this.headers = {
@@ -53,6 +54,12 @@ export default class CoreSDK {
 
     // [核心修正] 在构造函数中绑定事件处理函数的 this
     this._handleGlobalClick = this._handleGlobalClick.bind(this);
+  }
+  
+  // [新增] 专门用于初始化 Supabase 客户端的方法
+  // 这个基础版本为嵌入版 SDK 创建一个简单的客户端
+  _initializeSupabaseClient() {
+    this.supabase = createClient(this.supabaseUrl, this.supabaseKey);
   }
 
   // [新增] 公开的初始化方法，用于启动事件监听
