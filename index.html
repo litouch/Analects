@@ -418,17 +418,18 @@
       let codeToCopy = '';
 
           function showEmbedModal(type) {
-	          const sdkUrl = 'https://www.lunyu.xyz';
-	          const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' }`;
-            const lucideScript = `<script defer src="https://unpkg.com/lucide@latest"><\/script>\n`;
+            const sdkUrl = 'https://www.lunyu.xyz';
+            const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' }`;
+            
+            // [修改] lucideScript 变量已被完全移除，不再需要
 
-	          // [核心修正] 将骨架屏的HTML代码压缩成一行，避免因换行符导致的JS解析问题
-	          const dailySkeletonHTML = `<div class="daily-analect-skeleton"><div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div></div>`;
+            // [核心修正] 将骨架屏的HTML代码压缩成一行，避免因换行符导致的JS解析问题
+            const dailySkeletonHTML = `<div class="daily-analect-skeleton"><div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div></div>`;
 
-	          if (type === 'daily') {
-	            modalTitle.textContent = '每日论语 - 嵌入代码';
-	            codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
-                           `${lucideScript}` +
+            if (type === 'daily') {
+              modalTitle.textContent = '每日论语 - 嵌入代码';
+              codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
+                           // [修改] 移除 lucideScript 的引用
                            `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
                            `<div id="daily-analect-embed" style="background-color:#f9fafb; padding:1rem; border-radius:0.5rem; min-height:100px;">${dailySkeletonHTML}<\/div>\n\n` +
                            `<script>\n` +
@@ -438,10 +439,10 @@
                            `    sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));\n` +
                            `  });\n` +
                            `<\/script>`;
-	          } else {
-	            modalTitle.textContent = '论语查询 - 嵌入代码';
-	            codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
-                           `${lucideScript}` +
+            } else {
+              modalTitle.textContent = '论语查询 - 嵌入代码';
+              codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
+                           // [修改] 移除 lucideScript 的引用
                            `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
                            `<div id="analects-search-embed"></div>\n\n` +
                            `<script>\n` +
@@ -451,13 +452,13 @@
                            `    sdk.renderSearchInterface(document.getElementById('analects-search-embed'));\n` +
                            `  });\n` +
                            `<\/script>`;
-	          }
+            }
         
-	          embedCodeEl.textContent = codeToCopy;
-	          embedModal.classList.remove('opacity-0', 'pointer-events-none');
-	          modalContent.classList.remove('scale-95');
-	          modalContent.classList.add('scale-100');
-	        }
+            embedCodeEl.textContent = codeToCopy;
+            embedModal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+          }
       window.showEmbedModal = showEmbedModal;
 
       function closeEmbedModal() {

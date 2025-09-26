@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论语 SDK 嵌入测试页面</title>
+    
+    <link rel="stylesheet" href="/v1/analects.css">
+    
+    <script defer src="/v1/analects.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h1 {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            margin-top: 40px;
+            color: #555;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 40px 0;
+        }
+        .component-wrapper {
+          border: 1px dashed #ccc;
+          padding: 20px;
+          border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>论语 SDK (v1 嵌入版) 测试</h1>
+        <p>这个页面用于测试 "每日论语" 和 "论语查询" 两个组件是否可以独立、正常地工作。</p>
+
+        <hr>
+
+        <h2>组件一：每日论语 (Daily Analects)</h2>
+        <div class="component-wrapper">
+            <div id="daily-analect-embed"></div>
+        </div>
+        
+        <hr>
+
+        <h2>组件二：论语查询 (Analects Search)</h2>
+        <div class="component-wrapper">
+            <div id="analects-search-embed"></div>
+        </div>
+    </div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', async function() { // [修正1] 添加 async
+            if (window.AnalectsSDK) {
+                console.log("AnalectsSDK (v1 Embed) 加载成功!");
+
+                const sdk = new AnalectsSDK({
+                    supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+                    supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+                });
+
+                // [修正2] 调用新的 init 方法来启动事件监听
+                await sdk.init(); 
+
+                const dailyContainer = document.getElementById('daily-analect-embed');
+                if (dailyContainer) {
+                    sdk.renderDailyAnalect(dailyContainer);
+                }
+
+                const searchContainer = document.getElementById('analects-search-embed');
+                if (searchContainer) {
+                    sdk.renderSearchInterface(searchContainer);
+                }
+
+            } else {
+                console.error("AnalectsSDK未能加载，请检查JS文件路径是否正确。");
+            }
+        });
+    </script>
+
+</body>
+</html>

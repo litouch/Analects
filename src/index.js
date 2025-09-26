@@ -414,7 +414,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     `;
   }
 
-  // [核心覆盖] 完整版的卡片HTML生成，依赖用户状态
+// [核心覆盖] 完整版的卡片HTML生成，依赖用户状态
   generateResultCardHTML(entry, options = {}) {
       if (!entry) return '';
 
@@ -423,6 +423,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       // --- 1. 数据准备 ---
       const currentKeyword = this.currentFilters?.keyword || '';
       const isFavorited = this.favoriteIds.has(entry.id);
+      
       const favoriteData = this.favoritesDataCache.get(entry.id);
       const timeAgo = isFavorited && favoriteData?.favorited_at ? this.formatTimeAgo(favoriteData.favorited_at) : '';
     
@@ -463,10 +464,17 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       // --- 4. 构建标签区 (变为条件化渲染) ---
       let tagsHTML = '';
       if (showTags) {
+        // [核心] 定义SVG图标，移除对 lucide.js 的依赖
+        const icons = {
+            users: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+            target: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+            'message-square-quote': '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+        };
+        
         const createTagGroup = (label, items, icon, type) => 
           items.length > 0 ? `
             <div class="card-tag-group">
-              <div class="card-tag-label"><i data-lucide="${icon}"></i><span>${label}</span></div>
+              <div class="card-tag-label">${icons[icon] || ''}<span>${label}</span></div>
               <div class="card-tag-items">
                 ${items.map(item => `<span class="card-tag ${type}">${this.escapeHtml(item)}</span>`).join('')}
               </div>
@@ -476,8 +484,8 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         tagsHTML = (characters.length > 0 || argumentsList.length > 0 || proverbs.length > 0) ? `
           <div class="card-tags-section">
             ${createTagGroup('人物', characters, 'users', 'character')}
-            ${createTagGroup('论点', argumentsList, 'message-square-quote', 'argument')}
-            ${createTagGroup('谚语', proverbs, 'scroll-text', 'proverb')}
+            ${createTagGroup('论点', argumentsList, 'target', 'argument')}
+            ${createTagGroup('谚语', proverbs, 'message-square-quote', 'proverb')}
           </div>
         ` : '';
       }
@@ -1166,7 +1174,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.textContent;
         submitBtn.disabled = true;
-        submitBtn.textContent = '处理中...';
+        submitBtn.textContent = '登陆中...';
 
         const email = form.email.value;
         const password = form.password.value;

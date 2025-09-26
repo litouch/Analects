@@ -632,7 +632,7 @@ export default class CoreSDK {
     setTimeout(() => card.classList.add('animate-in'), 10);
   }
 
-  // [最终完整版] 生成结果卡片HTML
+// [最终完整版] 生成结果卡片HTML
   generateResultCardHTML(entry, options = {}) {
       if (!entry) return '';
 
@@ -681,10 +681,17 @@ export default class CoreSDK {
       // --- 4. 构建标签区 (变为条件化渲染) ---
       let tagsHTML = '';
       if (showTags) { // [核心修正] 只有在 showTags 为 true 时才生成标签区HTML
+        // [核心] 定义SVG图标，移除对 lucide.js 的依赖
+        const icons = {
+            users: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+            target: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+            'message-square-quote': '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+        };
+
         const createTagGroup = (label, items, icon, type) => 
           items.length > 0 ? `
             <div class="card-tag-group">
-              <div class="card-tag-label"><i data-lucide="${icon}"></i><span>${label}</span></div>
+              <div class="card-tag-label">${icons[icon] || ''}<span>${label}</span></div>
               <div class="card-tag-items">
                 ${items.map(item => `<span class="card-tag ${type}">${this.escapeHtml(item)}</span>`).join('')}
               </div>
@@ -828,36 +835,36 @@ export default class CoreSDK {
     `;
   }
 
-  // [最终修复版] 创建搜索区域HTML (统一了Lucide图标)
-  createSearchSection(type, title, className = '') {
-    // [核心] 定义统一的图标映射
-    const icons = {
-      chapter: 'book-open',
-      character: 'users', 
-      argument: 'target',
-      proverb: 'message-square-quote'
-    };
-    
-    const wrapperStyle = className === 'full-width' ? 'style="grid-column: 1 / -1;"' : '';
+// [最终修复版] 创建搜索区域HTML 
+createSearchSection(type, title, className = '') {
+  // [核心] 定义统一的SVG图标映射，不再需要外部JS库
+  const icons = {
+    chapter: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    character: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    argument: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+    proverb: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+  };
 
-    return `
-      <div class="analects-filter-section" ${wrapperStyle}>
-        <div class="analects-filter-header">
-          <h4 class="analects-filter-title">
-            <i data-lucide="${icons[type]}"></i>
-            <span>${title}</span>
-          </h4>
-          <span class="analects-filter-count" id="${type}-count">0</span>
-        </div>
-        <div class="analects-filter-search">
-          <input type="text" id="${type}-search" placeholder="搜索${title.replace('搜索', '')}...">
-        </div>
-        <div id="${type}-filters" class="analects-filter-options">
-          <div class="analects-loading">加载中...</div>
-        </div>
+  const wrapperStyle = className === 'full-width' ? 'style="grid-column: 1 / -1;"' : '';
+
+  return `
+    <div class="analects-filter-section" ${wrapperStyle}>
+      <div class="analects-filter-header">
+        <h4 class="analects-filter-title">
+          ${icons[type] || ''}
+          <span>${title}</span>
+        </h4>
+        <span class="analects-filter-count" id="${type}-count">0</span>
       </div>
-    `;
-  }
+      <div class="analects-filter-search">
+        <input type="text" id="${type}-search" placeholder="搜索${title.replace('搜索', '')}...">
+      </div>
+      <div id="${type}-filters" class="analects-filter-options">
+        <div class="analects-loading">加载中...</div>
+      </div>
+    </div>
+  `;
+}
 
   // 渲染每日论语组件
   renderDailyAnalect(container) {
