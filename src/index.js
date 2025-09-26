@@ -4,9 +4,11 @@ import CoreSDK from './CoreSDK'; // [核心修改] 引入基类
 // 论语 SDK - 完整功能版
 class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
   constructor(config = {}) {
+    // 这个 super() 调用现在会正确地、仅一次地触发我们在 AnalectsSDK 中重写的
+    // _initializeSupabaseClient 方法，从而创建唯一的 Supabase 实例。
     super(config); // [核心修改] 调用父类的构造函数
 
-    // 3. [新增] 增加一个属性来存储当前用户信息
+    // [保留] 以下是完整版独有的属性
     this.currentUser = null;
 	this.favoriteIds = new Set(); // [新增] 用于存储用户已收藏条目的ID
 	this.favoritesDataCache = new Map();
@@ -19,7 +21,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	this._handleNoteFormSubmit = this._handleNoteFormSubmit.bind(this);
 	this._handleGlobalKeyPress = this._handleGlobalKeyPress.bind(this);
   }
-  
+
   // [新增] 重写父类的客户端初始化方法
   // 这个版本会创建带有持久化认证功能的、功能完备的客户端。
   // 这也是现在项目中唯一一处创建完整版客户端的地方。
@@ -38,7 +40,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     await this._initializeSession();
     this._initializeGlobalEventListeners(); // 将事件监听器的启动也放在这里
   }
-  
+
   // [最终修复版] 采用主动、完整的状态同步流程
   async _initializeSession() {
       // 步骤 1: 页面首次加载时，完整地获取并应用初始状态
@@ -57,7 +59,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       // 步骤 2: 监听真正的“认证事件”（用户主动登录、登出）
       // 这个监听器现在只处理最核心的认证变化
       this.supabase.auth.onAuthStateChange(async (event, session) => {
-          // [关键修复] 增加处理“刚刚登录成功”的逻辑，用于关闭弹窗
+          // [最终修复] 处理第三方登录（如Google）成功后的回调
           const justLoggedIn = sessionStorage.getItem('justLoggedIn');
           if (session && justLoggedIn && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
 			
@@ -130,10 +132,11 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       });
 
       // 步骤 4: 确保页面首次加载时，UI完全渲染正确
+      this.renderGlobalHeader(); // [最终修复] 确保页头在初始化后立即渲染
       this._updateFavoriteButtonsUI();
 	  this.renderGlobalWidget(document.getElementById('analects-global-widget-container'));
   }
-
+  
   // [新增] 统一处理全局键盘事件 (例如 ESC 退出)
   _handleGlobalKeyPress(event) {
     if (event.key === 'Escape') {
@@ -420,7 +423,8 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       // --- 1. 数据准备 ---
       const currentKeyword = this.currentFilters?.keyword || '';
       const isFavorited = this.favoriteIds.has(entry.id);
-      const timeAgo = isFavorited && entry.favorited_at ? this.formatTimeAgo(entry.favorited_at) : '';
+      const favoriteData = this.favoritesDataCache.get(entry.id);
+      const timeAgo = isFavorited && favoriteData?.favorited_at ? this.formatTimeAgo(favoriteData.favorited_at) : '';
     
       const getRelatedData = (items, field) => 
         (items || []).map(item => item[field]?.name || item[field]?.title || item[field]?.content).filter(Boolean);
@@ -458,7 +462,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
       // --- 4. 构建标签区 (变为条件化渲染) ---
       let tagsHTML = '';
-      if (showTags) { // [核心修正] 只有在 showTags 为 true 时才生成标签区HTML
+      if (showTags) {
         const createTagGroup = (label, items, icon, type) => 
           items.length > 0 ? `
             <div class="card-tag-group">
@@ -479,7 +483,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       }
 
       // --- 5. 构建页脚 ---
-      const footerHTML = this._generateCardFooterHTML(entry);
+      const footerHTML = this._generateCardFooterHTML(entry, favoriteData);
     
       // --- 6. 组合成最终的卡片HTML ---
       return verseHeaderHTML + contentHTML + tagsHTML + footerHTML;
@@ -527,13 +531,11 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
     const initial = email[0].toUpperCase();
     
-    // 根据 email 字符串生成一个简单的哈希值，用于分配颜色
     let hash = 0;
     for (let i = 0; i < email.length; i++) {
       hash = email.charCodeAt(i) + ((hash << 5) - hash);
     }
     
-    // 定义一个漂亮的颜色数组
     const colors = ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#4ade80', '#34d399', '#22d3ee', '#60a5fa', '#818cf8', '#c084fc'];
     const color = colors[Math.abs(hash % colors.length)];
 
@@ -545,11 +547,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     if (!user) return this._generateInitialsAvatar('?');
 
     const metadata = user.user_metadata;
-    // 1. 优先使用 Google 等第三方提供商的头像
     if (metadata && metadata.avatar_url) {
       return `<img src="${metadata.avatar_url}" alt="用户头像">`;
     }
-    // 2. 否则，回退到使用 Email 生成首字母头像
     return this._generateInitialsAvatar(user.email);
   }
 	
@@ -624,16 +624,13 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       button.addEventListener('click', (e) => {
         e.stopPropagation(); // 阻止事件冒泡，防止触发下面的全局点击事件
         
-        // 找到紧跟在当前被点击按钮后面的那个下拉菜单
         const dropdown = button.nextElementSibling;
         
         if (dropdown && dropdown.classList.contains('user-dropdown-menu')) {
           const wasActive = dropdown.classList.contains('active');
           
-          // 为保险起见，先关闭页面上所有可能已打开的下拉菜单
           document.querySelectorAll('.user-dropdown-menu').forEach(d => d.classList.remove('active'));
           
-          // 如果刚才这个菜单不是打开状态，现在就打开它
           if (!wasActive) {
             dropdown.classList.add('active');
           }
@@ -642,16 +639,11 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     });
 
     // 3. [核心修正] 为页面上“所有”的登出按钮绑定事件
-    // 注意：之前的代码只会为第一个登出按钮绑定事件，现在修正为所有
     document.querySelectorAll('.dropdown-item.logout').forEach(logoutBtn => {
       logoutBtn.addEventListener('click', () => this.signOut());
     });
     
-    // 4. [核心修正] 修改全局点击事件，用于关闭“任何”已打开的菜单
-    // 我们在 _initializeGlobalEventListeners 中统一处理这个逻辑
-    // 此处无需重复添加 document.addEventListener
-    
-    // 5. 确保图标被正确渲染 (这部分不变)
+    // 4. 确保图标被正确渲染
     this._ensureIconsRendered();
   }
 	
@@ -660,7 +652,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	    const sentinel = document.getElementById('header-sentinel');
 	    const headerWrapper = document.getElementById('global-header-wrapper');
 
-	    // 现在只操作一个页头，逻辑非常清晰
 	    if (!sentinel || !headerWrapper) return;
 
 	    const observer = new IntersectionObserver(
@@ -715,7 +706,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
           const timeAgo = this.formatTimeAgo(entry.favorited_at);
 
-          // [核心] 构建包含收藏时间的头部
           const verseHeaderHTML = `
             <div class="verse-header">
               <div class="verse-header-left">
@@ -728,22 +718,20 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
             </div>
           `;
     
-      // [核心新增] 添加注释的显示逻辑
-      const annotationHTML = entry.annotation ? `
-        <div class="verse-annotation-wrapper">
-          <div class="verse-annotation-title">【注释】</div>
-          <div class="verse-annotation">${this.escapeHtml(entry.annotation)}</div>
-        </div>
-      ` : '';
+          const annotationHTML = entry.annotation ? `
+            <div class="verse-annotation-wrapper">
+              <div class="verse-annotation-title">【注释】</div>
+              <div class="verse-annotation">${this.escapeHtml(entry.annotation)}</div>
+            </div>
+          ` : '';
     
-          // 卡片结构现在非常干净
-        cardWrapper.innerHTML = `
-          ${verseHeaderHTML}
-          <blockquote class="verse-original">${this.escapeHtml(entry.original_text)}</blockquote>
-          <p class="verse-translation">【译文】${this.escapeHtml(entry.translation)}</p>
-          ${annotationHTML}
-          <div class="analects-card-footer-placeholder"></div>
-        `;
+          cardWrapper.innerHTML = `
+            ${verseHeaderHTML}
+            <blockquote class="verse-original">${this.escapeHtml(entry.original_text)}</blockquote>
+            <p class="verse-translation">【译文】${this.escapeHtml(entry.translation)}</p>
+            ${annotationHTML}
+            <div class="analects-card-footer-placeholder"></div>
+          `;
 
           container.appendChild(cardWrapper);
         });
@@ -764,11 +752,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
 	// [最终修复版 V2] 初始化章节页，确保使用完整数据重新渲染卡片
 	async initializeChapterPage() {
-	  if (!this.sessionInitialized) {
-	    await new Promise(resolve => setTimeout(resolve, 100));
-	    return this.initializeChapterPage();
-	  }
-
 	  const verseCards = document.querySelectorAll('.verse-card');
 	  if (verseCards.length === 0) return;
 
@@ -787,16 +770,20 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	}
 	
 	// [最终完整版] 生成卡片页脚
-	_generateCardFooterHTML(entry) {
+	_generateCardFooterHTML(entry, favoriteData) {
 	  if (!entry) return '';
 
 	  const isFavorited = this.favoriteIds.has(entry.id);
+      
+	  const userInsight = favoriteData?.user_insight;
+	  const insightUpdatedAt = favoriteData?.insight_updated_at;
+	  const favoritedAt = favoriteData?.favorited_at;
 
 	  let noteHTML = '';
-	  if (isFavorited && entry.user_insight) {
-	    const insightText = this.escapeHtml(entry.user_insight);
+	  if (isFavorited && userInsight) {
+	    const insightText = this.escapeHtml(userInsight);
 	    const isLongInsight = (insightText.split('\n').length > 4 || insightText.length > 150);
-	    const noteTimestamp = this.formatTimeAgo(entry.insight_updated_at || entry.favorited_at);
+	    const noteTimestamp = this.formatTimeAgo(insightUpdatedAt || favoritedAt);
       noteHTML = `
         <div class="user-insight-wrapper">
           <div class="user-insight-header">
@@ -825,7 +812,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       </button>
     `;
 
-	  const editNoteButtonHTML = isFavorited ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>${entry.user_insight ? '编辑笔记' : '添加笔记'}</span></button>` : '<div></div>';
+	  const editNoteButtonHTML = isFavorited ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>${userInsight ? '编辑笔记' : '添加笔记'}</span></button>` : '<div></div>';
   
 	  const shareLinks = this.generateShareLinks(entry);
 	  const escapedCopyText = this.escapeHtml(shareLinks.copy).replace(/'/g, "\\'").replace(/\n/g, '\\n');
@@ -875,8 +862,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     // 步骤 1: 确保我们一定能获取到完整的原文基础数据
     let baseEntry = this.entryCache.get(entryId);
 
-    // 如果缓存中没有，或者缓存中的数据不完整，则从网络获取
-    // 我们通过检查一个只有网络请求才会有的字段（比如 entry_characters）来判断数据是否完整
     if (!baseEntry || !baseEntry.hasOwnProperty('entry_characters')) {
       try {
         const data = await this.apiRequest('analects_entries_expanded', {
@@ -898,9 +883,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
     // 步骤 2: 检查是否存在用户笔记数据，如果存在，则进行合并
     if (this.favoritesDataCache.has(entryId)) {
-      const userEntry = this.favoritesDataCache.get(entryId);
+      const userEntryData = this.favoritesDataCache.get(entryId);
       // 将用户数据（笔记等）合并到完整的原文基础数据上
-      return { ...baseEntry, ...userEntry };
+      return { ...baseEntry, ...userEntryData };
     }
 
     // 步骤 3: 如果没有用户笔记数据，则直接返回完整的原文基础数据
@@ -912,7 +897,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     if (!container) return;
     this.widgetContainer = container; 
 
-    // 获取当前页面的路径，用于判断哪个菜单是激活状态
     const currentPage = window.location.pathname;
 
     let widgetHTML = '';
@@ -925,7 +909,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       const isHomeActive = (currentPage === '/' || currentPage.includes('/index.html'));
       const isFavoritesActive = currentPage.includes('/my-favorites.html');
 
-      // [核心修改] 生成包含弹出式菜单的新HTML结构
       widgetHTML = `
         <a href="/" class="app-footer-action ${isHomeActive ? 'active' : ''}">
           <i data-lucide="home"></i><span>首页</span>
@@ -978,16 +961,13 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       logoutBtn.addEventListener('click', () => this.signOut());
     }
 
-    // [核心新增] 为“我的账号”按钮和菜单添加交互
     if (accountBtn && accountMenu) {
       accountBtn.addEventListener('click', (e) => {
-        // 阻止事件冒泡，防止触发下面的全局点击事件而立即关闭
         e.stopPropagation();
         accountMenu.classList.toggle('active');
       });
     }
 
-    // 确保我们新添加的 Lucide 图标能被渲染
     this._ensureIconsRendered();
   }
 
@@ -1000,7 +980,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     if (error) {
       return { error };
     }
-    // 注册成功，Supabase会发送确认邮件
     return { user: data.user };
   }
 
@@ -1025,9 +1004,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	  const { error } = await this.supabase.auth.signInWithOAuth({
 	    provider: 'google',
 		options: {
-		  // [核心修改] 动态指定重定向地址为当前页面的源地址
-		  // 在本地，它会是 http://localhost:3000
-		  // 在线上，它会是 https://lunyu.xyz
 		  redirectTo: window.location.origin
 		}
 	  });
@@ -1077,19 +1053,13 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
   }
 
   // [新增] 删除当前用户账户
-  // 注意：这是一个敏感操作，在生产环境中建议通过一个自定义的 Edge Function 来执行
-  // 这里我们先实现一个客户端版本，未来可以再加固
   async deleteCurrentUser() {
     if (!this.currentUser) {
       return { error: new Error('用户未登录') };
     }
     
-    // Supabase 不允许在客户端直接删除用户，这是一个安全策略。
-    // 正确的做法是调用一个您自己编写的、具有管理员权限的云函数。
-    // 我们在这里模拟这个调用，并给出提示。
     console.warn('此为模拟删除。生产环境请替换为安全的 Edge Function 调用。');
     
-    // 示例：如何调用一个名为 'delete-user' 的 Edge Function
     const { data, error } = await this.supabase.functions.invoke('delete-user', {
       method: 'POST',
     });
@@ -1098,14 +1068,12 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       return { error };
     }
 
-    // 如果云函数成功删除了用户，我们需要手动登出
     await this.signOut(); 
     return { data };
   }
 	
   // [新增] 显示模态窗口的主方法
   showAuthModal(view = 'login') {
-    // 防止重复创建
     if (document.getElementById('analects-auth-modal')) return;
 
     const modalHTML = `
@@ -1142,7 +1110,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     if (!container) return;
 
     let formHTML = '';
-    // 我们将两个消息 div 放到一个容器里
     const messagesHTML = `
       <div class="auth-messages">
         <div id="auth-error-message" class="auth-error"></div>
@@ -1191,37 +1158,53 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     const form = document.getElementById(view === 'login' ? 'analects-login-form' : 'analects-signup-form');
     const googleBtn = document.getElementById('google-signin-btn');
     const errorDiv = document.getElementById('auth-error-message');
-    // const successDiv = document.getElementById('auth-success-message');
 
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '处理中...';
+
         const email = form.email.value;
         const password = form.password.value;
         errorDiv.textContent = '';
-        // if (successDiv) successDiv.textContent = '';
-
-        let result;
-        if (view === 'login') {
-          result = await this.signIn(email, password);
-        } else {
-          result = await this.signUp(email, password);
-        }
-
-        if (result.error) {
-          errorDiv.textContent = result.error.message;
-        } else {
-          // [核心修复] 对 Email 登录成功的情况进行处理
-          if (view === 'login') {
-            // 不再等待事件，立即关闭弹窗并显示提示
-            this.closeAuthModal();
-            if (window.showToast) {
-              window.showToast('登录成功，欢迎回来！');
+        
+        try {
+            let result;
+            if (view === 'login') {
+              result = await this.signIn(email, password);
+            } else {
+              result = await this.signUp(email, password);
             }
-          } else { // view === 'signup'
-            const formContainer = document.getElementById('auth-modal-form-container');
-            this._renderSignupSuccessView(formContainer, email);
-          }
+    
+            if (result.error) {
+              errorDiv.textContent = result.error.message;
+            } else {
+              // [最终修复] 对于邮箱登录，在这里直接关闭弹窗并提示
+              if (view === 'login') {
+                this.closeAuthModal();
+                if (window.showToast) {
+                  window.showToast('登录成功，欢迎回来！');
+                }
+              }
+              // 对于注册，显示成功视图
+              if (view === 'signup') {
+                const formContainer = document.getElementById('auth-modal-form-container');
+                this._renderSignupSuccessView(formContainer, email);
+              }
+            }
+        } finally {
+            // [最终修复] 只有在登录失败或注册流程中才恢复按钮，成功登录则弹窗已关闭
+            if (view === 'login' && errorDiv.textContent) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            } else if (view === 'signup' && errorDiv.textContent) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
         }
       });
     }
@@ -1278,9 +1261,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
   // [新增] 显示自定义的居中确认弹窗
   async showConfirmationModal(title, message) {
-    // 返回一个Promise，这样我们就可以用 await 等待用户的选择
     return new Promise((resolve) => {
-      // 防止重复创建
       if (document.getElementById('analects-confirm-modal')) return;
 
       const modalHTML = `
@@ -1303,12 +1284,11 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
       const closeModal = (result) => {
         modal.remove();
-        resolve(result); // 当用户点击按钮时，解析Promise
+        resolve(result);
       };
 
       confirmBtn.addEventListener('click', () => closeModal(true));
       cancelBtn.addEventListener('click', () => closeModal(false));
-      // 点击遮罩层也视为取消
       modal.addEventListener('click', (e) => {
         if (e.target.id === 'analects-confirm-modal') {
           closeModal(false);
@@ -1355,23 +1335,18 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	    }
 	    if (error) throw error;
     
-	    // 操作成功后，重新加载最新的收藏状态
 	    await this._loadUserFavorites();
 
-	    // [核心修正] 判断当前页面并执行不同的UI更新策略
 	    if (isFavorited && window.location.pathname.includes('/my-favorites.html')) {
-	        // 如果是在收藏页取消收藏，则执行移除动画
 	        const card = document.querySelector(`.verse-card[data-entry-id="${entryId}"]`);
 	        if (card) {
-	            // 为了动画效果，先记录卡片高度
 	            card.style.setProperty('--card-height', `${card.offsetHeight}px`);
 	            card.classList.add('is-removing');
 	            setTimeout(() => {
 	                card.remove();
-	            }, 500); // 动画时长为0.5秒
+	            }, 500);
 	        }
 	    } else {
-	        // 在其他页面，或者在执行“收藏”操作时，正常刷新卡片状态
 	        await this._refreshCardUI(entryId);
 	    }
 
@@ -1392,7 +1367,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	    const fullEntryData = await this._getEntryDataForHydration(entryId);
 	    if (!fullEntryData) return;
         
-        // [核心修正] 判断卡片是否在搜索结果区，来决定是否显示标签
         const isSearchResult = card.closest('#analects-results-container');
 	    card.innerHTML = this.generateResultCardHTML(fullEntryData, { showTags: !!isSearchResult });
 
@@ -1424,7 +1398,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
       if (error) throw error;
     
-      // 确保返回的是单个对象，而不是数组
       return { data: data ? data[0] : null };
 
     } catch (error) {
@@ -1455,7 +1428,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
     const form = document.getElementById('analects-note-form');
-    // 直接绑定我们已经修正了 this 指向的新方法
     form.addEventListener('submit', this._handleNoteFormSubmit);
 
     document.getElementById('note-modal-close').addEventListener('click', () => this.closeNoteEditorModal());
@@ -1493,7 +1465,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	    const { data: updatedFavorite, error } = await this.updateFavoriteInsight(entryId, newInsight);
 	    if (error) throw error;
     
-	    // [核心] 保存成功后，更新缓存并调用统一的刷新函数
 	    if (updatedFavorite) {
 	        this.favoritesDataCache.set(entryId, {
 	            user_insight: updatedFavorite.user_insight,
@@ -1524,11 +1495,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
       const isFavorited = this.favoriteIds.has(entryId);
     
-      // 更新视觉状态 (class 和 title)
       button.classList.toggle('favorited', isFavorited);
       button.title = isFavorited ? '取消收藏' : '收藏此条';
     
-      // 如果是每日论语的按钮，还需要更新文字
       const buttonTextSpan = button.querySelector('span');
       if (buttonTextSpan) {
         buttonTextSpan.textContent = isFavorited ? '已收藏' : '收藏';
@@ -1542,15 +1511,17 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     allCards.forEach(card => {
       const entryId = parseInt(card.dataset.entryId, 10);
       if (isNaN(entryId)) return;
-
-      const originalEntry = this.entryCache.get(entryId);
-      if (originalEntry) {
-        // [核心修正] 判断卡片是否在搜索结果区，并传递正确的 options
-        const isSearchResult = card.closest('#analects-results-container');
-        card.innerHTML = this.generateResultCardHTML(originalEntry, { showTags: !!isSearchResult });
-      }
+      
+      this._getEntryDataForHydration(entryId).then(fullEntryData => {
+        if (fullEntryData) {
+          const isSearchResult = card.closest('#analects-results-container');
+          card.innerHTML = this.generateResultCardHTML(fullEntryData, { showTags: !!isSearchResult });
+        }
+      });
     });
+    this._ensureIconsRendered();
   }
+
 
   // [新增] 渲染注册成功的视图
   _renderSignupSuccessView(container, email) {
@@ -1571,7 +1542,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     `;
     container.innerHTML = successHTML;
 
-    // 为新的关闭按钮绑定事件
     document.getElementById('auth-close-success-btn').addEventListener('click', () => this.closeAuthModal());
   }	
 
@@ -1582,15 +1552,14 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       return;
     }
 
-    // 一个辅助函数，用于在文本节点中执行高亮
     const highlightTextInNode = (node, searchTerm) => {
-      if (node.nodeType === 3) { // 3 代表文本节点
+      if (node.nodeType === 3) { 
         const text = node.textContent;
         const regex = new RegExp(`(${this.escapeRegExp(searchTerm)})`, 'gi');
         if (regex.test(text)) {
           const fragment = document.createDocumentFragment();
           text.split(regex).forEach((part, index) => {
-            if (index % 2 === 1) { // 这是匹配到的关键词
+            if (index % 2 === 1) { 
               const mark = document.createElement('mark');
               mark.className = 'keyword-highlight';
               mark.textContent = part;
@@ -1601,19 +1570,17 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
           });
           node.parentNode.replaceChild(fragment, node);
         }
-      } else if (node.nodeType === 1 && node.nodeName !== 'MARK') { // 1 代表元素节点
-        // 递归遍历所有子节点
+      } else if (node.nodeType === 1 && node.nodeName !== 'MARK') {
         Array.from(node.childNodes).forEach(child => highlightTextInNode(child, searchTerm));
       }
     };
 
-    // 一个辅助函数，用于移除高亮
     const removeHighlightInCard = (card) => {
       const marks = card.querySelectorAll('mark.keyword-highlight');
       marks.forEach(mark => {
         const parent = mark.parentNode;
         parent.replaceChild(document.createTextNode(mark.textContent), mark);
-        parent.normalize(); // 合并相邻的文本节点
+        parent.normalize(); 
       });
     };
 
@@ -1623,16 +1590,13 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       const allCards = containerElement.querySelectorAll('.verse-card');
 
       allCards.forEach(card => {
-        // 1. 先移除旧的高亮
         removeHighlightInCard(card);
 
         const cardText = card.textContent.toLowerCase();
       
-        // 2. 检查是否匹配，并显示/隐藏卡片
         if (!searchTerm || cardText.includes(lowerCaseSearchTerm)) {
           card.style.display = 'block';
         
-          // 3. 如果匹配且有搜索词，则添加新的高亮
           if (searchTerm) {
             highlightTextInNode(card, searchTerm);
           }
