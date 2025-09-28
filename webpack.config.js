@@ -94,6 +94,8 @@ module.exports = (env, argv) => {
 		    { from: 'favicon.ico', to: 'favicon.ico', noErrorOnMissing: true },
 			  { from: 'logo.png', to: 'logo.png', noErrorOnMissing: true },
 		    { from: 'my-favorites.html', to: 'my-favorites.html', noErrorOnMissing: true },
+			{ from: 'borrowed-notes.html', to: 'borrowed-notes.html', noErrorOnMissing: true },
+			{ from: 'view-notebook.html', to: 'view-notebook.html', noErrorOnMissing: true },
 		    { from: 'account.html', to: 'account.html', noErrorOnMissing: true },
 			  { from: 'stories.html', to: 'stories.html', noErrorOnMissing: true },
 			  { from: 'public', to: '.', noErrorOnMissing: true }, 

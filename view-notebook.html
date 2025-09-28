@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>查看笔记 - 论语SDK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
+  </style>
+</head>
+<body class="page-with-sticky-header text-gray-800 antialiased">
+  <header id="global-header-wrapper"></header>
+  
+  <div class="container mx-auto max-w-3xl px-4 py-8">
+    <div id="viewing-banner" class="mb-6"></div>
+
+    <main id="notebook-view-container" class="space-y-8">
+      <div class="verse-card-skeleton">
+        <div class="skeleton-block" style="height: 150px; width: 100%;"></div>
+      </div>
+    </main>
+  </div>
+  
+  <div id="analects-global-widget-container"></div>
+  <div id="toast-container"></div>
+
+  <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="/v2/analects.js"></script>
+  <script type="module">
+    (async () => {
+      let sdk;
+      try {
+        sdk = new AnalectsSDK({
+          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+        });
+
+        await sdk.init();
+
+        // 从URL获取lender的ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const lenderId = urlParams.get('lender_id');
+        const lenderEmail = urlParams.get('email'); // 同时传递email以获得更好的用户体验
+        
+        if (!lenderId) throw new Error('未指定要查看的用户');
+
+        const container = document.getElementById('notebook-view-container');
+        
+        // 更新横幅
+        const banner = document.getElementById('viewing-banner');
+        banner.innerHTML = `
+          <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md">
+            <p class="font-bold">只读模式</p>
+            <p>您正在查看来自 <strong>${sdk.escapeHtml(lenderEmail || '用户')}</strong> 的分享笔记。</p>
+            <a href="/borrowed-notes.html" class="text-blue-600 hover:underline mt-2 inline-block text-sm">&larr; 返回借阅列表</a>
+          </div>
+        `;
+        
+        await sdk.renderLenderNotebook(container, lenderId);
+
+      } catch (e) {
+        console.error("SDK或笔记查看页面渲染失败:", e);
+        document.getElementById('notebook-view-container').innerHTML = '<div class="analects-error text-center py-8">加载分享笔记失败，可能分享已被收回或链接无效。</div>';
+      }
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

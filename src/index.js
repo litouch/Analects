@@ -418,7 +418,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
   generateResultCardHTML(entry, options = {}) {
       if (!entry) return '';
 
-      const { showTags = false } = options; // 默认不显示标签
+      const { showTags = false, readOnly = false  } = options; // 默认不显示标签
 
       // --- 1. 数据准备 ---
       const currentKeyword = this.currentFilters?.keyword || '';
@@ -491,7 +491,14 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       }
 
       // --- 5. 构建页脚 ---
-      const footerHTML = this._generateCardFooterHTML(entry, favoriteData);
+      // [核心修正] 决定用于页脚的数据源。
+      // 如果 entry 对象自身已包含笔记信息 (如只读模式下)，则直接使用 entry。
+      // 否则，从当前用户的缓存中获取。
+      const favoriteDataForFooter = entry.hasOwnProperty('user_insight') 
+          ? entry 
+          : favoriteData;
+
+      const footerHTML = this._generateCardFooterHTML(entry, favoriteDataForFooter, readOnly);
     
       // --- 6. 组合成最终的卡片HTML ---
       return verseHeaderHTML + contentHTML + tagsHTML + footerHTML;
@@ -533,11 +540,15 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     }
   }
 
-  // [新增] 根据 email 生成带背景色的首字母头像 HTML
+// [优化版] 根据 email 生成带背景色的首字母头像 HTML
   _generateInitialsAvatar(email) {
     if (!email) return `<div class="initials">?</div>`;
 
-    const initial = email[0].toUpperCase();
+    // [核心修改] 检查首字母是否为英文字母
+    let initial = email[0].toUpperCase();
+    if (!/^[A-Z]$/.test(initial)) {
+      initial = 'U'; // 如果不是字母，则默认为 'U' (代表 User)
+    }
     
     let hash = 0;
     for (let i = 0; i < email.length; i++) {
@@ -592,6 +603,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	                        <div class="user-dropdown-menu">
 	                            <div class="dropdown-user-info"><span class="email">${userEmail}</span></div>
 	                            <a href="/my-favorites.html" class="dropdown-item"><i data-lucide="bookmark"></i><span>我的收藏</span></a>
+                              <a href="/borrowed-notes.html" class="dropdown-item"><i data-lucide="users"></i><span>借阅的笔记</span></a>
 	                            <a href="/account.html" class="dropdown-item"><i data-lucide="settings"></i><span>账户设置</span></a>
 	                            <button class="dropdown-item logout"><i data-lucide="log-out"></i><span>登出</span></button>
 	                        </div>
@@ -778,7 +790,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	}
 	
 	// [最终完整版] 生成卡片页脚
-	_generateCardFooterHTML(entry, favoriteData) {
+	_generateCardFooterHTML(entry, favoriteData, readOnly = false) {
 	  if (!entry) return '';
 
 	  const isFavorited = this.favoriteIds.has(entry.id);
@@ -787,8 +799,12 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	  const insightUpdatedAt = favoriteData?.insight_updated_at;
 	  const favoritedAt = favoriteData?.favorited_at;
 
-	  let noteHTML = '';
-	  if (isFavorited && userInsight) {
+      let noteHTML = '';
+      // [核心修正] 在只读模式下，我们只关心有没有笔记，
+      // 而在普通模式下，我们关心用户是否已收藏且有笔记。
+      if (userInsight && (readOnly || isFavorited)) {
+      // [核心修正] 根据是否为只读模式，动态生成笔记标题
+      const noteTitle = readOnly ? '分享的笔记' : '我的笔记';
 	    const insightText = this.escapeHtml(userInsight);
 	    const isLongInsight = (insightText.split('\n').length > 4 || insightText.length > 150);
 	    const noteTimestamp = this.formatTimeAgo(insightUpdatedAt || favoritedAt);
@@ -796,7 +812,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         <div class="user-insight-wrapper">
           <div class="user-insight-header">
             <div class="user-insight-title">
-              <span>我的笔记</span>
+              <span>${noteTitle}</span>
             </div>
             <span class="insight-timestamp">${noteTimestamp}</span>
           </div>
@@ -808,19 +824,20 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       `;
     }
 
-	  const favoriteButtonHTML = `
-      <button 
-        class="favorite-btn ${isFavorited ? 'favorited' : ''}" 
-        data-entry-id="${entry.id}" 
-        title="${isFavorited ? '取消收藏' : '收藏此条'}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-        </svg>
-        <div class="spinner"></div>
-      </button>
-    `;
+  // [修改] 收藏和编辑按钮的HTML，根据 readOnly 标志来决定是否渲染
+  const favoriteButtonHTML = !readOnly ? `
+    <button 
+      class="favorite-btn ${isFavorited ? 'favorited' : ''}" 
+      data-entry-id="${entry.id}" 
+      title="${isFavorited ? '取消收藏' : '收藏此条'}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+      </svg>
+      <div class="spinner"></div>
+    </button>
+  ` : '';
 
-	  const editNoteButtonHTML = isFavorited ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>${userInsight ? '编辑笔记' : '添加笔记'}</span></button>` : '<div></div>';
+  const editNoteButtonHTML = !readOnly && isFavorited ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>${userInsight ? '编辑笔记' : '添加笔记'}</span></button>` : '';
   
 	  const shareLinks = this.generateShareLinks(entry);
 	  const escapedCopyText = this.escapeHtml(shareLinks.copy).replace(/'/g, "\\'").replace(/\n/g, '\\n');
@@ -930,6 +947,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
             <i data-lucide="user"></i><span>我的账号</span>
           </button>
           <div id="global-account-menu" class="app-footer-submenu">
+            <a href="/borrowed-notes.html" class="app-footer-submenu-item">
+              <i data-lucide="users"></i><span>借阅的笔记</span>
+            </a>
             <a href="/account.html" class="app-footer-submenu-item">
               <i data-lucide="settings"></i><span>账户设置</span>
             </a>
@@ -1037,7 +1057,12 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     
       // [核心修正] 增加对 account.html 页面的判断
       const currentPage = window.location.pathname;
-      if (currentPage.includes('/my-favorites.html') || currentPage.includes('/account.html')) {
+      if (
+        currentPage.includes('/my-favorites.html') || 
+        currentPage.includes('/account.html') ||
+        currentPage.includes('/borrowed-notes.html') ||
+        currentPage.includes('/view-notebook.html')
+      ) {
         // 等待短暂延迟，让用户能看到 Toast 提示，然后再跳转
         setTimeout(() => {
           window.location.href = '/'; 
@@ -1174,7 +1199,8 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.textContent;
         submitBtn.disabled = true;
-        submitBtn.textContent = '登陆中...';
+        // [核心修正] 根据当前是登录(login)还是注册(signup)视图，显示不同的文本
+        submitBtn.textContent = view === 'login' ? '登录中...' : '注册中...';
 
         const email = form.email.value;
         const password = form.password.value;
@@ -1267,8 +1293,8 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     }
   }
 
-  // [新增] 显示自定义的居中确认弹窗
-  async showConfirmationModal(title, message) {
+  // [升级版] 显示自定义的居中确认弹窗（支持自定义按钮文字）
+  async showConfirmationModal(title, message, confirmText = '确认') {
     return new Promise((resolve) => {
       if (document.getElementById('analects-confirm-modal')) return;
 
@@ -1279,7 +1305,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
             <p>${this.escapeHtml(message)}</p>
             <div class="confirm-modal-actions">
               <button id="confirm-cancel-btn" class="confirm-modal-btn cancel">取消</button>
-              <button id="confirm-ok-btn" class="confirm-modal-btn confirm">确认删除</button>
+              <button id="confirm-ok-btn" class="confirm-modal-btn confirm">${this.escapeHtml(confirmText)}</button>
             </div>
           </div>
         </div>
@@ -1325,7 +1351,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	      // --- 取消收藏 ---
 	      const hasNote = this.favoritesDataCache.get(entryId)?.user_insight;
 	      if (hasNote) {
-	        const confirmed = await this.showConfirmationModal('确认取消收藏？', '此条目包含您的笔记，取消收藏将会永久删除这条笔记。您确定要继续吗？');
+	        const confirmed = await this.showConfirmationModal('确认取消收藏？', '此条目包含您的笔记，取消收藏将会永久删除这条笔记。您确定要继续吗？', '确认删除');
 	        if (!confirmed) {
 	          targetButton.classList.remove('is-loading');
             targetButton.disabled = false;
@@ -1614,6 +1640,312 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       });
     });
   }
+
+  // [新增] 调用数据库函数来分享整本笔记
+  async shareNotebook(borrowerEmail) {
+    if (!this.currentUser) {
+      return { success: false, message: '请先登录' };
+    }
+    if (!borrowerEmail) {
+      return { success: false, message: '请输入接收方的Email' };
+    }
+
+    try {
+      const { data, error } = await this.supabase.rpc('share_notebook_with_email', {
+        borrower_email: borrowerEmail
+      });
+
+      if (error) throw error;
+      
+      return data; // 函数的返回值就是 { success, message }
+    } catch (error) {
+      console.error('分享笔记时出错:', error);
+      return { success: false, message: '分享失败，请稍后重试' };
+    }
+  }
+
+// AnalectsSDK class in index.js
+
+  // [RPC最终版 - 修正数据传递] 获取当前用户已经分享给了哪些人
+  async getSharedWithList() {
+    if (!this.currentUser) return [];
+    try {
+      // 1. 调用数据库函数，它会返回正确且完整的数据
+      const { data, error } = await this.supabase.rpc('get_shared_with_list');
+      if (error) throw error;
+      
+      // 2. [核心修正] 在这里将数据库返回的所有字段，正确地映射到前端需要的对象结构中
+      return data.map(item => ({
+        borrower_user_id: item.borrower_user_id,
+        created_at: item.created_at,
+        updated_at: item.updated_at, // <-- [修正] 之前遗漏了这一行！
+        status: item.status,
+        borrower: {
+          email: item.email,
+          user_metadata: { avatar_url: item.avatar_url }
+        }
+      }));
+    } catch (error) {
+      console.error('获取分享列表失败:', error);
+      return [];
+    }
+  }
+  
+  // [新增] 收回分享
+  async revokeShare(borrowerId) {
+    if (!this.currentUser) return { error: new Error('用户未登录') };
+    
+    try {
+      const { error } = await this.supabase
+        .from('notebook_shares')
+        .update({ status: 'revoked' })
+        .match({
+          lender_user_id: this.currentUser.id,
+          borrower_user_id: borrowerId
+        });
+        
+      if (error) throw error;
+      return { success: true };
+    } catch (error) {
+      console.error('收回分享失败:', error);
+      return { error };
+    }
+  }
+
+  // [新增] 渲染账户管理页面
+  async renderAccountPage(container) {
+    if (!container) return;
+    if (!this.currentUser) {
+      container.innerHTML = `
+        <div class="text-center text-gray-500 py-8">
+          <p class="text-lg">请先登录以管理您的账户。</p>
+          <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
+        </div>`;
+      return;
+    }
+
+    const sharedWithList = await this.getSharedWithList();
+
+    const shareFormHTML = `
+      <div class="card">
+        <div class="p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">分享我的全部笔记</h2>
+          <p class="text-gray-600 mb-6 text-sm">输入对方的注册邮箱，即可授权对方只读访问您全部的收藏和笔记。您可以随时在此页面收回授权。</p>
+          <form id="share-notebook-form" class="flex flex-col sm:flex-row gap-4 items-start">
+            <input type="email" id="share-email-input" required placeholder="接收方的注册邮箱" class="analects-input flex-grow">
+            <button type="submit" id="share-submit-btn" class="analects-btn w-full sm:w-auto">确认分享</button>
+          </form>
+          <div id="share-status-message" class="mt-4 text-sm"></div>
+        </div>
+      </div>
+    `;
+
+    const managementListHTML = `
+      <div class="card">
+        <div class="p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">已分享列表</h2>
+          <div id="shared-with-list-container" class="space-y-4">
+            ${sharedWithList.length === 0 ? '<p class="text-gray-500">您还没有分享给任何人。</p>' : 
+              sharedWithList.map(share => `
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border">
+                  <div>
+                    <p class="font-semibold text-gray-800">${this.escapeHtml(share.borrower.email)}</p>
+                    <p class="text-sm text-gray-500">
+                      分享于 ${new Date(share.created_at).toLocaleDateString()}
+                      <span class="font-bold ${share.status === 'active' ? 'text-green-600' : 'text-red-600'}">
+                        (${share.status === 'active' ? '生效中' : '已收回'})
+                      </span>
+                    </p>
+                  </div>
+                  ${share.status === 'active' ? `
+                  <button class="revoke-share-btn analects-btn analects-btn-clear" data-borrower-id="${share.borrower_user_id}">
+                    收回
+                  </button>` : ''}
+                </div>
+              `).join('')
+            }
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = shareFormHTML + managementListHTML;
+
+    this._attachAccountPageEvents(); // 绑定事件
+  }
+
+  // [新增] 为账户页面绑定事件
+  _attachAccountPageEvents() {
+    const shareForm = document.getElementById('share-notebook-form');
+    if (shareForm) {
+      shareForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById('share-email-input');
+        const submitBtn = document.getElementById('share-submit-btn');
+        const statusDiv = document.getElementById('share-status-message');
+        
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '处理中...';
+        statusDiv.textContent = '';
+        
+        const result = await this.shareNotebook(emailInput.value);
+        
+        if (result.success) {
+          statusDiv.className = 'text-green-600';
+          if (window.showToast) window.showToast(result.message);
+          // 重新渲染页面以更新列表
+          this.renderAccountPage(document.getElementById('account-management-container'));
+        } else {
+          statusDiv.className = 'text-red-600';
+          if (window.showToast) window.showToast(result.message, true);
+        }
+        statusDiv.textContent = result.message;
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        emailInput.value = '';
+      });
+    }
+
+    document.querySelectorAll('.revoke-share-btn').forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const borrowerId = e.target.dataset.borrowerId;
+        const confirmed = await this.showConfirmationModal('确认收回？', '您确定要收回对此用户的笔记分享吗？对方将无法再查看您的笔记。');
+        
+        if (confirmed) {
+          const result = await this.revokeShare(borrowerId);
+          if (result.success) {
+            if (window.showToast) window.showToast('已成功收回分享');
+            this.renderAccountPage(document.getElementById('account-management-container'));
+          } else {
+            if (window.showToast) window.showToast('操作失败，请重试', true);
+          }
+        }
+      });
+    });
+  }
+
+  // [RPC最终版] 获取向我分享了笔记的用户列表
+  async getSharedByList() {
+    if (!this.currentUser) return [];
+    try {
+      // 直接调用我们创建的数据库函数
+      const { data, error } = await this.supabase.rpc('get_shared_by_list');
+      if (error) throw error;
+      // 同样，手动映射字段以保持前端渲染代码不变
+      return data.map(item => ({
+        lender_user_id: item.lender_user_id,
+        created_at: item.created_at,
+        lender: {
+          email: item.email,
+          user_metadata: { avatar_url: item.avatar_url }
+        }
+      }));
+    } catch (error) {
+      console.error('获取分享来源列表失败:', error);
+      return [];
+    }
+  }
+
+  // [新增] 获取某个特定用户的全部收藏 (只读)
+  async getLenderNotebook(lenderId) {
+    if (!this.currentUser || !lenderId) return [];
+    try {
+      // RLS策略在这里生效，如果无权访问，将返回空数组
+      const { data, error } = await this.supabase
+        .from('user_favorites')
+        .select(`
+          created_at,
+          user_insight,
+          insight_updated_at, 
+          analects_entries (
+            *
+          )
+        `)
+        .eq('user_id', lenderId)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      const favorites = data.map(item => {
+        if (!item.analects_entries) return null;
+        return {
+          ...item.analects_entries,
+          favorited_at: item.created_at,
+          user_insight: item.user_insight,
+          insight_updated_at: item.insight_updated_at
+        };
+      }).filter(Boolean);
+      
+      return favorites;
+    } catch (error) {
+      console.error('获取分享的笔记内容失败:', error);
+      return [];
+    }
+  }
+
+  // [修正版] 渲染“借阅的笔记”列表页面
+  async renderBorrowedNotesList(container) {
+    if (!container) return;
+    if (!this.currentUser) {
+      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>请先登录查看分享给您的笔记。</p></div>`;
+      return;
+    }
+    
+    const sharedByList = await this.getSharedByList();
+    
+    if (sharedByList.length === 0) {
+      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>目前还没有人向您分享笔记。</p></div>`;
+      return;
+    }
+    
+    container.innerHTML = sharedByList.map(share => {
+      const lender = share.lender; // [此处修改] 直接使用我们新命名的lender对象
+      const avatarHTML = this._getAvatarHTML(lender);
+      const viewUrl = `/view-notebook.html?lender_id=${share.lender_user_id}&email=${encodeURIComponent(lender.email)}`;
+      
+      return `
+        <a href="${viewUrl}" class="flex items-center p-4 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+          <div class="user-avatar-display mr-4">${avatarHTML}</div>
+          <div class="flex-grow">
+            <p class="font-semibold text-gray-900">${this.escapeHtml(lender.email)}</p>
+            <p class="text-sm text-gray-500">分享于 ${new Date(share.created_at).toLocaleDateString()}</p>
+          </div>
+          <span class="text-blue-600 font-semibold">查看 &rarr;</span>
+        </a>
+      `;
+    }).join('');
+  }
+
+  // [新增] 渲染只读的笔记页面
+  async renderLenderNotebook(container, lenderId) {
+    if (!container || !lenderId) return;
+    
+    const notebook = await this.getLenderNotebook(lenderId);
+    
+    if (notebook.length === 0) {
+      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>无法加载笔记，可能分享已被收回或内容为空。</p></div>`;
+      return;
+    }
+
+    // 复用已有的卡片渲染逻辑，但传入一个只读标记
+    container.innerHTML = notebook.map(entry => {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'verse-card';
+      // 传入 readOnly: true 来生成没有编辑按钮的页脚
+      cardWrapper.innerHTML = this.generateResultCardHTML(entry, { showTags: false, readOnly: true });
+      return cardWrapper.outerHTML;
+    }).join('');
+
+        // [新增] 添加“已全部显示完毕”的提示
+    const allDisplayedMessage = document.createElement('div');
+    allDisplayedMessage.className = 'analects-load-complete';
+    allDisplayedMessage.style.display = 'block';
+    allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
+    container.appendChild(allDisplayedMessage);
+  }
+
 }
 
 // 全局复制方法

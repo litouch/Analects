@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>借阅的笔记 - 论语SDK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
+  </style>
+</head>
+<body class="page-with-sticky-header text-gray-800 antialiased">
+  <header id="global-header-wrapper"></header>
+
+  <div class="container mx-auto max-w-3xl px-4 py-8">
+    <header class="text-center mb-8 border-b pb-4">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">借阅的笔记</h1>
+      <p class="text-lg text-gray-500 mt-2">他山之石，可以攻玉</p>
+    </header>
+
+    <main id="borrowed-list-container" class="space-y-4">
+      <div class="verse-card-skeleton">
+        <div class="skeleton-block" style="height: 60px; width: 100%;"></div>
+      </div>
+       <div class="verse-card-skeleton">
+        <div class="skeleton-block" style="height: 60px; width: 100%;"></div>
+      </div>
+    </main>
+  </div>
+  
+  <div id="analects-global-widget-container"></div>
+
+  <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="/v2/analects.js"></script>
+  <script type="module">
+    (async () => {
+      let sdk;
+      try {
+        sdk = new AnalectsSDK({
+          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+        });
+
+        await sdk.init();
+
+        const container = document.getElementById('borrowed-list-container');
+        await sdk.renderBorrowedNotesList(container);
+
+      } catch (e) {
+        console.error("SDK或借阅列表渲染失败:", e);
+        document.getElementById('borrowed-list-container').innerHTML = '<div class="analects-error text-center py-8">页面加载失败，请确保您已登录。</div>';
+      }
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

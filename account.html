@@ -111,39 +111,54 @@
       <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
     </header>
 
-    <main id="account-settings-container">
+<main id="account-settings-container">
       
-      <section class="form-section">
-        <h2 class="text-xl font-semibold mb-4">个人资料</h2>
-        <form id="profile-form">
-          <div>
-            <label for="email" class="form-label">邮箱地址</label>
-            <input type="email" id="email" name="email" class="form-input bg-gray-100" readonly>
-          </div>
-          </form>
-      </section>
+    <section class="form-section">
+      <h2 class="text-xl font-semibold mb-4">个人资料</h2>
+      <form id="profile-form">
+        <div>
+          <label for="email" class="form-label">邮箱地址</label>
+          <input type="email" id="email" name="email" class="form-input bg-gray-100" readonly>
+        </div>
+      </form>
+    </section>
 
-      <section class="form-section">
-        <h2 class="text-xl font-semibold mb-4">修改密码</h2>
-        <form id="password-form">
-          <div>
-            <label for="new-password" class="form-label">新密码</label>
-            <input type="password" id="new-password" name="new-password" class="form-input" required minlength="6">
-            <p class="text-xs text-gray-500 mt-1">至少6位字符，不允许纯数字或者字母。</p>
-          </div>
-          <div class="mt-4">
-            <button type="submit" class="form-submit-btn">更新密码</button>
-          </div>
-        </form>
-      </section>
+    <section class="form-section">
+      <h2 class="text-xl font-semibold mb-4">修改密码</h2>
+      <form id="password-form">
+        <div>
+          <label for="new-password" class="form-label">新密码</label>
+          <input type="password" id="new-password" name="new-password" class="form-input" required minlength="6">
+          <p id="password-helper-text" class="text-xs text-gray-500 mt-1">至少6位字符，不允许纯数字或者字母。</p>
+        </div>
+        <div class="mt-4">
+          <button type="submit" class="form-submit-btn">更新密码</button>
+        </div>
+      </form>
+    </section>
 
-      <!-- <section class="form-section delete-section">
-        <h2 class="text-xl font-semibold mb-2">删除账户</h2>
-        <p class="text-sm text-gray-600 mb-4">此操作不可逆，您的所有收藏和笔记都将被永久删除。</p>
-        <button id="delete-account-btn" class="form-submit-btn delete-btn">删除我的账户</button>
-      </section> -->
+    <section class="form-section">
+        <h2 class="text-xl font-semibold mb-4">笔记分享管理</h2>
+        
+        <div>
+            <label for="share-email-input" class="form-label">分享我的全部笔记给他人</label>
+            <p class="text-xs text-gray-500 mb-2">输入对方的注册邮箱，即可授权对方只读访问您全部的收藏和笔记。您可以随时在下方列表收回授权。</p>
+            <form id="share-notebook-form" class="flex flex-col sm:flex-row gap-2 items-start">
+                <input type="email" id="share-email-input" required placeholder="接收方的注册邮箱" class="form-input flex-grow">
+                <button type="submit" id="share-submit-btn" class="form-submit-btn w-full sm:w-auto whitespace-nowrap">确认分享</button>
+            </form>
+            <div id="share-status-message" class="mt-2 text-sm h-4"></div>
+        </div>
 
-    </main>
+        <div class="mt-6">
+            <h3 class="font-semibold text-gray-700 mb-3">已分享列表</h3>
+            <div id="shared-with-list-container" class="space-y-3">
+                <p class="text-gray-500 text-sm">正在加载列表...</p>
+            </div>
+        </div>
+    </section>
+
+</main>
 
   </div>
   
@@ -158,94 +173,153 @@
   <script type="module" src="/v2/analects.js"></script>
 <script type="module">
     (async () => {
+      // 1. 初始化SDK
       const sdk = new AnalectsSDK({
         supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
         supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
-
-      // 立即渲染一次页头，此时会显示骨架屏
+      
+      // 显示骨架屏
       sdk.renderGlobalHeader();
-	        
-      // 初始化并渲染通用组件
       await sdk.init();
-	  
-      //sdk._initializeHeaderAnimation();
-      // --- [核心修改] 账户页面的专属JS逻辑 ---
       const user = sdk.currentUser;
       const accountContainer = document.getElementById('account-settings-container');
 
+      // 2. 检查登录状态
       if (!user) {
-        // 如果用户未登录，显示提示并禁用所有表单
         accountContainer.innerHTML = 
           '<div class="text-center text-gray-500 py-8"><p class="text-lg">请先登录以管理您的账户。</p><a href="/" class="text-blue-600 hover:underline mt-4 inline-block">去首页登录</a></div>';
-        return; // 中断后续代码执行
+        return;
       }
 
-      // 填充邮箱信息
+      // 3. 填充通用信息
       document.getElementById('email').value = user.email;
-	  
-      // --- [核心修改] 检查用户是否通过 Google 登录 ---
-      if (user.app_metadata.provider === 'google') {
-        const passwordInput = document.getElementById('new-password');
-        const passwordSubmitBtn = document.querySelector('#password-form button[type="submit"]');
-        const passwordHelperText = document.getElementById('password-helper-text');
 
-        // 禁用输入框和按钮
+      // 4. 处理密码修改逻辑
+      const passwordForm = document.getElementById('password-form');
+      const passwordInput = document.getElementById('new-password');
+      const passwordSubmitBtn = passwordForm.querySelector('button[type="submit"]');
+      const passwordHelperText = document.getElementById('password-helper-text');
+      
+      if (user.app_metadata.provider === 'google') {
         passwordInput.disabled = true;
         passwordSubmitBtn.disabled = true;
-        
-        // 更新提示文字
         passwordHelperText.textContent = '您通过 Google 登录，无需在此设置密码。';
-        passwordHelperText.style.color = '#6b7280'; // 可以给一个更柔和的颜色
+      } else {
+        passwordForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const originalBtnText = passwordSubmitBtn.textContent;
+          passwordSubmitBtn.disabled = true;
+          passwordSubmitBtn.textContent = '更新中...';
+          const { error } = await sdk.updatePassword(passwordInput.value);
+          if (error) {
+            alert(`密码更新失败: ${error.message}`);
+          } else {
+            alert('密码更新成功！');
+            passwordForm.reset();
+          }
+          passwordSubmitBtn.disabled = false;
+          passwordSubmitBtn.textContent = originalBtnText;
+        });
       }
 
-      // --- 1. 修改密码表单事件 ---
-      const passwordForm = document.getElementById('password-form');
-      passwordForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newPassword = document.getElementById('new-password').value;
-        const submitBtn = passwordForm.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.textContent;
+      // ========================================================
+      // [新增逻辑]: 处理笔记分享功能
+      // ========================================================
 
-        submitBtn.disabled = true;
-        submitBtn.textContent = '更新中...';
-
-        const { error } = await sdk.updatePassword(newPassword);
-
-        if (error) {
-          alert(`密码更新失败: ${error.message}`);
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalBtnText;
-        } else {
-          alert('密码更新成功！');
-          passwordForm.reset();
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalBtnText;
-        }
-      });
-
-      // --- 2. 删除账户按钮事件 (功能暂未上线) ---
-	  /*
-      const deleteBtn = document.getElementById('delete-account-btn');
-      deleteBtn.addEventListener('click', async () => {
-        // 使用一个简单的浏览器确认框
-        const confirmation = prompt('这是一个危险操作！为确认删除，请输入您的邮箱地址:');
+      const shareForm = document.getElementById('share-notebook-form');
+      const shareEmailInput = document.getElementById('share-email-input');
+      const shareSubmitBtn = document.getElementById('share-submit-btn');
+      const shareStatusDiv = document.getElementById('share-status-message');
+      const sharedListContainer = document.getElementById('shared-with-list-container');
+      
+      // -- 函数 A: 渲染已分享列表 --
+      const renderSharedList = async () => {
+        sharedListContainer.innerHTML = '<p class="text-gray-500 text-sm">正在加载列表...</p>';
+        const sharedWithList = await sdk.getSharedWithList();
         
-        if (confirmation === user.email) {
-            alert('正在删除账户... (此为模拟操作)');
-            // 注意：在您创建了 Edge Function 后，这里的调用才会真实生效
-            const { error } = await sdk.deleteCurrentUser();
-            if (error) {
-                alert(`删除账户失败: ${error.message}`);
-            } else {
-                alert('账户已成功删除，您将返回首页。');
-                window.location.href = '/';
-            }
-        } else if (confirmation !== null) { // 用户输入了但内容不匹配
-            alert('邮箱地址不匹配，操作已取消。');
+        if (sharedWithList.length === 0) {
+            sharedListContainer.innerHTML = '<p class="text-gray-500 text-sm">您还没有分享给任何人。</p>';
+            return;
         }
+        
+        sharedListContainer.innerHTML = sharedWithList.map(share => {
+    const shareDate = new Date(share.created_at).toLocaleDateString();
+    let statusTextHTML = `分享于 ${shareDate} <span class="font-bold text-green-600">(生效中)</span>`;
+
+    // [核心修改] 如果状态不是 active，则补充“已收回于”的信息
+    if (share.status !== 'active') {
+        const revokeDate = new Date(share.updated_at).toLocaleDateString();
+        statusTextHTML = `分享于 ${shareDate} / <span class="text-red-600">已收回于 ${revokeDate}</span>`;
+    }
+
+    return `
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+        <div>
+            <p class="font-medium text-gray-800 text-sm">${sdk.escapeHtml(share.borrower.email)}</p>
+            <p class="text-xs text-gray-500">
+                ${statusTextHTML}
+            </p>
+        </div>
+        ${share.status === 'active' ? `
+        <button class="form-submit-btn delete-btn !text-xs !py-1 !px-3" data-borrower-id="${share.borrower_user_id}">
+            收回
+        </button>` : ''}
+    </div>
+    `
+        }).join('');
+        
+        // 为新生成的“收回”按钮绑定事件
+        document.querySelectorAll('.delete-btn[data-borrower-id]').forEach(button => {
+            button.addEventListener('click', handleRevoke);
+        });
+      };
+
+      // -- 函数 B: 处理收回事件 [修正版] --
+      const handleRevoke = async (e) => {
+          const borrowerId = e.target.dataset.borrowerId;
+          // [核心修改] 使用SDK的自定义弹窗，而不是浏览器的 confirm()
+          const confirmed = await sdk.showConfirmationModal(
+              '确认收回？', 
+              '您确定要收回对此用户的笔记分享吗？对方将无法再查看您的笔记。',
+              '确认收回'
+          );
+          if (confirmed) {
+              const { error } = await sdk.revokeShare(borrowerId);
+              if (error) {
+                  alert('操作失败，请重试');
+              } else {
+                  // 重新渲染列表以更新状态
+                  renderSharedList();
+              }
+          }
+      };
+      
+      // -- 事件绑定: 提交分享表单 --
+      shareForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const originalBtnText = shareSubmitBtn.textContent;
+        shareSubmitBtn.disabled = true;
+        shareSubmitBtn.textContent = '处理中...';
+        shareStatusDiv.textContent = '';
+
+        const result = await sdk.shareNotebook(shareEmailInput.value);
+        
+        if (result.success) {
+          shareStatusDiv.className = 'text-green-600 mt-2 text-sm';
+          shareEmailInput.value = '';
+          await renderSharedList(); // 分享成功后刷新列表
+        } else {
+          shareStatusDiv.className = 'text-red-600 mt-2 text-sm';
+        }
+        shareStatusDiv.textContent = result.message;
+
+        shareSubmitBtn.disabled = false;
+        shareSubmitBtn.textContent = originalBtnText;
       });
-	  */
+
+      // -- 页面加载时，立即渲染一次列表 --
+      renderSharedList();
 
     })();
   </script>
