@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>借阅的笔记 - 论语SDK</title>
+  <title>共享空间 - 论语SDK</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/v2/analects.css">
   <script defer src="https://unpkg.com/lucide@latest"></script>
@@ -16,11 +16,11 @@
 
   <div class="container mx-auto max-w-3xl px-4 py-8">
     <header class="text-center mb-8 border-b pb-4">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">借阅的笔记</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">共享空间</h1>
       <p class="text-lg text-gray-500 mt-2">他山之石，可以攻玉</p>
     </header>
 
-    <main id="borrowed-list-container" class="space-y-4">
+    <main id="shared-list-container" class="space-y-4">
       <div class="verse-card-skeleton">
         <div class="skeleton-block" style="height: 60px; width: 100%;"></div>
       </div>
@@ -29,7 +29,7 @@
       </div>
     </main>
   </div>
-  
+
   <div id="analects-global-widget-container"></div>
 
   <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
@@ -48,14 +48,17 @@
           supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
         });
 
+        sdk.renderGlobalHeader();
         await sdk.init();
 
-        const container = document.getElementById('borrowed-list-container');
-        await sdk.renderBorrowedNotesList(container);
+        // [修改] 调用更新后的函数名和容器ID
+        const container = document.getElementById('shared-list-container');
+        await sdk.renderSharedWithMeList(container);
 
       } catch (e) {
-        console.error("SDK或借阅列表渲染失败:", e);
-        document.getElementById('borrowed-list-container').innerHTML = '<div class="analects-error text-center py-8">页面加载失败，请确保您已登录。</div>';
+        console.error("SDK或共享空间列表渲染失败:", e);
+        // [修改] 更新容器ID和错误信息
+        document.getElementById('shared-list-container').innerHTML = '<div class="analects-error text-center py-8">页面加载失败，请确保您已登录。</div>';
       }
       document.getElementById('year').textContent = new Date().getFullYear();
     })();

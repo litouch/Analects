@@ -504,8 +504,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       return verseHeaderHTML + contentHTML + tagsHTML + footerHTML;
   }
 
-  // [升级版] 获取收藏列表（包含笔记更新时间）
-  async getMyFavorites() {
+// [修改] 函数名：getMyFavorites -> getMyNotes, 并更新注释和错误信息
+// [升级版] 获取我的笔记列表（包含笔记更新时间）
+async getMyNotes() {
     if (!this.currentUser) return [];
     try {
       const { data, error } = await this.supabase
@@ -523,7 +524,8 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 
       if (error) throw error;
 
-      const favorites = data.map(item => {
+      // [修改] 变量名 favorites -> myNotes
+      const myNotes = data.map(item => {
         if (!item.analects_entries) return null;
         return {
           ...item.analects_entries,
@@ -533,12 +535,14 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         };
       }).filter(Boolean);
       
-      return favorites;
+      // [修改] 返回新的变量
+      return myNotes;
     } catch (error) {
-      console.error('获取收藏列表失败:', error);
+      // [修改] 更新错误日志文本
+      console.error('获取我的笔记列表失败:', error);
       return [];
     }
-  }
+}
 
 // [优化版] 根据 email 生成带背景色的首字母头像 HTML
   _generateInitialsAvatar(email) {
@@ -572,64 +576,64 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     return this._generateInitialsAvatar(user.email);
   }
 	
-  // [最终骨架屏版] 渲染全局页头
-	renderGlobalHeader() {
-	    const headerWrapper = document.getElementById('global-header-wrapper');
-	    if (!headerWrapper) return;
+// [最终骨架屏版] 渲染全局页头
+renderGlobalHeader() {
+    const headerWrapper = document.getElementById('global-header-wrapper');
+    if (!headerWrapper) return;
 
-	    let innerHTML = '';
+    let innerHTML = '';
 
-	    // 状态一：如果初始会话还未确认，则显示骨架屏
-	    if (!this.sessionInitialized) {
-	        innerHTML = `
-	            <div class="global-header-inner">
-	                <div class="header-left-area"><div class="header-skeleton text"></div></div>
-	                <a href="/" class="header-mini-logo">論語SDK</a>
-	                <div class="header-right-area"><div class="header-skeleton avatar"></div></div>
-	            </div>
-	        `;
-	    } 
-	    // 状态二：会话已确认，且用户已登录
-	    else if (this.currentUser) {
-	        const avatarHTML = this._getAvatarHTML(this.currentUser);
-	        const userEmail = this.escapeHtml(this.currentUser.email);
-	        innerHTML = `
-	            <div class="global-header-inner">
-	                <div class="header-left-area"><div class="header-welcome-message">欢迎, <span class="email">${userEmail}</span></div></div>
-	                <a href="/" class="header-mini-logo">論語SDK</a>
-	                <div class="header-right-area">
-	                    <div class="user-avatar-container">
-	                        <button class="user-menu-button" title="用户菜单"><i data-lucide="menu" class="menu-icon"></i><div class="user-avatar-display">${avatarHTML}</div></button>
-	                        <div class="user-dropdown-menu">
-	                            <div class="dropdown-user-info"><span class="email">${userEmail}</span></div>
-	                            <a href="/my-favorites.html" class="dropdown-item"><i data-lucide="bookmark"></i><span>我的收藏</span></a>
-                              <a href="/borrowed-notes.html" class="dropdown-item"><i data-lucide="users"></i><span>借阅的笔记</span></a>
-	                            <a href="/account.html" class="dropdown-item"><i data-lucide="settings"></i><span>账户设置</span></a>
-	                            <button class="dropdown-item logout"><i data-lucide="log-out"></i><span>登出</span></button>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-	        `;
-	    } 
-	    // 状态三：会话已确认，但用户未登录
-	    else {
-	        innerHTML = `
-	            <div class="global-header-inner">
-	                <div class="header-left-area"><div class="header-welcome-message">欢迎访问论语 SDK</div></div>
-	                <a href="/" class="header-mini-logo">論語SDK</a>
-	                <div class="header-right-area"><div class="header-user-area"><button id="header-login-btn" class="header-login-btn">登录 / 注册</button></div></div>
-	            </div>
-	        `;
-	    }
+    // 状态一：如果初始会话还未确认，则显示骨架屏
+    if (!this.sessionInitialized) {
+        innerHTML = `
+            <div class="global-header-inner">
+                <div class="header-left-area"><div class="header-skeleton text"></div></div>
+                <a href="/" class="header-mini-logo">論語SDK</a>
+                <div class="header-right-area"><div class="header-skeleton avatar"></div></div>
+            </div>
+        `;
+    } 
+    // 状态二：会话已确认，且用户已登录
+    else if (this.currentUser) {
+        const avatarHTML = this._getAvatarHTML(this.currentUser);
+        const userEmail = this.escapeHtml(this.currentUser.email);
+        innerHTML = `
+            <div class="global-header-inner">
+                <div class="header-left-area"><div class="header-welcome-message">欢迎, <span class="email">${userEmail}</span></div></div>
+                <a href="/" class="header-mini-logo">論語SDK</a>
+                <div class="header-right-area">
+                    <div class="user-avatar-container">
+                        <button class="user-menu-button" title="用户菜单"><i data-lucide="menu" class="menu-icon"></i><div class="user-avatar-display">${avatarHTML}</div></button>
+                        <div class="user-dropdown-menu">
+                            <div class="dropdown-user-info"><span class="email">${userEmail}</span></div>
+                            <a href="/my-notes.html" class="dropdown-item"><i data-lucide="bookmark"></i><span>我的笔记</span></a>
+                            <a href="/shared-with-me.html" class="dropdown-item"><i data-lucide="users"></i><span>共享空间</span></a>
+                            <a href="/share-management.html" class="dropdown-item"><i data-lucide="share-2"></i><span>分享管理</span></a>
+                            <a href="/account.html" class="dropdown-item"><i data-lucide="settings"></i><span>账户设置</span></a>
+                            <button class="dropdown-item logout"><i data-lucide="log-out"></i><span>登出</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } 
+    // 状态三：会话已确认，但用户未登录
+    else {
+        innerHTML = `
+            <div class="global-header-inner">
+                <div class="header-left-area"><div class="header-welcome-message">欢迎访问论语 SDK</div></div>
+                <a href="/" class="header-mini-logo">論語SDK</a>
+                <div class="header-right-area"><div class="header-user-area"><button id="header-login-btn" class="header-login-btn">登录 / 注册</button></div></div>
+            </div>
+        `;
+    }
 
-	    headerWrapper.innerHTML = innerHTML;
-	    
-	    // 只有在渲染真实内容后才需要绑定事件和图标
-	    if (this.sessionInitialized) {
-	        this._attachHeaderEvents();
-	    }
-	}
+    headerWrapper.innerHTML = innerHTML;
+    
+    if (this.sessionInitialized) {
+        this._attachHeaderEvents();
+    }
+}
 
   // [最终修正版] 为全局页头绑定所有必要的事件
   _attachHeaderEvents() {
@@ -688,17 +692,19 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	    observer.observe(sentinel);
 	}
 
-  // [最终版] 渲染“我的收藏”页面 (头部元数据 & 交互占位符)
-  async renderMyFavoritesPage(container) {
+// [修改] 函数名：renderMyFavoritesPage -> renderMyNotesPage, 并更新注释和内部文本
+// [最终版] 渲染“我的笔记”页面 (头部元数据 & 交互占位符)
+async renderMyNotesPage(container) {
     if (!container) {
-      console.error('收藏页面的容器未找到');
+      // [修改] 更新错误日志文本
+      console.error('“我的笔记”页面的容器未找到');
       return;
     }
 
     if (!this.currentUser) {
       container.innerHTML = `
         <div class="text-center text-gray-500 py-8">
-          <p class="text-lg">请先登录以查看您的收藏。</p>
+          <p class="text-lg">请先登录以查看您的笔记。</p>
           <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页进行登录</a>
         </div>
       `;
@@ -706,19 +712,21 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     }
 
     try {
-      const favorites = await this.getMyFavorites();
+      // [修改] 调用新函数名，并更新变量名
+      const myNotes = await this.getMyNotes();
 
-      if (favorites.length === 0) {
+      if (myNotes.length === 0) {
         container.innerHTML = `
           <div class="text-center text-gray-500 py-8">
-              <p class="text-lg">您还没有收藏任何章句。</p>
+              <p class="text-lg">您还没有任何笔记。</p>
               <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">去首页浏览并收藏</a>
           </div>
           `;
       } else {
         container.innerHTML = '';
       
-        favorites.forEach(entry => {
+        // [修改] 更新变量名
+        myNotes.forEach(entry => {
           this.entryCache.set(entry.id, entry);
           const cardWrapper = document.createElement('div');
           cardWrapper.className = 'verse-card'; 
@@ -765,10 +773,11 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         container.appendChild(allDisplayedMessage);
       }
     } catch (error) {
-      console.error('渲染收藏页面失败:', error);
-      container.innerHTML = '<div class="analects-daily-error text-center py-8">加载收藏失败，请稍后重试。</div>';
+      // [修改] 更新错误日志和提示文本
+      console.error('渲染我的笔记页面失败:', error);
+      container.innerHTML = '<div class="analects-daily-error text-center py-8">加载笔记失败，请稍后重试。</div>';
     }
-  }
+}
 
 	// [最终修复版 V2] 初始化章节页，确保使用完整数据重新渲染卡片
 	async initializeChapterPage() {
@@ -917,38 +926,39 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     return baseEntry;
   }
 
-  // [最终导航版] 增加首页导航，并为当前页面添加'active'状态
+  // [最终版] 渲染全局浮动组件
   renderGlobalWidget(container) {
     if (!container) return;
-    this.widgetContainer = container; 
+    this.widgetContainer = container;
 
     const currentPage = window.location.pathname;
-
     let widgetHTML = '';
 
     if (this.currentUser) {
-      // --- 已登录状态 ---
       container.classList.add('logged-in');
       container.classList.remove('logged-out');
-      
+
       const isHomeActive = (currentPage === '/' || currentPage.includes('/index.html'));
-      const isFavoritesActive = currentPage.includes('/my-favorites.html');
+      const isNotesActive = currentPage.includes('/my-notes.html');
 
       widgetHTML = `
         <a href="/" class="app-footer-action ${isHomeActive ? 'active' : ''}">
           <i data-lucide="home"></i><span>首页</span>
         </a>
-        <a href="/my-favorites.html" class="app-footer-action ${isFavoritesActive ? 'active' : ''}">
-          <i data-lucide="bookmark"></i><span>我的收藏</span>
+        <a href="/my-notes.html" class="app-footer-action ${isNotesActive ? 'active' : ''}">
+          <i data-lucide="bookmark"></i><span>我的笔记</span>
         </a>
-        
+
         <div class="app-footer-menu-container">
           <button id="global-account-btn" class="app-footer-action">
             <i data-lucide="user"></i><span>我的账号</span>
           </button>
           <div id="global-account-menu" class="app-footer-submenu">
-            <a href="/borrowed-notes.html" class="app-footer-submenu-item">
-              <i data-lucide="users"></i><span>借阅的笔记</span>
+            <a href="/shared-with-me.html" class="app-footer-submenu-item">
+              <i data-lucide="users"></i><span>共享空间</span>
+            </a>
+            <a href="/share-management.html" class="app-footer-submenu-item">
+              <i data-lucide="share-2"></i><span>分享管理</span>
             </a>
             <a href="/account.html" class="app-footer-submenu-item">
               <i data-lucide="settings"></i><span>账户设置</span>
@@ -959,12 +969,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
           </div>
         </div>
       `;
-
     } else {
-      // --- 未登录状态 (保持不变) ---
       container.classList.add('logged-out');
       container.classList.remove('logged-in');
-      
       widgetHTML = `
         <button id="global-login-btn" class="app-footer-action login">登录 / 注册</button>
       `;
@@ -1042,7 +1049,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
 	  }
 	}
 	
-  // [最终优化版] 登出方法
+  // [修改] 登出时需要检查的页面路径也需要更新
   async signOut() {
     const { error } = await this.supabase.auth.signOut();
     if (error) {
@@ -1055,18 +1062,17 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         window.showToast('您已成功登出');
       }
     
-      // [核心修正] 增加对 account.html 页面的判断
       const currentPage = window.location.pathname;
       if (
-        currentPage.includes('/my-favorites.html') || 
+        currentPage.includes('/my-notes.html') || 
         currentPage.includes('/account.html') ||
-        currentPage.includes('/borrowed-notes.html') ||
-        currentPage.includes('/view-notebook.html')
+        currentPage.includes('/shared-with-me.html') ||
+        currentPage.includes('/view-notebook.html') ||
+        currentPage.includes('/share-management.html') // <-- [新增] 添加新页面
       ) {
-        // 等待短暂延迟，让用户能看到 Toast 提示，然后再跳转
         setTimeout(() => {
           window.location.href = '/'; 
-        }, 500); // 延迟500毫秒
+        }, 500);
       }
     }
   }
@@ -1331,67 +1337,86 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     });
   }
 
-  // [最终修复版 V2] 收藏或取消收藏 (恢复了收藏页的移除动画)
-	async toggleFavorite(entryId, targetButton) {
-	  if (!this.currentUser) {
-	    this.showAuthModal('login');
-	    return;
-	  }
-	  if (!targetButton || targetButton.classList.contains('is-loading')) {
-	    return;
-	  }
+// [最终修复版 V4 - 恢复原始平滑动画]
+// 收藏或取消收藏
+async toggleFavorite(entryId, targetButton) {
+  if (!this.currentUser) {
+    this.showAuthModal('login');
+    return;
+  }
+  if (!targetButton || targetButton.classList.contains('is-loading')) {
+    return;
+  }
 
-	  targetButton.classList.add('is-loading');
-	  targetButton.disabled = true;
-	  const isFavorited = this.favoriteIds.has(entryId);
-  
-	  try {
-	    let error;
-	    if (isFavorited) {
-	      // --- 取消收藏 ---
-	      const hasNote = this.favoritesDataCache.get(entryId)?.user_insight;
-	      if (hasNote) {
-	        const confirmed = await this.showConfirmationModal('确认取消收藏？', '此条目包含您的笔记，取消收藏将会永久删除这条笔记。您确定要继续吗？', '确认删除');
-	        if (!confirmed) {
-	          targetButton.classList.remove('is-loading');
-            targetButton.disabled = false;
-	          return;
-	        }
-	      }
-	      const result = await this.supabase.from('user_favorites').delete().match({ user_id: this.currentUser.id, entry_id: entryId });
-	      error = result.error;
-	      if (!error && window.showToast) window.showToast('已取消收藏');
-	    } else {
-	      // --- 收藏 ---
-	      const { data: insertedData, error: insertError } = await this.supabase.from('user_favorites').insert({ user_id: this.currentUser.id, entry_id: entryId }).select().single();
-	      error = insertError;
-	      if (!error && window.showToast) window.showToast('收藏成功！');
-	    }
-	    if (error) throw error;
+  targetButton.classList.add('is-loading');
+  targetButton.disabled = true;
+  const isFavorited = this.favoriteIds.has(entryId);
+
+  try {
+    let error;
+    if (isFavorited) {
+      // --- 取消收藏 ---
+      const hasNote = this.favoritesDataCache.get(entryId)?.user_insight;
+      if (hasNote) {
+        const confirmed = await this.showConfirmationModal('确认取消收藏？', '此条目包含您的笔记，取消收藏将会永久删除这条笔记。您确定要继续吗？', '确认删除');
+        if (!confirmed) {
+          targetButton.classList.remove('is-loading');
+          targetButton.disabled = false;
+          return;
+        }
+      }
+      const result = await this.supabase.from('user_favorites').delete().match({ user_id: this.currentUser.id, entry_id: entryId });
+      error = result.error;
+      if (!error && window.showToast) window.showToast('已取消收藏');
+    } else {
+      // --- 收藏 ---
+      const { data: insertedData, error: insertError } = await this.supabase.from('user_favorites').insert({ user_id: this.currentUser.id, entry_id: entryId }).select().single();
+      error = insertError;
+      if (!error && window.showToast) window.showToast('收藏成功！');
+    }
+    if (error) throw error;
+
+    await this._loadUserFavorites();
     
-	    await this._loadUserFavorites();
+    // [核心修正] 判断逻辑调整回检查 my-notes.html
+    if (isFavorited && window.location.pathname.includes('/my-notes.html')) {
+        const card = document.querySelector(`.verse-card[data-entry-id="${entryId}"]`);
+        if (card) {
+            // [恢复原始动画逻辑]
+            // 1. 使用 setProperty 将当前高度存入一个CSS变量 --card-height
+            card.style.setProperty('--card-height', `${card.offsetHeight}px`);
+            
+            // 2. 添加 is-removing class，CSS将使用 --card-height 变量来执行平滑动画
+            card.classList.add('is-removing');
+            
+            // 3. 在动画结束后 (500ms)，从 DOM 中彻底移除这个元素
+            setTimeout(() => {
+                card.remove();
+                // 检查容器是否为空
+                const container = document.getElementById('notes-list-container');
+                if (container && !container.querySelector('.verse-card')) {
+                    container.innerHTML = `
+                      <div class="text-center text-gray-500 py-8">
+                          <p class="text-lg">您还没有任何笔记。</p>
+                          <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">去首页浏览并收藏</a>
+                      </div>`;
+                }
+            }, 500); // 动画时长为 500ms
+        }
+    } else {
+        await this._refreshCardUI(entryId);
+    }
 
-	    if (isFavorited && window.location.pathname.includes('/my-favorites.html')) {
-	        const card = document.querySelector(`.verse-card[data-entry-id="${entryId}"]`);
-	        if (card) {
-	            card.style.setProperty('--card-height', `${card.offsetHeight}px`);
-	            card.classList.add('is-removing');
-	            setTimeout(() => {
-	                card.remove();
-	            }, 500);
-	        }
-	    } else {
-	        await this._refreshCardUI(entryId);
-	    }
-
-	  } catch (error) {
-	    console.error('收藏操作失败:', error);
-	    if (window.showToast) window.showToast('操作失败，请稍后重试', true);
-	  } finally {
-	    targetButton.classList.remove('is-loading');
-		targetButton.disabled = false;
-	  }
-	}
+  } catch (error) {
+    console.error('收藏操作失败:', error);
+    if (window.showToast) window.showToast('操作失败，请稍后重试', true);
+  } finally {
+    if (targetButton && targetButton.isConnected) {
+        targetButton.classList.remove('is-loading');
+        targetButton.disabled = false;
+    }
+  }
+}
 	
 	// [最终修复版 V3] 统一的、智能的卡片UI刷新函数 (兼容每日论语)
 	async _refreshCardUI(entryId) {
@@ -1579,10 +1604,12 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     document.getElementById('auth-close-success-btn').addEventListener('click', () => this.closeAuthModal());
   }	
 
-  // [最终优化版] 初始化收藏页的搜索功能（带高亮）
-  initializeFavoritesSearch(inputElement, containerElement) {
+// [修改] 函数名：initializeFavoritesSearch -> initializeNotesSearch, 并更新注释
+// [最终优化版] 初始化笔记页面的搜索功能（带高亮）
+initializeNotesSearch(inputElement, containerElement) {
     if (!inputElement || !containerElement) {
-      console.error('搜索框或收藏容器未找到');
+      // [修改] 更新错误日志文本
+      console.error('笔记搜索框或容器未找到');
       return;
     }
 
@@ -1639,7 +1666,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         }
       });
     });
-  }
+}
 
   // [新增] 调用数据库函数来分享整本笔记
   async shareNotebook(borrowerEmail) {
@@ -1848,11 +1875,16 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     }
   }
 
-  // [新增] 获取某个特定用户的全部收藏 (只读)
+// [最终健壮版] 获取某个特定用户的全部收藏 (只读)
   async getLenderNotebook(lenderId) {
+    // 1. 检查当前用户是否登录，以及是否传入了目标用户ID
     if (!this.currentUser || !lenderId) return [];
+
     try {
-      // RLS策略在这里生效，如果无权访问，将返回空数组
+      // 2. 向数据库发起查询
+      // RLS 策略在这里生效，如果当前用户无权访问 lenderId 的笔记，
+      // Supabase 会返回 { data: [], error: null }，这是一个正常情况。
+      // 只有在发生网络错误或数据库本身出错时，error 才会有值。
       const { data, error } = await this.supabase
         .from('user_favorites')
         .select(`
@@ -1866,8 +1898,10 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         .eq('user_id', lenderId)
         .order('created_at', { ascending: false });
         
+      // 3. 如果查询过程出错，则在这里抛出，由下面的 catch 捕获
       if (error) throw error;
       
+      // 4. 将查询到的数据处理成前端需要的格式
       const favorites = data.map(item => {
         if (!item.analects_entries) return null;
         return {
@@ -1879,17 +1913,21 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       }).filter(Boolean);
       
       return favorites;
+
     } catch (error) {
+      // 5. [关键] 捕获所有可能的错误，在控制台打印日志方便调试，并返回空数组
       console.error('获取分享的笔记内容失败:', error);
       return [];
     }
   }
 
-  // [修正版] 渲染“借阅的笔记”列表页面
-  async renderBorrowedNotesList(container) {
+// [修改] 函数名：renderBorrowedNotesList -> renderSharedWithMeList, 并更新注释和内部文本
+// [修正版] 渲染“共享空间”列表页面
+async renderSharedWithMeList(container) {
     if (!container) return;
     if (!this.currentUser) {
-      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>请先登录查看分享给您的笔记。</p></div>`;
+      // [修改] 更新提示文本
+      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>请先登录查看共享给您的笔记。</p></div>`;
       return;
     }
     
@@ -1901,9 +1939,10 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     }
     
     container.innerHTML = sharedByList.map(share => {
-      const lender = share.lender; // [此处修改] 直接使用我们新命名的lender对象
+      const lender = share.lender;
       const avatarHTML = this._getAvatarHTML(lender);
-      const viewUrl = `/view-notebook.html?lender_id=${share.lender_user_id}&email=${encodeURIComponent(lender.email)}`;
+      // [修改] 将链接指向新的文件名 view-shared-notes.html
+      const viewUrl = `/view-shared-notes.html?lender_id=${share.lender_user_id}&email=${encodeURIComponent(lender.email)}`;
       
       return `
         <a href="${viewUrl}" class="flex items-center p-4 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
@@ -1916,12 +1955,14 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         </a>
       `;
     }).join('');
-  }
+}
 
-  // [新增] 渲染只读的笔记页面
-  async renderLenderNotebook(container, lenderId) {
+// 将函数名从 renderLenderNotebook 更新为 renderSharedNotebook
+// 渲染共享笔记页面，并为其启用收藏和笔记功能
+async renderSharedNotebook(container, lenderId) {
     if (!container || !lenderId) return;
     
+    // 调用 getLenderNotebook 函数获取指定用户分享的笔记内容
     const notebook = await this.getLenderNotebook(lenderId);
     
     if (notebook.length === 0) {
@@ -1929,22 +1970,27 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       return;
     }
 
-    // 复用已有的卡片渲染逻辑，但传入一个只读标记
+    // [核心] 
+    // 遍历获取到的笔记数据，为每一条笔记生成一个可交互的卡片。
+    // 我们不再传入 readOnly: true 参数，这将使得 generateResultCardHTML 
+    // 函数为每一张卡片都生成包含“收藏”和“笔记”按钮的完整版页脚。
+    // 由于事件监听是全局的，这些按钮将自动具备交互功能。
     container.innerHTML = notebook.map(entry => {
       const cardWrapper = document.createElement('div');
       cardWrapper.className = 'verse-card';
-      // 传入 readOnly: true 来生成没有编辑按钮的页脚
-      cardWrapper.innerHTML = this.generateResultCardHTML(entry, { showTags: false, readOnly: true });
+      
+      // 调用核心渲染函数，生成完整的卡片HTML
+      cardWrapper.innerHTML = this.generateResultCardHTML(entry, { showTags: false });
       return cardWrapper.outerHTML;
     }).join('');
 
-        // [新增] 添加“已全部显示完毕”的提示
+    // 添加“已全部显示完毕”的提示，提升用户体验
     const allDisplayedMessage = document.createElement('div');
     allDisplayedMessage.className = 'analects-load-complete';
     allDisplayedMessage.style.display = 'block';
     allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
     container.appendChild(allDisplayedMessage);
-  }
+}
 
 }
 

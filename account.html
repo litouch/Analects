@@ -7,96 +7,17 @@
   <link rel="stylesheet" href="/v2/analects.css">
   <script defer src="https://unpkg.com/lucide@latest"></script>
   <style>
-      /* 基础字体和背景，保持和全站一致 */
       body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    
-      /* [优化] 统一 h1 和 h2 的字体来源 */
       h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
-
-
-      /* --- 表单样式核心优化 --- */
-    
-      .form-section {
-          background-color: white;
-          padding: 24px;
-          border-radius: 12px;
-          border: 1px solid #e2e8f0; /* var(--slate-200) */
-          margin-bottom: 24px;
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
-      }
-
-      /* [优化] 减小区块标题尺寸 */
-      .form-section h2 {
-          font-size: 1.125rem; /* text-lg */
-          font-weight: 600; /* 保持semibold */
-          margin-bottom: 1rem;
-          padding-bottom: 0.75rem;
-          border-bottom: 1px solid #f1f5f9; /* var(--slate-100) */
-      }
-
-      .form-label {
-          display: block;
-          font-weight: 500;
-          margin-bottom: 8px;
-          color: #475569; /* var(--slate-600) */
-          font-size: 0.875rem; /* text-sm */
-      }
-
-      /* [优化] 减小输入框的内边距，使其更紧凑 */
-      .form-input {
-          width: 100%;
-          padding: 8px 12px; /* 原为 10px 14px */
-          border: 1px solid #cbd5e1; /* var(--slate-300) */
-          border-radius: 8px;
-          transition: all 0.2s ease;
-          background-color: white;
-      }
-
-      .form-input:focus {
-          outline: none;
-          border-color: #3b82f6; /* var(--blue-500) */
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-      }
-    
-      /* [新增] 为禁用的输入框（如邮箱）添加样式，使其看起来不可用 */
-      .form-input:disabled, .form-input[readonly] {
-          background-color: #f1f5f9; /* var(--slate-100) */
-          cursor: not-allowed;
-          color: #64748b;
-      }
-
-      /* [优化] 减小按钮内边距，并增加禁用状态的样式 */
-      .form-submit-btn {
-          padding: 9px 18px; /* 原为 12px 24px */
-          border: none;
-          border-radius: 8px;
-          background-color: #3b82f6;
-          color: white;
-          font-weight: 500;
-          font-size: 0.875rem; /* text-sm */
-          cursor: pointer;
-          transition: all 0.2s;
-      }
-
-      .form-submit-btn:hover {
-          background-color: #2563eb; /* var(--blue-600) */
-      }
-
-      .form-submit-btn:disabled {
-          background-color: #94a3b8; /* var(--slate-400) */
-          cursor: not-allowed;
-      }
-
-      .delete-section {
-          border-color: #ef4444; /* var(--red-500) */
-      }
-    
-      .delete-btn {
-          background-color: #ef4444;
-      }
-      .delete-btn:hover {
-          background-color: #dc2626; /* var(--red-600) */
-      }
+      .form-section { background-color: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 24px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px -1px rgba(0, 0, 0, 0.03); }
+      .form-section h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9; }
+      .form-label { display: block; font-weight: 500; margin-bottom: 8px; color: #475569; font-size: 0.875rem; }
+      .form-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; transition: all 0.2s ease; background-color: white; }
+      .form-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+      .form-input:disabled, .form-input[readonly] { background-color: #f1f5f9; cursor: not-allowed; color: #64748b; }
+      .form-submit-btn { padding: 9px 18px; border: none; border-radius: 8px; background-color: #3b82f6; color: white; font-weight: 500; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; }
+      .form-submit-btn:hover { background-color: #2563eb; }
+      .form-submit-btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
   </style>
 </head>
 <body class="page-with-sticky-header text-gray-800 antialiased">
@@ -107,59 +28,35 @@
     
     <header class="text-center mb-8 border-b pb-4">
       <h1 class="text-3xl md:text-4xl font-bold text-gray-900">账户设置</h1>
-      <p class="text-lg text-gray-500 mt-2">管理您的个人资料、密码和账户</p>
+      <p class="text-lg text-gray-500 mt-2">管理您的个人资料和密码</p>
       <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
     </header>
 
-<main id="account-settings-container">
-      
-    <section class="form-section">
-      <h2 class="text-xl font-semibold mb-4">个人资料</h2>
-      <form id="profile-form">
-        <div>
-          <label for="email" class="form-label">邮箱地址</label>
-          <input type="email" id="email" name="email" class="form-input bg-gray-100" readonly>
-        </div>
-      </form>
-    </section>
+    <main id="account-settings-container">
+      <section class="form-section">
+        <h2 class="text-xl font-semibold mb-4">个人资料</h2>
+        <form id="profile-form">
+          <div>
+            <label for="email" class="form-label">邮箱地址</label>
+            <input type="email" id="email" name="email" class="form-input" readonly>
+          </div>
+        </form>
+      </section>
 
-    <section class="form-section">
-      <h2 class="text-xl font-semibold mb-4">修改密码</h2>
-      <form id="password-form">
-        <div>
-          <label for="new-password" class="form-label">新密码</label>
-          <input type="password" id="new-password" name="new-password" class="form-input" required minlength="6">
-          <p id="password-helper-text" class="text-xs text-gray-500 mt-1">至少6位字符，不允许纯数字或者字母。</p>
-        </div>
-        <div class="mt-4">
-          <button type="submit" class="form-submit-btn">更新密码</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="form-section">
-        <h2 class="text-xl font-semibold mb-4">笔记分享管理</h2>
-        
-        <div>
-            <label for="share-email-input" class="form-label">分享我的全部笔记给他人</label>
-            <p class="text-xs text-gray-500 mb-2">输入对方的注册邮箱，即可授权对方只读访问您全部的收藏和笔记。您可以随时在下方列表收回授权。</p>
-            <form id="share-notebook-form" class="flex flex-col sm:flex-row gap-2 items-start">
-                <input type="email" id="share-email-input" required placeholder="接收方的注册邮箱" class="form-input flex-grow">
-                <button type="submit" id="share-submit-btn" class="form-submit-btn w-full sm:w-auto whitespace-nowrap">确认分享</button>
-            </form>
-            <div id="share-status-message" class="mt-2 text-sm h-4"></div>
-        </div>
-
-        <div class="mt-6">
-            <h3 class="font-semibold text-gray-700 mb-3">已分享列表</h3>
-            <div id="shared-with-list-container" class="space-y-3">
-                <p class="text-gray-500 text-sm">正在加载列表...</p>
-            </div>
-        </div>
-    </section>
-
-</main>
-
+      <section class="form-section">
+        <h2 class="text-xl font-semibold mb-4">修改密码</h2>
+        <form id="password-form">
+          <div>
+            <label for="new-password" class="form-label">新密码</label>
+            <input type="password" id="new-password" name="new-password" class="form-input" required minlength="6">
+            <p id="password-helper-text" class="text-xs text-gray-500 mt-1">至少6位字符，不允许纯数字或者字母。</p>
+          </div>
+          <div class="mt-4">
+            <button type="submit" class="form-submit-btn">更新密码</button>
+          </div>
+        </form>
+      </section>
+    </main>
   </div>
   
   <div id="analects-global-widget-container"></div>
@@ -171,7 +68,7 @@
   </footer>
   
   <script type="module" src="/v2/analects.js"></script>
-<script type="module">
+  <script type="module">
     (async () => {
       // 1. 初始化SDK
       const sdk = new AnalectsSDK({
@@ -179,23 +76,21 @@
         supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
       });
       
-      // 显示骨架屏
       sdk.renderGlobalHeader();
       await sdk.init();
       const user = sdk.currentUser;
       const accountContainer = document.getElementById('account-settings-container');
 
-      // 2. 检查登录状态
       if (!user) {
         accountContainer.innerHTML = 
           '<div class="text-center text-gray-500 py-8"><p class="text-lg">请先登录以管理您的账户。</p><a href="/" class="text-blue-600 hover:underline mt-4 inline-block">去首页登录</a></div>';
         return;
       }
 
-      // 3. 填充通用信息
+      // 2. 填充通用信息
       document.getElementById('email').value = user.email;
 
-      // 4. 处理密码修改逻辑
+      // 3. 处理密码修改逻辑
       const passwordForm = document.getElementById('password-form');
       const passwordInput = document.getElementById('new-password');
       const passwordSubmitBtn = passwordForm.querySelector('button[type="submit"]');
@@ -222,105 +117,6 @@
           passwordSubmitBtn.textContent = originalBtnText;
         });
       }
-
-      // ========================================================
-      // [新增逻辑]: 处理笔记分享功能
-      // ========================================================
-
-      const shareForm = document.getElementById('share-notebook-form');
-      const shareEmailInput = document.getElementById('share-email-input');
-      const shareSubmitBtn = document.getElementById('share-submit-btn');
-      const shareStatusDiv = document.getElementById('share-status-message');
-      const sharedListContainer = document.getElementById('shared-with-list-container');
-      
-      // -- 函数 A: 渲染已分享列表 --
-      const renderSharedList = async () => {
-        sharedListContainer.innerHTML = '<p class="text-gray-500 text-sm">正在加载列表...</p>';
-        const sharedWithList = await sdk.getSharedWithList();
-        
-        if (sharedWithList.length === 0) {
-            sharedListContainer.innerHTML = '<p class="text-gray-500 text-sm">您还没有分享给任何人。</p>';
-            return;
-        }
-        
-        sharedListContainer.innerHTML = sharedWithList.map(share => {
-    const shareDate = new Date(share.created_at).toLocaleDateString();
-    let statusTextHTML = `分享于 ${shareDate} <span class="font-bold text-green-600">(生效中)</span>`;
-
-    // [核心修改] 如果状态不是 active，则补充“已收回于”的信息
-    if (share.status !== 'active') {
-        const revokeDate = new Date(share.updated_at).toLocaleDateString();
-        statusTextHTML = `分享于 ${shareDate} / <span class="text-red-600">已收回于 ${revokeDate}</span>`;
-    }
-
-    return `
-    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
-        <div>
-            <p class="font-medium text-gray-800 text-sm">${sdk.escapeHtml(share.borrower.email)}</p>
-            <p class="text-xs text-gray-500">
-                ${statusTextHTML}
-            </p>
-        </div>
-        ${share.status === 'active' ? `
-        <button class="form-submit-btn delete-btn !text-xs !py-1 !px-3" data-borrower-id="${share.borrower_user_id}">
-            收回
-        </button>` : ''}
-    </div>
-    `
-        }).join('');
-        
-        // 为新生成的“收回”按钮绑定事件
-        document.querySelectorAll('.delete-btn[data-borrower-id]').forEach(button => {
-            button.addEventListener('click', handleRevoke);
-        });
-      };
-
-      // -- 函数 B: 处理收回事件 [修正版] --
-      const handleRevoke = async (e) => {
-          const borrowerId = e.target.dataset.borrowerId;
-          // [核心修改] 使用SDK的自定义弹窗，而不是浏览器的 confirm()
-          const confirmed = await sdk.showConfirmationModal(
-              '确认收回？', 
-              '您确定要收回对此用户的笔记分享吗？对方将无法再查看您的笔记。',
-              '确认收回'
-          );
-          if (confirmed) {
-              const { error } = await sdk.revokeShare(borrowerId);
-              if (error) {
-                  alert('操作失败，请重试');
-              } else {
-                  // 重新渲染列表以更新状态
-                  renderSharedList();
-              }
-          }
-      };
-      
-      // -- 事件绑定: 提交分享表单 --
-      shareForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const originalBtnText = shareSubmitBtn.textContent;
-        shareSubmitBtn.disabled = true;
-        shareSubmitBtn.textContent = '处理中...';
-        shareStatusDiv.textContent = '';
-
-        const result = await sdk.shareNotebook(shareEmailInput.value);
-        
-        if (result.success) {
-          shareStatusDiv.className = 'text-green-600 mt-2 text-sm';
-          shareEmailInput.value = '';
-          await renderSharedList(); // 分享成功后刷新列表
-        } else {
-          shareStatusDiv.className = 'text-red-600 mt-2 text-sm';
-        }
-        shareStatusDiv.textContent = result.message;
-
-        shareSubmitBtn.disabled = false;
-        shareSubmitBtn.textContent = originalBtnText;
-      });
-
-      // -- 页面加载时，立即渲染一次列表 --
-      renderSharedList();
-
     })();
   </script>
 
