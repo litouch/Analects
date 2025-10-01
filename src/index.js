@@ -324,7 +324,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
   }
 
 // [最终修正版] 统一处理全局点击事件
-  _handleGlobalClick(event) {
+async _handleGlobalClick(event) {
     // 处理收藏按钮的点击
     const favoriteButton = event.target.closest('.favorite-btn');
     if (favoriteButton) {
@@ -341,7 +341,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       const entryId = parseInt(editInsightButton.dataset.entryId, 10);
       const card = editInsightButton.closest('.verse-card, .analects-result-card');
       
-      // [核心修改] 精确查找'我的笔记'区块的内容，避免获取到分享的笔记
       const myInsightWrapper = card ? card.querySelector('.my-insight-wrapper') : null;
       const insightTextEl = myInsightWrapper ? myInsightWrapper.querySelector('.insight-text') : null;
       
@@ -352,7 +351,71 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       return;
     }
 
-    // [已移除] “更多选项”按钮的逻辑已从此处移除，并由专属监听器 _attachCardActionListeners 处理。
+    // [最终UI优化版 V2] 处理“查看对照”按钮的点击
+    const comparisonButton = event.target.closest('.view-comparison-btn');
+    if (comparisonButton) {
+        event.preventDefault();
+        const entryId = comparisonButton.dataset.entryId;
+        const currentState = comparisonButton.dataset.state;
+        const card = comparisonButton.closest('.verse-card');
+        const container = card.querySelector('.comparison-notes-container');
+        const buttonText = comparisonButton.querySelector('span');
+
+        if (currentState === 'shown') {
+            // 如果已显示，则收起
+            container.innerHTML = '';
+            buttonText.textContent = '查看对照笔记';
+            comparisonButton.dataset.state = 'idle';
+        } else if (currentState === 'idle') {
+            // 如果是初次点击，则立即进入加载状态
+            comparisonButton.dataset.state = 'loading';
+            comparisonButton.classList.add('is-loading');
+            buttonText.textContent = '加载中...'; // 立即提供文字反馈
+
+            try {
+                // 异步获取数据
+                const { data: notes, error } = await this.supabase.rpc('get_comparison_notes_for_entry', { p_entry_id: entryId });
+                if (error) throw error;
+                
+                const noteCount = notes ? notes.length : 0;
+
+                if (noteCount > 0) {
+                    container.innerHTML = notes.map(note => {
+                        const noteTimestamp = this.formatTimeAgo(note.updated_at);
+                        const insightText = this.escapeHtml(note.note_text);
+                        const isLongInsight = (insightText.split('\n').length > 4 || insightText.length > 150);
+                        return `
+                        <div class="user-insight-wrapper sharer-insight-wrapper" style="background-color: #fefce8; border-color: #fef08a;">
+                            <div class="user-insight-header">
+                                <div class="user-insight-title" style="color: #a16207;">
+                                    <span>Ta的笔记 (来自 ${this.escapeHtml(note.author_email)})</span>
+                                </div>
+                                <span class="insight-timestamp" style="color: #ca8a04;">${noteTimestamp}</span>
+                            </div>
+                            <div class="user-insight-content">
+                                <p class="insight-text ${isLongInsight ? 'is-truncated' : ''}" style="color: #a16207;">${insightText}</p>
+                                ${isLongInsight ? '<button class="insight-toggle-btn" style="color: #a16207;">展开阅读</button>' : ''}
+                            </div>
+                        </div>`;
+                    }).join('');
+                    buttonText.textContent = `收起对照笔记 (${noteCount})`;
+                    comparisonButton.dataset.state = 'shown';
+                } else {
+                    buttonText.textContent = '无对照笔记';
+                    comparisonButton.dataset.state = 'no_notes';
+                    comparisonButton.disabled = true;
+                }
+            } catch (err) {
+                console.error('获取对照笔记失败:', err);
+                buttonText.textContent = '加载失败';
+                comparisonButton.dataset.state = 'idle'; // 允许重试
+            } finally {
+                // 无论成功失败，都移除加载状态的CSS类
+                comparisonButton.classList.remove('is-loading');
+            }
+        }
+        return;
+    }
 
     // 处理笔记展开/收起按钮的点击
     const insightToggleButton = event.target.closest('.insight-toggle-btn');
@@ -376,7 +439,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         activeFooterMenu.classList.remove('active');
     }
 
-    // [修改] 更新关闭逻辑，确保点击按钮本身不会触发关闭
     const moreOptionsButton = event.target.closest('.more-options-btn');
     if (!moreOptionsButton) {
         const activeCardDropdown = document.querySelector('.card-actions-dropdown.active');
@@ -384,7 +446,7 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
             activeCardDropdown.classList.remove('active');
         }
     }
-  }
+}
 
 // [核心修正] 覆盖基类的方法，为“每日论语”组件添加功能完备的收藏按钮
   getDailyAnalectHTML(entry, dateInfo, shareLinks) {
@@ -434,8 +496,8 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     `;
   }
 
-// [核心覆盖] 完整版的卡片HTML生成，依赖用户状态 - [修改]
-  generateResultCardHTML(entry, options = {}, myFavoriteData = null, sharerFavoriteData = null) {
+// [核心覆盖] 完整版的卡片HTML生成，依赖用户状态
+  generateResultCardHTML(entry, options = {}, myFavoriteData = null, sharerFavoriteData = null, hasLenders = false, comparisonEntryIds = new Set()) {
       if (!entry) return '';
 
       const { showTags = false } = options;
@@ -443,7 +505,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       // --- 1. 数据准备 ---
       const currentKeyword = this.currentFilters?.keyword || '';
       
-      // [修改] 如果 myFavoriteData 没有被直接传入，则从缓存中查找
       const finalMyFavoriteData = myFavoriteData || this.favoritesDataCache.get(entry.id);
       const isFavoritedByMe = this.favoriteIds.has(entry.id);
       const timeAgo = isFavoritedByMe && finalMyFavoriteData?.favorited_at ? this.formatTimeAgo(finalMyFavoriteData.favorited_at) : '';
@@ -485,7 +546,6 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
       // --- 4. 构建标签区 (变为条件化渲染) ---
       let tagsHTML = '';
       if (showTags) {
-        // [核心] 定义SVG图标，移除对 lucide.js 的依赖
         const icons = {
             users: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
             target: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
@@ -511,8 +571,9 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
         ` : '';
       }
 
-      // --- 5. [核心修改] 构建页脚，现在传入区分开的笔记数据
-      const footerHTML = this._generateCardFooterHTML(entry, finalMyFavoriteData, sharerFavoriteData);
+      // --- 5. 构建页脚 ---
+      // [修复] 将接收到的 hasLenders 和 comparisonEntryIds 参数传递下去
+      const footerHTML = this._generateCardFooterHTML(entry, finalMyFavoriteData, sharerFavoriteData, hasLenders, comparisonEntryIds);
     
       // --- 6. 组合成最终的卡片HTML ---
       return verseHeaderHTML + contentHTML + tagsHTML + footerHTML;
@@ -706,10 +767,9 @@ renderGlobalHeader() {
 	    observer.observe(sentinel);
 	}
 
-// [最终版] 渲染“我的笔记”页面 (头部元数据 & 交互占位符)
+// [最终版] 渲染“我的笔记”页面，并实现完整的“对照模式”功能
 async renderMyNotesPage(container) {
     if (!container) {
-      // [修改] 更新错误日志文本
       console.error('“我的笔记”页面的容器未找到');
       return;
     }
@@ -725,8 +785,22 @@ async renderMyNotesPage(container) {
     }
 
     try {
-      // [修改] 调用新函数名，并更新变量名
-      const myNotes = await this.getMyNotes();
+      // 1. 调用 RPC 函数获取自己的笔记
+      const { data: myNotes, error: notesError } = await this.supabase.rpc('get_my_notes');
+      if (notesError) throw notesError;
+
+      // 2. [核心修改] 调用新函数，获取存在对照笔记的 Entry ID 列表
+      const { data: comparisonIdsData, error: idsError } = await this.supabase.rpc('get_lender_note_entry_ids');
+      if (idsError) throw idsError;
+      const comparisonEntryIds = new Set(comparisonIdsData.map(item => item.entry_id));
+      const hasLenders = comparisonEntryIds.size > 0; // [修改] 现在根据是否有对照笔记来判断
+
+      const globalControls = document.getElementById('global-comparison-controls');
+      const globalToggle = document.getElementById('global-comparison-toggle');
+
+      if (globalControls && hasLenders) {
+        globalControls.style.display = 'block';
+      }
 
       if (myNotes.length === 0) {
         container.innerHTML = `
@@ -738,49 +812,35 @@ async renderMyNotesPage(container) {
       } else {
         container.innerHTML = '';
       
-        // [修改] 更新变量名
-        myNotes.forEach(entry => {
-          this.entryCache.set(entry.id, entry);
+        // 3. 遍历笔记并渲染卡片，传入对照ID列表
+        myNotes.forEach(note => {
+          const entryData = note.entry;
+          const fullEntryData = { 
+              ...entryData, 
+              user_insight: note.user_insight,
+              insight_updated_at: note.insight_updated_at,
+              favorited_at: note.favorited_at
+          };
+          
+          this.entryCache.set(entryData.id, fullEntryData);
+          this.favoritesDataCache.set(entryData.id, {
+              user_insight: note.user_insight,
+              insight_updated_at: note.insight_updated_at,
+              favorited_at: note.favorited_at
+          });
+
           const cardWrapper = document.createElement('div');
           cardWrapper.className = 'verse-card'; 
-          cardWrapper.setAttribute('data-entry-id', entry.id);
+          cardWrapper.setAttribute('data-entry-id', entryData.id);
 
-          const timeAgo = this.formatTimeAgo(entry.favorited_at);
-
-          const verseHeaderHTML = `
-            <div class="verse-header">
-              <div class="verse-header-left">
-                <span class="verse-chapter">${this.escapeHtml(entry.chapter)}</span>
-                <span class="verse-section">第${this.escapeHtml(entry.section_number)}节</span>
-              </div>
-              <div class="verse-header-right">
-                ${timeAgo ? `<span class="verse-time-ago">${timeAgo}</span>` : ''}
-                </div>
-            </div>
-          `;
-    
-          const annotationHTML = entry.annotation ? `
-            <div class="verse-annotation-wrapper">
-              <div class="verse-annotation-title">【注释】</div>
-              <div class="verse-annotation">${this.escapeHtml(entry.annotation)}</div>
-            </div>
-          ` : '';
-    
-          cardWrapper.innerHTML = `
-            ${verseHeaderHTML}
-            <blockquote class="verse-original">${this.escapeHtml(entry.original_text)}</blockquote>
-            <p class="verse-translation">【译文】${this.escapeHtml(entry.translation)}</p>
-            ${annotationHTML}
-            <div class="analects-card-footer-placeholder"></div>
-          `;
-
+          // [核心修改] 将 comparisonEntryIds 传递给渲染函数
+          cardWrapper.innerHTML = this.generateResultCardHTML(fullEntryData, { showTags: false }, fullEntryData, null, hasLenders, comparisonEntryIds);
+          
           container.appendChild(cardWrapper);
         });
       
-        await this.initializeChapterPage();
-
-        // [修复] 在所有卡片内容被 initializeChapterPage 最终渲染后，为正确的容器绑定事件监听器
         this._attachCardActionListeners(container);
+        this._ensureIconsRendered();
 
         const allDisplayedMessage = document.createElement('div');
         allDisplayedMessage.className = 'analects-load-complete';
@@ -788,8 +848,27 @@ async renderMyNotesPage(container) {
         allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
         container.appendChild(allDisplayedMessage);
       }
+
+      // 4. 为全局开关绑定事件监听器
+      if (globalToggle) {
+        globalToggle.addEventListener('change', (event) => {
+          if (event.target.checked) {
+            const idleButtons = document.querySelectorAll('.view-comparison-btn[data-state="idle"]');
+            idleButtons.forEach((btn, index) => {
+              setTimeout(() => {
+                btn.click();
+              }, index * 200);
+            });
+          } else {
+            const shownButtons = document.querySelectorAll('.view-comparison-btn[data-state="shown"]');
+            shownButtons.forEach(btn => {
+              btn.click();
+            });
+          }
+        });
+      }
+
     } catch (error) {
-      // [修改] 更新错误日志和提示文本
       console.error('渲染我的笔记页面失败:', error);
       container.innerHTML = '<div class="analects-daily-error text-center py-8">加载笔记失败，请稍后重试。</div>';
     }
@@ -817,7 +896,7 @@ async renderMyNotesPage(container) {
 	}
 	
 // [最终完整版] 生成卡片页脚
-_generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData) {
+_generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData, hasLenders = false, comparisonEntryIds = new Set()) {
     if (!entry) return '';
 
     // 1. "我的" 收藏和笔记相关数据
@@ -837,7 +916,6 @@ _generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData) {
         const insightText = this.escapeHtml(myInsight);
         const isLongInsight = (insightText.split('\n').length > 4 || insightText.length > 150);
         const noteTimestamp = this.formatTimeAgo(myInsightUpdatedAt || myFavoritedAt);
-        // [核心修改] 添加 'my-insight-wrapper' 类用于精确查找
         myNoteHTML = `
         <div class="user-insight-wrapper my-insight-wrapper">
             <div class="user-insight-header">
@@ -854,13 +932,12 @@ _generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData) {
         `;
     }
 
-    // 4. 构建 "分享的笔记" HTML区块
+    // 4. 构建 "Ta的笔记" HTML区块
     let sharerNoteHTML = '';
     if (sharerInsight) {
         const insightText = this.escapeHtml(sharerInsight);
         const isLongInsight = (insightText.split('\n').length > 4 || insightText.length > 150);
         const noteTimestamp = this.formatTimeAgo(sharerInsightUpdatedAt || sharerFavoritedAt);
-        // [核心修改] 添加 'sharer-insight-wrapper' 类
         sharerNoteHTML = `
         <div class="user-insight-wrapper sharer-insight-wrapper" style="background-color: #fefce8; border-color: #fef08a;">
             <div class="user-insight-header">
@@ -890,8 +967,16 @@ _generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData) {
     </button>
     `;
 
-    const editNoteButtonHTML = isFavoritedByMe ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>${myInsight ? '编辑笔记' : '添加笔记'}</span></button>` : '';
+    const editNoteButtonHTML = isFavoritedByMe ? `<button class="edit-insight-btn pill-style" data-entry-id="${entry.id}"><span>编辑笔记</span></button>` : '';
 
+    // [核心修改] 移除按钮内部的 spinner div
+    const showComparisonButton = isFavoritedByMe && comparisonEntryIds.has(entry.id);
+    const comparisonButtonHTML = showComparisonButton ? `
+        <button class="view-comparison-btn pill-style-yellow" data-entry-id="${entry.id}" data-state="idle">
+            <span>查看对照笔记</span>
+        </button>
+    ` : '';
+  
     // 6. 构建分享菜单
     const shareLinks = this.generateShareLinks(entry);
     const escapedCopyText = this.escapeHtml(shareLinks.copy).replace(/'/g, "\\'").replace(/\n/g, '\\n');
@@ -925,15 +1010,19 @@ _generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData) {
     // 7. 最终组合
     return `
         <div class="analects-card-footer">
-        <div class="footer-actions">
-            <div class="flex items-center gap-2">
-            ${favoriteButtonHTML}
-            ${editNoteButtonHTML}
+            <div class="footer-actions">
+                <div class="flex items-center gap-2 flex-wrap">
+                    ${favoriteButtonHTML}
+                    ${editNoteButtonHTML}
+                    ${comparisonButtonHTML}
+                </div>
+                ${shareMenuHTML}
             </div>
-            ${shareMenuHTML}
-        </div>
-        ${sharerNoteHTML}
-        ${myNoteHTML}
+            
+            <div class="comparison-notes-container"></div>
+            
+            ${sharerNoteHTML}
+            ${myNoteHTML}
         </div>
     `;
 }
@@ -1426,7 +1515,7 @@ async toggleFavorite(entryId, targetButton) {
       if (!error) {
         // [核心修改] 根据您的要求，使用升级版的 showToast
         if (isDailyAnalect) {
-            const message = '已收藏至我的笔记本 > <a href="/my-notes.html" class="font-bold text-white underline hover:text-blue-200">立即查看并添加笔记 &rarr;</a>';
+            const message = '已收藏至我的笔记本 > <a href="/my-notes.html" class="font-bold text-white underline hover:text-blue-200">立即添加笔记 &rarr;</a>';
             if (window.showToast) window.showToast(message);
         } else {
             if (window.showToast) window.showToast('收藏成功！');

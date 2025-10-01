@@ -3127,3 +3127,91 @@ a.chapter-item p {
 .verse-card:last-child {
   margin-bottom: 0; /* 保证最后一个卡片底部没有额外空隙 */
 }
+
+/* 全局对照模式开关美化 */
+#global-comparison-controls input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 99px;
+  background-color: #e2e8f0;
+  position: relative;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#global-comparison-controls input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: left 0.2s ease-in-out;
+}
+
+#global-comparison-controls input[type="checkbox"]:checked {
+  background-color: #3b82f6; /* 蓝色 */
+}
+
+#global-comparison-controls input[type="checkbox"]:checked::before {
+  left: 19px;
+}
+
+
+/* [UI优化] 全新的黄色胶囊按钮样式 V2 (带加载动画) */
+.pill-style-yellow {
+  background-color: #fefce8;
+  color: #a16207;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid #fef08a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* --- 新增的修复代码 --- */
+  min-width: 110px;      /* 1. 设置一个最小宽度，防止按钮缩水 */
+  text-align: center;      /* 2. 确保文字在容器内居中 */
+  vertical-align: middle;  /* 3. 确保垂直对齐一致 */
+}
+
+.pill-style-yellow:hover {
+  background-color: #fef9c3; /* 悬浮时颜色加深 */
+  border-color: #fef08a;
+  transform: translateY(-1px);
+}
+
+/* 定义呼吸动画 */
+@keyframes pulse-opacity {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 加载中状态：应用呼吸动画 */
+.pill-style-yellow.is-loading {
+  cursor: wait;
+  animation: pulse-opacity 1.5s infinite ease-in-out;
+}
+
+/* Toast Notification */
+#toast {
+  position: fixed;
+  top: 1.25rem; /* 20px */
+  right: 1.25rem; /* 20px */
+  background-color: #48bb78; /* green-500 */
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 4000; 
+}

@@ -2,41 +2,32 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>論語SDK - 每日论语, 论语查询与学习笔记</title>
+  <title>论语学习平台 | 学生与爱好者的论语笔记、心得与查询工具</title>
   <link rel="stylesheet" href="/v2/analects.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- SEO Meta Tags -->
-  <meta name="description" content="一个开源的论语SDK和论语学习平台，提供每日论语、全文检索、随机章句、论语收藏、我的论语笔记等功能，致力于传播中华传统文化。">
-  <meta name="keywords" content="论语SDK,论语查询,每日论语,论语搜索,线上论语,论语全文,孔子语录,国学经典,中华文化,儒家思想,开源SDK,我的论语,我的论语笔记,论语笔记,论语学习,论语学习平台,论语心得,论语收藏">
+  <meta name="description" content="一个专为中小学生、教师及论语爱好者打造的在线学习平台。提供每日论语、全文检索、个人学习笔记与心得分享功能，是您自学和研读《论语》的得力助手。">
+  <meta name="keywords" content="论语,论语学习,学生论语,小学生论语,中学生论语学习,论语自学,论语笔记,论语心得,论语体会,论语全文,论语查询,论语搜索,论语检索,每日论语,论语学习平台,论语SDK,国学经典,孔子,儒家思想,论语爱好者">
   <meta name="author" content="lehua.li">
 
-  <!-- Open Graph Tags for Social Sharing -->
-  <meta property="og:title" content="论语SDK：每日论语、论语查询、开源SDK、论语收藏、我的论语笔记">
-  <meta property="og:description" content="一个开源的论语SDK，提供每日论语、全文检索、论语收藏、我的论语笔记等功能，致力于传播中华传统文化。">
+  <meta property="og:title" content="论语学习平台 | 学生与爱好者的论语笔记、心得与查询工具">
+  <meta property="og:description" content="一个专为中小学生、教师及论语爱好者打造的在线学习平台。提供每日论语、全文检索、个人学习笔记与心得分享功能，是您自学和研读《论语》的得力助手。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.lunyu.xyz/">
   <meta property="og:image" content="https://www.lunyu.xyz/og-image.png">
   <meta property="og:site_name" content="论语SDK">
   <meta property="og:locale" content="zh_CN">
 
-  <!-- Twitter Card Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="论语SDK：每日论语、论语查询、开源SDK、论语收藏、我的论语笔记">
-  <meta name="twitter:description" content="一个开源的论语SDK，提供每日论语、全文检索、论语收藏、我的论语笔记等功能，致力于传播中华传统文化。">
+  <meta name="twitter:title" content="论语学习平台 | 学生与爱好者的论语笔记、心得与查询工具">
+  <meta name="twitter:description" content="一个专为中小学生、教师及论语爱好者打造的在线学习平台。提供每日论语、全文检索、个人学习笔记与心得分享功能，是您自学和研读《论语》的得力助手。">
   <meta name="twitter:image" content="https://www.lunyu.xyz/og-image.png">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://www.lunyu.xyz/favicon.ico">
   <link rel="apple-touch-icon" href="https://www.lunyu.xyz/logo.png">
 
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://www.lunyu.xyz/">
 
-  <!-- Analects SDK CSS -->
-  
-
-  <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -97,32 +88,28 @@
     .card {
       @apply bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200/80;
     }
-    #toast {
+    /* #toast {
       z-index: 2000 !important;
-    }
+    } */
   </style>
 
 </head>
 <body class="text-gray-800 antialiased">
   <header id="global-header-wrapper"></header>
-  <!-- Main Container -->
   <div class="container mx-auto max-w-5xl px-4 py-8">
 
-    <!-- Header Section with Text Logo (Compact) -->
     <header class="text-center mb-8">
       <h1 class="font-logo text-4xl md:text-5xl font-normal text-gray-900 mb-2">
         論語SDK
       </h1>
       <p class="text-lg md:text-xl font-medium text-gray-500 tracking-tight">
-        每日论语、论语查询、我的论语笔记
+        专为学生、教师和论语爱好者打造的学习与笔记平台
       </p>
     </header>
     <div id="header-sentinel" style="height: 1px;"></div>
 
-    <!-- Core Features Grid (Adjusted Spacing) -->
     <main class="space-y-6">
 
-      <!-- 1. Daily Analects Section -->
       <section id="daily" class="card">
         <div class="p-6 md:p-8 pb-0">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
@@ -143,7 +130,6 @@
         </div>
       </section>
 	  
-      <!-- 2. Introduction Section (Updated Text) -->
       <section class="mb-8 bg-white/80 backdrop-blur-sm border border-gray-200/80 p-6 rounded-xl shadow-md">
          <div class="text-left text-gray-600 space-y-4 text-sm md:text-base leading-relaxed">
             <p><strong class="font-bold text-gray-900">《论语》</strong>是孔子及其弟子言论的汇编，由孔子门生及再传弟子集录整理（疑为曾参弟子），是儒家重要经典。南宋朱熹将其定为四书之首并做集注，明清科举更不出四书，论语的影响由此深远。论语中的教育、道德、伦理、政治思想和言语已经深深融入华夏文化的血脉和思维。今通行本《论语》共20篇，约1.2万字。</p>
@@ -152,20 +138,17 @@
       </section>
 	  
 
-      <!-- 3. Twenty Chapters Section -->
       <section id="chapters" class="card">
         <div class="p-6 md:p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">论语二十篇</h2>
             <div id="chapter-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                <!-- Chapters will be injected by JS -->
-            </div>
+                </div>
             <div class="text-center mt-6">
                 <button id="toggle-chapters-btn" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors">展开全部</button>
             </div>
         </div>
       </section>
       
-      <!-- 4. Analects Search Section -->
       <section id="search" class="card">
         <div class="p-6 md:p-8">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
@@ -176,12 +159,10 @@
             </button>
           </div>
           <div id="analects-search">
-            <!-- SDK will render here -->
-          </div>
+            </div>
         </div>
       </section>
       
-      <!-- 5. Quotes on "Ren" (Benevolence) - Updated with 3 quotes -->
       <section id="quotes">
         <div class="space-y-8">
 			<h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语核心解读</h2>
@@ -206,8 +187,7 @@
         </div>
       </section>
 	  
-	        <!-- 6. Analects story -->
-<section id="stories" class="card">
+	        <section id="stories" class="card">
   <div class="p-6 md:p-8">
       <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语典故</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -251,7 +231,6 @@
       </div>
 </section>
 
-      <!-- 7. Recommended Books Section (3 Columns) -->
       <section id="books" class="card">
         <div class="p-6 md:p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语著作推荐</h2>
@@ -277,9 +256,55 @@
         </div>
       </section>
 
+      <section id="user-guide" class="card">
+        <div class="p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">用户操作指南 (Q&A)</h2>
+            <div class="space-y-6 text-gray-700 text-sm md:text-base leading-relaxed max-w-4xl mx-auto">
+                
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 我需要注册或登录才能使用吗？</h3>
+                    <p><strong>A:</strong> 不需要。您可以直接使用“论语查询”功能对《论语》全文进行关键字检索和高级筛选。每日论语、章节列表等基础功能也无需登录即可使用。</p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 注册登录后有哪些高级功能？</h3>
+                    <div class="pl-4">
+                        <p><strong>A:</strong> 注册并登录后，您将解锁个性化的“我的笔记”功能，包括：</p>
+                        <ul class="list-disc list-inside mt-2 space-y-1">
+                            <li><strong>收藏经典</strong>：通过点击 ‘<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-top: -2px;"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg>’ 按钮，将您喜欢的论语条目一键收藏到个人笔记本中。</li>
+                            <li><strong>记录笔记</strong>：为每一条收藏添加您自己的理解和心得。</li>
+                            <li><strong>分享交流</strong>：可以将您的整本笔记分享给指定邮箱的朋友，共同学习。</li>
+                            <li><strong>对照学习</strong>：在“我的笔记”页面，可以开启“对照模式”，查看朋友分享给您的、针对同一条论语的笔记，取长补短。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 这个平台适合学生使用吗？</h3>
+                    <p><strong>A:</strong> 非常适合！无论您是<strong>小学生</strong>、<strong>中学生</strong>，还是<strong>论语自学</strong>爱好者，都可以通过本平台轻松进行<strong>论语学习</strong>。我们的“我的笔记”功能，可以帮助您随时记录<strong>论语心得</strong>和<strong>体会</strong>，构建属于您自己的知识库。老师们也可以利用这个平台辅助教学，与学生分享和交流笔记。</p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 内容的来源和版本是什么？</h3>
+                    <p><strong>A:</strong> 本站《论语》的白话翻译和注释主要参考了**杨伯峻先生的《论语译注》**版本，该版本被公认为现代最权威、最严谨的注本之一。我们鼓励深度学习者购买正版纸质书籍进行研读与收藏。书香四溢 · 尽在纸书。人物/论点/谚语部分则属于作者归纳总结，如有纰漏或者补充，敬请联系作者处理。</p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 未来有什么计划吗？比如英文版？</h3>
+                    <p><strong>A:</strong> 作为一个开源项目，我们欢迎各种形式的贡献。目前站点的数据库和后端设计已支持多语言内容的扩充，但**暂时不提供英文或其他语言版本的《论语》**。我们期待未来有更多志愿者加入，共同丰富和完善这个平台。</p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 我的数据安全和隐私如何保障？</h3>
+                    <p><strong>A:</strong> 我们非常重视您的数据安全和隐私。本站的论语数据库及所有用户数据均托管于业界领先的云服务平台 <a href="https://supabase.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Supabase</a>，确保了专业级的安全防护。全站采用 HTTPS 加密传输，保障您在浏览和操作过程中的数据安全。我们承诺，绝不会将您的个人数据用于任何商业用途。如果您需要清除个人数据，请发送邮件至 <a href="mailto:contact@lunyu.xyz" class="text-blue-600 hover:underline">contact@lunyu.xyz</a>，我们将为您处理。</p>
+                </div>
+                                
+            </div>
+        </div>
+      </section>
+
     </main>
 
-    <!-- Footer -->
     <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
@@ -306,7 +331,6 @@
 
   </div>
 
-  <!-- Embed Code Modal -->
   <div id="embedModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-[2000] transition-opacity duration-300 opacity-0 pointer-events-none">
     <div id="modalContent" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform scale-95 transition-all duration-300">
       <div class="flex justify-between items-center p-5 border-b border-gray-200">
@@ -325,7 +349,6 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
   <div id="toast" class="fixed top-5 right-5 bg-green-600 text-white py-2 px-5 rounded-lg shadow-lg transform translate-x-[120%] transition-transform duration-300 ease-in-out z-50">
     代码已复制到剪贴板！
   </div>
