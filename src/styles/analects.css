@@ -2172,7 +2172,7 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
 
 .user-avatar-container { position: relative; }
 .user-menu-button {
-  display: flex; align-items: center; gap: 6px; background-color: #ffffff;
+  display: flex; align-items: center; gap: 6px; background-color: #f8fafc;
   border: 1px solid var(--border); border-radius: 999px; padding: 4px;
   cursor: pointer; transition: all 0.2s ease-in-out;
 }
