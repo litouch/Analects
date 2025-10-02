@@ -357,7 +357,7 @@
   <div id="analects-global-widget-container"></div>
 
   <script type="module" src="/v2/analects.js"></script>
-  <script type="module">
+<script type="module">
     (async () => {
       // --- 1. SDK 初始化 ---
       let sdk;
@@ -367,19 +367,27 @@
             supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
         });
         
-        await sdk.init(); // 等待 SDK 准备就绪
-		
-        // --- [新增] 在这里手动渲染全局页头 ---
-        sdk.renderGlobalHeader(); 
-        sdk._initializeHeaderAnimation(); // <-- [新增] 启动页头动画
+        // --- [核心优化] 调整执行顺序 ---
+
+        // 1. 立即开始加载“每日论语”，不等待用户信息
+        //    这个函数是异步的，但我们不使用 await，让它在后台独立运行
         sdk.renderDailyAnalect(document.getElementById('daily-analect'));
+        
+        // 2. 立即开始渲染“论语查询”界面骨架
         sdk.renderSearchInterface(document.getElementById('analects-search'));
+
+        // 3. 与此同时，在后台初始化用户会话（这步会花费一些网络时间）
+        await sdk.init(); 
+        
+        // 4. 当用户会话准备好后，再渲染依赖登录状态的组件（如页头）
+        sdk.renderGlobalHeader(); 
+        sdk._initializeHeaderAnimation(); // 启动页头动画
 
       } catch (e) {
           console.error("AnalectsSDK failed to initialize.", e);
       }
 
-      // --- 2. 页面动态内容和事件监听 (原 DOMContentLoaded 的内容) ---
+      // --- 2. 页面其他同步内容和事件监听 (这部分代码保持不变) ---
       document.getElementById('year').textContent = new Date().getFullYear();
 	  const chapters = [
 	        { name: "学而第一", desc: "主要讲“务本”的道理", slug: "xue-er-1" },
@@ -433,7 +441,7 @@
           });
         }
 
-      // --- 3. 模态窗口等全局函数 (更新版) ---
+      // --- 3. 模态窗口等全局函数 (这部分代码保持不变) ---
       const embedModal = document.getElementById('embedModal');
       const modalContent = document.getElementById('modalContent');
       const modalTitle = document.getElementById('modalTitle');
@@ -443,16 +451,11 @@
           function showEmbedModal(type) {
             const sdkUrl = 'https://www.lunyu.xyz';
             const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' }`;
-            
-            // [修改] lucideScript 变量已被完全移除，不再需要
-
-            // [核心修正] 将骨架屏的HTML代码压缩成一行，避免因换行符导致的JS解析问题
             const dailySkeletonHTML = `<div class="daily-analect-skeleton"><div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div></div>`;
 
             if (type === 'daily') {
               modalTitle.textContent = '每日论语 - 嵌入代码';
               codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
-                           // [修改] 移除 lucideScript 的引用
                            `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
                            `<div id="daily-analect-embed" style="background-color:#f9fafb; padding:1rem; border-radius:0.5rem; min-height:100px;">${dailySkeletonHTML}<\/div>\n\n` +
                            `<script>\n` +
@@ -465,7 +468,6 @@
             } else {
               modalTitle.textContent = '论语查询 - 嵌入代码';
               codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
-                           // [修改] 移除 lucideScript 的引用
                            `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
                            `<div id="analects-search-embed"></div>\n\n` +
                            `<script>\n` +
@@ -528,17 +530,15 @@
         document.body.removeChild(textArea);
       }
       
-      // [修改] 此函数现在通过 innerHTML 渲染内容，以支持链接
       window.showToast = function(message = '...', isError = false) {
         const toast = document.getElementById('toast');
-        // [核心修改] 使用 innerHTML 替代 textContent
         toast.innerHTML = message; 
         toast.className = 'fixed top-5 right-5 text-white py-2 px-5 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out z-50';
         toast.classList.add(isError ? 'bg-red-600' : 'bg-green-600');
         toast.classList.remove('translate-x-[120%]');
         setTimeout(() => {
           toast.classList.add('translate-x-[120%]');
-        }, 3000); // 提示持续3秒
+        }, 3000);
       }
       
       if (embedModal) {
@@ -553,7 +553,7 @@
         }
       });
 
-    })(); // IIFE 结束，包裹所有脚本
+    })();
   </script>
 </body>
 </html>
