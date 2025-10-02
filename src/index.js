@@ -16,6 +16,15 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
     // [核心新增] 添加一个标志，用于跟踪初始会话是否已加载
     this.sessionInitialized = false; 
     
+        // [新增] 为“我的笔记”页面添加独立的分页状态管理
+    this.notesPagination = {
+      pageSize: 10,
+      currentPage: 0,
+      isLoading: false,
+      hasMore: true,
+      totalCount: 0
+    };
+
     // 在构造函数中提前绑定事件处理函数的 this，确保其上下文正确
     this._handleGlobalClick = this._handleGlobalClick.bind(this);
 	this._handleNoteFormSubmit = this._handleNoteFormSubmit.bind(this);
@@ -776,7 +785,7 @@ renderGlobalHeader() {
 	    observer.observe(sentinel);
 	}
 
-// [最终版] 渲染“我的笔记”页面，并实现完整的“对照模式”功能
+// [最终版] 渲染“我的笔记”页面，作为分页加载的“启动器”
 async renderMyNotesPage(container) {
     if (!container) {
       console.error('“我的笔记”页面的容器未找到');
@@ -793,16 +802,17 @@ async renderMyNotesPage(container) {
       return;
     }
 
-    try {
-      // 1. 调用 RPC 函数获取自己的笔记
-      const { data: myNotes, error: notesError } = await this.supabase.rpc('get_my_notes');
-      if (notesError) throw notesError;
+    // 重置分页状态
+    this.notesPagination = { pageSize: 10, currentPage: 0, isLoading: false, hasMore: true, totalCount: 0 };
+    // 使用HTML中预设的骨架屏
+    // container.innerHTML = `<div class="verse-card-skeleton">...</div>`;
 
-      // 2. [核心修改] 调用新函数，获取存在对照笔记的 Entry ID 列表
+    try {
+      // 在开始分页前，一次性获取所有存在对照笔记的ID列表
       const { data: comparisonIdsData, error: idsError } = await this.supabase.rpc('get_lender_note_entry_ids');
       if (idsError) throw idsError;
-      const comparisonEntryIds = new Set(comparisonIdsData.map(item => item.entry_id));
-      const hasLenders = comparisonEntryIds.size > 0; // [修改] 现在根据是否有对照笔记来判断
+      this.currentComparisonIds = new Set(comparisonIdsData.map(item => item.entry_id));
+      const hasLenders = this.currentComparisonIds.size > 0;
 
       const globalControls = document.getElementById('global-comparison-controls');
       const globalToggle = document.getElementById('global-comparison-toggle');
@@ -810,65 +820,38 @@ async renderMyNotesPage(container) {
       if (globalControls && hasLenders) {
         globalControls.style.display = 'block';
       }
+      
+      const { data: count, error: countError } = await this.supabase.rpc('get_my_notes_count');
+      if (countError) throw countError;
+      
+      this.notesPagination.totalCount = count;
 
-      if (myNotes.length === 0) {
+      if (count === 0) {
         container.innerHTML = `
           <div class="text-center text-gray-500 py-8">
               <p class="text-lg">您还没有任何笔记。</p>
               <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">去首页浏览并收藏</a>
-          </div>
-          `;
-      } else {
-        container.innerHTML = '';
-      
-        // 3. 遍历笔记并渲染卡片，传入对照ID列表
-        myNotes.forEach(note => {
-          const entryData = note.entry;
-          const fullEntryData = { 
-              ...entryData, 
-              user_insight: note.user_insight,
-              insight_updated_at: note.insight_updated_at,
-              favorited_at: note.favorited_at
-          };
-          
-          this.entryCache.set(entryData.id, fullEntryData);
-          this.favoritesDataCache.set(entryData.id, {
-              user_insight: note.user_insight,
-              insight_updated_at: note.insight_updated_at,
-              favorited_at: note.favorited_at
-          });
-
-          const cardWrapper = document.createElement('div');
-          cardWrapper.className = 'verse-card'; 
-          cardWrapper.setAttribute('data-entry-id', entryData.id);
-
-          // [核心修改] 将 comparisonEntryIds 传递给渲染函数
-          cardWrapper.innerHTML = this.generateResultCardHTML(fullEntryData, { showTags: false }, fullEntryData, null, hasLenders, comparisonEntryIds);
-          
-          container.appendChild(cardWrapper);
-        });
-      
-        this._attachCardActionListeners(container);
-        this._ensureIconsRendered();
-
-        const allDisplayedMessage = document.createElement('div');
-        allDisplayedMessage.className = 'analects-load-complete';
-        allDisplayedMessage.style.display = 'block';
-        allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
-        container.appendChild(allDisplayedMessage);
+          </div>`;
+        return;
       }
 
-      // 4. 为全局开关绑定事件监听器
+      // 加载第一页
+      await this.loadMoreNotes();
+
+      // [核心修复] 为全局开关绑定事件监听器
       if (globalToggle) {
         globalToggle.addEventListener('change', (event) => {
           if (event.target.checked) {
+            // 如果开关打开，找到所有“空闲”状态的对照按钮，并依次触发点击
             const idleButtons = document.querySelectorAll('.view-comparison-btn[data-state="idle"]');
             idleButtons.forEach((btn, index) => {
+              // 使用 setTimeout 错开请求，避免瞬间发送大量请求
               setTimeout(() => {
                 btn.click();
-              }, index * 200);
+              }, index * 200); // 每隔200毫秒点击一个
             });
           } else {
+            // 如果开关关闭，找到所有“已显示”状态的对照按钮，并触发点击以收起
             const shownButtons = document.querySelectorAll('.view-comparison-btn[data-state="shown"]');
             shownButtons.forEach(btn => {
               btn.click();
@@ -877,8 +860,15 @@ async renderMyNotesPage(container) {
         });
       }
 
+      // 设置滚动监听器
+      window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+          this.loadMoreNotes();
+        }
+      });
+
     } catch (error) {
-      console.error('渲染我的笔记页面失败:', error);
+      console.error('初始化笔记页面失败:', error);
       container.innerHTML = '<div class="analects-daily-error text-center py-8">加载笔记失败，请稍后重试。</div>';
     }
 }
@@ -2203,6 +2193,73 @@ async renderSharedNotebook(container, lenderId) {
         });
     });
   }
+
+// [最终版] “我的笔记”页面的按需加载核心函数
+async loadMoreNotes() {
+    if (this.notesPagination.isLoading || !this.notesPagination.hasMore) {
+      return;
+    }
+
+    this.notesPagination.isLoading = true;
+    const container = document.getElementById('notes-list-container');
+    
+    // [新增] 获取并显示“加载中”提示
+    const loadingMoreDiv = document.getElementById('notes-loading-more');
+    if (loadingMoreDiv) loadingMoreDiv.style.display = 'block';
+    
+    try {
+      // 不再重复获取ID列表，直接使用已暂存的 this.currentComparisonIds
+      const comparisonEntryIds = this.currentComparisonIds || new Set();
+
+      const { data: newNotes, error } = await this.supabase.rpc('get_my_notes', {
+        page_size: this.notesPagination.pageSize,
+        start_offset: this.notesPagination.currentPage * this.notesPagination.pageSize
+      });
+
+      if (error) throw error;
+      
+      const skeleton = container.querySelector('.verse-card-skeleton');
+      if (skeleton && this.notesPagination.currentPage === 0) {
+        container.innerHTML = '';
+      }
+
+      newNotes.forEach(note => {
+        const entryData = note.entry;
+        const fullEntryData = { ...entryData, user_insight: note.user_insight, insight_updated_at: note.insight_updated_at, favorited_at: note.favorited_at };
+
+        this.entryCache.set(entryData.id, fullEntryData);
+        this.favoritesDataCache.set(entryData.id, { user_insight: note.user_insight, insight_updated_at: note.insight_updated_at, favorited_at: note.favorited_at });
+
+        const cardWrapper = document.createElement('div');
+        cardWrapper.className = 'verse-card';
+        cardWrapper.setAttribute('data-entry-id', entryData.id);
+
+        cardWrapper.innerHTML = this.generateResultCardHTML(fullEntryData, { showTags: false }, fullEntryData, null, true, comparisonEntryIds);
+        container.appendChild(cardWrapper);
+      });
+
+      this._attachCardActionListeners(container);
+      this._ensureIconsRendered();
+
+      this.notesPagination.currentPage++;
+      this.notesPagination.hasMore = (this.notesPagination.currentPage * this.notesPagination.pageSize) < this.notesPagination.totalCount;
+
+      if (!this.notesPagination.hasMore) {
+        const allDisplayedMessage = document.createElement('div');
+        allDisplayedMessage.className = 'analects-load-complete';
+        allDisplayedMessage.style.display = 'block';
+        allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
+        container.appendChild(allDisplayedMessage);
+      }
+    } catch (error) {
+      console.error('加载更多笔记失败:', error);
+      if (loadingMoreDiv) loadingMoreDiv.textContent = '加载失败，请刷新重试。';
+    } finally {
+      this.notesPagination.isLoading = false;
+      // [新增] 无论成功或失败，都隐藏“加载中”提示
+      if (loadingMoreDiv) loadingMoreDiv.style.display = 'none';
+    }
+}
 
 }
 
