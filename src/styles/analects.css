@@ -3266,3 +3266,63 @@ a.chapter-item p {
   height: 16px;
   color: #64748b;
 }
+
+/* “我的笔记”页面总数徽章样式 (最终稳定版：图标+数字) */
+.notes-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* 图标和数字的间距 */
+  padding: 4px 12px;
+  background-color: #f1f5f9; /* 柔和的灰色背景 */
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  vertical-align: middle;
+  margin-left: 0.75rem;
+  top: -3px;
+  position: relative;
+  opacity: 0; /* 默认透明，等待动画 */
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* 徽章内的 Lucide 图标样式 */
+.notes-count-badge svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5;
+}
+
+/* 徽章内的数字样式 */
+.notes-count-badge .count-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1; /* 确保数字垂直居中 */
+}
+
+/* 定义弹出动画 */
+@keyframes badge-pop-in {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 应用动画的类 */
+.notes-count-badge.animate {
+  animation: badge-pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* --- [最终版] 颜色等级方案 --- */
+/* 等级1 (1-10篇): 灰色 */
+.badge-tier-1 { color: #64748b; }
+
+/* 等级2 (11-50篇): 铜色 */
+.badge-tier-2 { background-color: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+
+/* 等级3 (51-100篇): 银色 */
+.badge-tier-3 { background-color: #fafafa; border-color: #e5e5e5; color: #737373; }
+
+/* 等级4 (101-511篇): 金色 */
+.badge-tier-4 { background-color: #fefce8; border-color: #fef08a; color: #a16207; }
+
+/* 等级5 (全部512篇): 顶级红色 */
+.badge-tier-5 { background-color: #fee2e2; border-color: #fecaca; color: #b91c1c; }

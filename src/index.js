@@ -785,7 +785,7 @@ renderGlobalHeader() {
 	    observer.observe(sentinel);
 	}
 
-// [最终版] 渲染“我的笔记”页面，作为分页加载的“启动器”
+// [最终版] 渲染“我的笔记”页面，并实现完整的“对照模式”和“多彩徽章”功能
 async renderMyNotesPage(container) {
     if (!container) {
       console.error('“我的笔记”页面的容器未找到');
@@ -804,8 +804,6 @@ async renderMyNotesPage(container) {
 
     // 重置分页状态
     this.notesPagination = { pageSize: 10, currentPage: 0, isLoading: false, hasMore: true, totalCount: 0 };
-    // 使用HTML中预设的骨架屏
-    // container.innerHTML = `<div class="verse-card-skeleton">...</div>`;
 
     try {
       // 在开始分页前，一次性获取所有存在对照笔记的ID列表
@@ -815,10 +813,8 @@ async renderMyNotesPage(container) {
       const hasLenders = this.currentComparisonIds.size > 0;
 
       const globalControls = document.getElementById('global-comparison-controls');
-      const globalToggle = document.getElementById('global-comparison-toggle');
-
-      if (globalControls && hasLenders) {
-        globalControls.style.display = 'block';
+      if (globalControls) {
+        globalControls.style.display = hasLenders ? 'block' : 'none';
       }
       
       const { data: count, error: countError } = await this.supabase.rpc('get_my_notes_count');
@@ -826,7 +822,34 @@ async renderMyNotesPage(container) {
       
       this.notesPagination.totalCount = count;
 
+      const countContainer = document.getElementById('notes-count');
+      const countText = document.querySelector('#notes-count .count-text');
+
+      if (countText && countContainer) {
+          countText.textContent = count;
+
+          // 根据笔记数量决定徽章颜色等级
+          let tierClass = 'badge-tier-1';
+          if (count >= 11) tierClass = 'badge-tier-2';
+          if (count >= 51) tierClass = 'badge-tier-3';
+          if (count >= 101) tierClass = 'badge-tier-4';
+          if (count >= 512) tierClass = 'badge-tier-5';
+          
+          countContainer.classList.remove('badge-tier-1', 'badge-tier-2', 'badge-tier-3', 'badge-tier-4', 'badge-tier-5', 'animate');
+          countContainer.classList.add(tierClass);
+
+          // 触发动画
+          setTimeout(() => {
+            countContainer.classList.add('animate');
+          }, 100);
+      }
+      
+      // 确保 Lucide 图标被渲染
+      this._ensureIconsRendered();
+
       if (count === 0) {
+        if (countContainer) countContainer.style.display = 'none';
+
         container.innerHTML = `
           <div class="text-center text-gray-500 py-8">
               <p class="text-lg">您还没有任何笔记。</p>
@@ -838,20 +861,18 @@ async renderMyNotesPage(container) {
       // 加载第一页
       await this.loadMoreNotes();
 
-      // [核心修复] 为全局开关绑定事件监听器
+      // 为全局开关绑定事件监听器
+      const globalToggle = document.getElementById('global-comparison-toggle');
       if (globalToggle) {
         globalToggle.addEventListener('change', (event) => {
           if (event.target.checked) {
-            // 如果开关打开，找到所有“空闲”状态的对照按钮，并依次触发点击
             const idleButtons = document.querySelectorAll('.view-comparison-btn[data-state="idle"]');
             idleButtons.forEach((btn, index) => {
-              // 使用 setTimeout 错开请求，避免瞬间发送大量请求
               setTimeout(() => {
                 btn.click();
-              }, index * 200); // 每隔200毫秒点击一个
+              }, index * 200);
             });
           } else {
-            // 如果开关关闭，找到所有“已显示”状态的对照按钮，并触发点击以收起
             const shownButtons = document.querySelectorAll('.view-comparison-btn[data-state="shown"]');
             shownButtons.forEach(btn => {
               btn.click();
