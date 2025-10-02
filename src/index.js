@@ -448,6 +448,15 @@ async _handleGlobalClick(event) {
     }
 }
 
+  // [新增] 重写 renderDailyAnalect 以添加收藏按钮状态更新的逻辑
+  async renderDailyAnalect(container) {
+    // 1. 首先，调用父类 (CoreSDK) 的同名方法来完成基础的渲染工作
+    await super.renderDailyAnalect(container);
+
+    // 2. 在基础渲染完成后，执行只有完整版SDK才有的额外操作：更新收藏按钮的UI
+    this._updateFavoriteButtonsUI();
+  }
+
 // [核心修正] 覆盖基类的方法，为“每日论语”组件添加功能完备的收藏按钮
   getDailyAnalectHTML(entry, dateInfo, shareLinks) {
     // [新增] 收藏按钮的核心逻辑

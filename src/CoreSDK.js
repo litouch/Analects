@@ -467,38 +467,17 @@ export default class CoreSDK {
   async getProverbs() { return this.getData('proverbs'); }
   async getChapters() { return this.getData('chapters'); }
 
-  // [升级版] 获取每日论语 (支持每日固定)
-  async getDailyAnalect(deterministic = true) {
+  // [优化版] 获取每日论语，直接调用后端 RPC 函数
+  async getDailyAnalect() {
     try {
-      const data = await this.apiRequest('analects_entries_expanded', {
-        select: 'id,chapter,section_number,original_text,translation',
-        'show_in_daily': 'eq.true'
-      });
+      const { data: dailyEntries, error } = await this.supabase.rpc('get_daily_analect');
+      if (error) throw error;
 
-      if (!data || data.length === 0) return null;
-
-      if (deterministic) {
-        // --- 每日固定的新逻辑 ---
-        const startDate = new Date('2024-01-01T00:00:00Z'); // 设置一个固定的起始日期
-        const today = new Date();
-        
-        // 将今天的日期和开始日期都标准化到UTC时间的零点，以保证全球用户在同一“天”
-        startDate.setUTCHours(0, 0, 0, 0);
-        today.setUTCHours(0, 0, 0, 0);
-        
-        // 计算从起始日期到今天过去了多少天
-        const dayIndex = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-        
-        // 使用取余运算，确保索引总是在有效范围内，并实现循环展示
-        const entryIndex = dayIndex % data.length;
-        
-        return data[entryIndex];
-
-      } else {
-        // --- 保留原来的随机逻辑，以备不时之需 ---
-        const randomIndex = Math.floor(Math.random() * data.length);
-        return data[randomIndex];
+      if (dailyEntries && dailyEntries.length > 0) {
+        return dailyEntries[0];
       }
+      
+      return null;
     } catch (error) {
       console.error('获取每日论语失败:', error);
       throw error;
@@ -866,30 +845,28 @@ createSearchSection(type, title, className = '') {
   `;
 }
 
-  // 渲染每日论语组件
-  renderDailyAnalect(container) {
+  // [优化版] 渲染每日论语组件
+  async renderDailyAnalect(container) {
     if (!container) {
       console.error('未找到容器元素');
       return;
     }
+    container.innerHTML = `<div class="daily-analect-skeleton"><div class="skeleton-block" style="height: 30px; width: 40%; margin: 0 auto 16px;"></div><div class="skeleton-block" style="height: 20px; width: 60%; margin: 0 auto 48px;"></div><div class="skeleton-block" style="height: 80px; width: 100%; margin-bottom: 24px;"></div><div class="skeleton-block" style="height: 50px; width: 80%; margin: 0 auto;"></div></div>`;
 
-    // [核心修改] 删除了JS动态生成骨架屏的代码块
-  
-    this.getDailyAnalect().then(entry => {
-      if (!entry) {
-        container.innerHTML = '<div class="analects-daily-empty">暂无每日论语</div>';
-        return;
+    try {
+      const entry = await this.getDailyAnalect();
+
+      if (entry) {
+        const dateInfo = this.formatDate();
+        const shareLinks = this.generateShareLinks(entry);
+        container.innerHTML = this.getDailyAnalectHTML(entry, dateInfo, shareLinks);
+      } else {
+        container.innerHTML = '<div class="analects-daily-empty">今日无语。</div>';
       }
-
-      const dateInfo = this.formatDate();
-      const shareLinks = this.generateShareLinks(entry);
-
-      // 直接用真实数据替换掉HTML中的骨架屏
-      container.innerHTML = this.getDailyAnalectHTML(entry, dateInfo, shareLinks);
-    }).catch(error => {
+    } catch (error) {
       console.error('渲染每日论语失败:', error);
       container.innerHTML = '<div class="analects-daily-error">加载每日论语失败，请检查配置</div>';
-    });
+    }
   }
 
   // [修正版] 获取每日论语HTML
