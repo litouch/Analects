@@ -3277,8 +3277,7 @@ a.chapter-item p {
   border-radius: 999px;
   border: 1px solid #e2e8f0;
   vertical-align: middle;
-  margin-left: 0.75rem;
-  top: -3px;
+  margin-left: 1rem;
   position: relative;
   opacity: 0; /* 默认透明，等待动画 */
   transition: color 0.3s ease, background-color 0.3s ease;
@@ -3326,3 +3325,23 @@ a.chapter-item p {
 
 /* 等级5 (全部512篇): 顶级红色 */
 .badge-tier-5 { background-color: #fee2e2; border-color: #fecaca; color: #b91c1c; }
+
+/* [UI优化] 固定“我的笔记”标题，防止因徽章出现而跳动 */
+.notes-title-grid {
+  display: grid;
+  /* 创建一个三列网格：[自动宽度的左侧空间] [标题内容] [与左侧等宽的右侧空间] */
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%; /* 确保 h1 撑满父容器宽度以正确居中 */
+}
+
+/* 将标题文字强制放入中间的第二列 */
+.notes-title-grid > span:first-of-type {
+  grid-column: 2;
+}
+
+/* 将徽章强制放入右侧的第三列，并让它靠左对齐 */
+.notes-title-grid > .notes-count-badge {
+  grid-column: 3;
+  justify-self: start;
+}
