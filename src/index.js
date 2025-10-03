@@ -894,25 +894,39 @@ async renderMyNotesPage(container) {
     }
 }
 
-	// [最终修复版 V2] 初始化章节页，确保使用完整数据重新渲染卡片
+// [最终重构版] 初始化章节页，采用并行获取、同步渲染的稳定模式
 	async initializeChapterPage() {
 	  const verseCards = document.querySelectorAll('.verse-card');
 	  if (verseCards.length === 0) return;
 
-	  for (const card of verseCards) {
-	    const entryId = parseInt(card.dataset.entryId, 10);
-	    if (isNaN(entryId)) continue;
+	  try {
+	    // 1. 一次性收集所有需要获取数据的卡片ID
+	    const entryIds = Array.from(verseCards).map(card => parseInt(card.dataset.entryId, 10)).filter(id => !isNaN(id));
 
-	    const entry = await this._getEntryDataForHydration(entryId);
-	    if (!entry) continue;
+	    // 2. 并行地、一次性地获取所有卡片所需的数据
+	    const entriesData = await Promise.all(
+	      entryIds.map(id => this._getEntryDataForHydration(id))
+	    );
+	    
+	    // 将数据整理成一个 Map，方便快速查找
+	    const entriesMap = new Map(entriesData.filter(e => e).map(e => [e.id, e]));
 
-	    // [核心修正] 在章节页和收藏页，明确指出不显示标签
-	    card.innerHTML = this.generateResultCardHTML(entry, { showTags: false });
+	    // 3. 同步地、快速地渲染所有卡片
+	    verseCards.forEach(card => {
+	      const entryId = parseInt(card.dataset.entryId, 10);
+	      const entry = entriesMap.get(entryId);
+	      if (entry) {
+	        card.innerHTML = this.generateResultCardHTML(entry, { showTags: false });
+	      }
+	    });
+
+	    // 4. 在所有卡片都稳定渲染后，再统一绑定事件
+	    this._attachCardActionListeners(document);
+	    this._ensureIconsRendered();
+
+	  } catch (error) {
+	    console.error('初始化章节页失败:', error);
 	  }
-
-      // [新增] 为页面上所有新渲染的卡片绑定下拉菜单事件
-      this._attachCardActionListeners(document.getElementById('chapter-content'));
-	  this._ensureIconsRendered();
 	}
 	
 // [最终完整版] 生成卡片页脚
