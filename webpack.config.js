@@ -93,6 +93,7 @@ module.exports = (env, argv) => {
 		    { from: 'sitemap.xml', to: 'sitemap.xml', noErrorOnMissing: true },
 		    { from: 'favicon.ico', to: 'favicon.ico', noErrorOnMissing: true },
 			  { from: 'logo.png', to: 'logo.png', noErrorOnMissing: true },
+			{ from: 'bd22849580564ab794ae31e2153f53ff.txt', to: 'bd22849580564ab794ae31e2153f53ff.txt', noErrorOnMissing: true },
 		    { from: 'my-notes.html', to: 'my-notes.html', noErrorOnMissing: true },
 			{ from: 'shared-with-me.html', to: 'shared-with-me.html', noErrorOnMissing: true },
 			{ from: 'view-shared-notes.html', to: 'view-shared-notes.html', noErrorOnMissing: true },
