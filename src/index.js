@@ -437,24 +437,41 @@ async _handleGlobalClick(event) {
       return;
     }
 
-    // 处理点击页面其他地方关闭菜单的逻辑
-    const activeHeaderDropdown = document.querySelector('.user-dropdown-menu.active');
-    if (activeHeaderDropdown && !event.target.closest('.user-avatar-container')) {
-        activeHeaderDropdown.classList.remove('active');
-    }
-
-    const activeFooterMenu = document.querySelector('.app-footer-submenu.active');
-    if (activeFooterMenu && !event.target.closest('.app-footer-menu-container')) {
-        activeFooterMenu.classList.remove('active');
-    }
-
-    const moreOptionsButton = event.target.closest('.more-options-btn');
-    if (!moreOptionsButton) {
-        const activeCardDropdown = document.querySelector('.card-actions-dropdown.active');
-        if (activeCardDropdown && !event.target.closest('.card-actions-container')) {
-            activeCardDropdown.classList.remove('active');
+// 处理点击分享/更多选项按钮，实现下拉菜单的切换（使用事件委托修复Bug）
+const cardActionsContainer = event.target.closest('.card-actions-container');
+if (cardActionsContainer) {
+    const dropdown = cardActionsContainer.querySelector('.card-actions-dropdown');
+    // 首先关闭其他所有打开的卡片菜单
+    document.querySelectorAll('.card-actions-dropdown.active').forEach(activeDropdown => {
+        if (activeDropdown !== dropdown) {
+            activeDropdown.classList.remove('active');
         }
+    });
+    // 切换当前点击卡片的菜单状态
+    if (dropdown) {
+        dropdown.classList.toggle('active');
     }
+    // 阻止冒泡，防止被下面的点击外部关闭逻辑误伤
+    return;
+}
+
+// 处理点击页面其他地方关闭菜单的逻辑 (保留原有逻辑，但更清晰)
+const activeHeaderDropdown = document.querySelector('.user-dropdown-menu.active');
+if (activeHeaderDropdown && !event.target.closest('.user-avatar-container')) {
+    activeHeaderDropdown.classList.remove('active');
+}
+
+const activeFooterMenu = document.querySelector('.app-footer-submenu.active');
+if (activeFooterMenu && !event.target.closest('.app-footer-menu-container')) {
+    activeFooterMenu.classList.remove('active');
+}
+
+// 检查是否点击了卡片菜单之外的区域，如果是，则关闭所有活动卡片菜单。
+const activeCardDropdown = document.querySelector('.card-actions-dropdown.active');
+if (activeCardDropdown && !event.target.closest('.card-actions-container')) {
+    activeCardDropdown.classList.remove('active');
+}
+
 }
 
   // [新增] 重写 renderDailyAnalect 以添加收藏按钮状态更新的逻辑
