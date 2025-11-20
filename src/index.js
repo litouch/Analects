@@ -567,11 +567,13 @@ if (activeCardDropdown && !event.target.closest('.card-actions-container')) {
       // --- 3. 构建卡片内容区 (原文、译文、注释) ---
       const highlightedOriginal = this.highlightKeywords(entry.original_text, currentKeyword);
       const highlightedTranslation = entry.translation ? this.highlightKeywords(entry.translation, currentKeyword) : '';
+      const highlightedEnglish = entry.english_text ? this.highlightKeywords(entry.english_text, currentKeyword) : '';
       const highlightedAnnotation = entry.annotation ? this.highlightKeywords(entry.annotation, currentKeyword) : '';
 
       const contentHTML = `
         <blockquote class="verse-original">${highlightedOriginal}</blockquote>
         ${highlightedTranslation ? `<p class="verse-translation">【译文】${highlightedTranslation}</p>` : ''}
+        ${highlightedEnglish ? `<p class="verse-translation">【英译】${highlightedEnglish}</p>` : ''}
         ${highlightedAnnotation ? `<div class="verse-annotation-wrapper">
                                     <div class="verse-annotation-title">【注释】</div>
                                     <div class="verse-annotation">${highlightedAnnotation}</div>

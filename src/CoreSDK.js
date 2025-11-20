@@ -7,8 +7,8 @@ export default class CoreSDK {
   constructor(config = {}) {
     this.supabaseUrl = config.supabaseUrl || 'https://your-project.supabase.co';
     this.supabaseKey = config.supabaseKey || 'your-anon-key';
-	this.supabase = null; // 初始化为 null
-	this._initializeSupabaseClient(); // 调用新的初始化方法
+    this.supabase = null; // 初始化为 null
+    this._initializeSupabaseClient(); // 调用新的初始化方法
 
     this.apiBaseUrl = `${this.supabaseUrl}/rest/v1`;
     this.headers = {
@@ -19,7 +19,7 @@ export default class CoreSDK {
     };
 
     this.entryCache = new Map();
-	
+
     this.cache = {
       characters: null,
       arguments: null,
@@ -49,13 +49,13 @@ export default class CoreSDK {
     this.scrollListener = null;
     this.isAutoLoadingEnabled = false;
     this.searchConditionsChanged = false;
-	this.searchEventsInitialized = false;
-	this.latestSearchId = 0;
+    this.searchEventsInitialized = false;
+    this.latestSearchId = 0;
 
     // [核心修正] 在构造函数中绑定事件处理函数的 this
     this._handleGlobalClick = this._handleGlobalClick.bind(this);
   }
-  
+
   // [新增] 专门用于初始化 Supabase 客户端的方法
   // 这个基础版本为嵌入版 SDK 创建一个简单的客户端
   _initializeSupabaseClient() {
@@ -81,7 +81,7 @@ export default class CoreSDK {
       event.stopPropagation();
       const dropdown = moreOptionsButton.nextElementSibling;
       const wasActive = dropdown.classList.contains('active');
-      
+
       // 先关闭所有可能已打开的菜单
       document.querySelectorAll('.card-actions-dropdown.active').forEach(d => d.classList.remove('active'));
 
@@ -98,7 +98,7 @@ export default class CoreSDK {
       activeCardDropdown.classList.remove('active');
     }
   }
-  
+
   // 验证配置
   validateConfig() {
     if (!this.supabaseUrl || this.supabaseUrl.includes('your-project')) {
@@ -189,6 +189,7 @@ export default class CoreSDK {
     }
   }
 
+
   // 构建查询参数
   buildQueryParams(filters, page, pageSize) {
     const params = {
@@ -225,6 +226,8 @@ export default class CoreSDK {
             `original_text.ilike.*${kw}*`,
             `translation.ilike.*${kw}*`,
             `annotation.ilike.*${kw}*`,
+            // [新增] 将 english_text 加入到关键字搜索范围
+            `english_text.ilike.*${kw}*`,
             `personal_insight.ilike.*${kw}*`
           ];
           return `or(${searchFields.join(',')})`;
@@ -244,9 +247,9 @@ export default class CoreSDK {
     }
 
     let escapedText = this.escapeHtml(text);
-  
+
     const keywords = keyword.trim().split(/\s+/).filter(k => k.length > 0);
-  
+
     if (keywords.length === 0) {
       return escapedText;
     }
@@ -279,16 +282,17 @@ export default class CoreSDK {
   removeDuplicates(data) {
     const uniqueData = [];
     const seenIds = new Set();
-    
+
     for (const entry of data) {
       if (entry.id && !seenIds.has(entry.id)) {
         seenIds.add(entry.id);
         uniqueData.push(entry);
       }
     }
-    
+
     return uniqueData;
   }
+
 
   // 获取总数
   async getTotalCount(filters) {
@@ -325,6 +329,8 @@ export default class CoreSDK {
               `original_text.ilike.*${kw}*`,
               `translation.ilike.*${kw}*`,
               `annotation.ilike.*${kw}*`,
+              // [新增] 将 english_text 加入到关键字搜索范围
+              `english_text.ilike.*${kw}*`,
               `personal_insight.ilike.*${kw}*`
             ];
             return `or(${searchFields.join(',')})`;
@@ -353,7 +359,7 @@ export default class CoreSDK {
       });
     });
   }
-  
+
   // 章节排序
   sortChaptersByNumber(chapters) {
     return chapters.sort((a, b) => {
@@ -377,23 +383,23 @@ export default class CoreSDK {
       '六': 6, '七': 7, '八': 8, '九': 9, '十': 10,
       '百': 100, '千': 1000, '万': 10000
     };
-  
+
     if (chineseNumbers[chineseNum]) {
       return chineseNumbers[chineseNum];
     }
-  
+
     let result = 0;
     let temp = 0;
-  
+
     if (chineseNum.startsWith('十')) {
       result = 10;
       chineseNum = chineseNum.substring(1);
     }
-  
+
     for (let i = 0; i < chineseNum.length; i++) {
       const char = chineseNum[i];
       const num = chineseNumbers[char];
-    
+
       if (num < 10) {
         temp = num;
       } else if (num === 10) {
@@ -414,7 +420,7 @@ export default class CoreSDK {
         temp = 0;
       }
     }
-  
+
     result += temp;
     return result;
   }
@@ -433,18 +439,18 @@ export default class CoreSDK {
     };
 
     try {
-      let data = await this.apiRequest(endpoints[type].split('?')[0], 
+      let data = await this.apiRequest(endpoints[type].split('?')[0],
         Object.fromEntries(new URLSearchParams(endpoints[type].split('?')[1] || '')));
-    
+
       if (type === 'chapters') {
         const uniqueChapters = [...new Set(data.map(item => item.chapter))]
           .filter(chapter => chapter && typeof chapter === 'string' && chapter.trim())
           .map(chapter => ({ id: chapter, name: chapter }));
         data = this.sortChaptersByNumber(uniqueChapters);
       } else {
-        const sortField = type === 'characters' ? 'name' : 
-                         type === 'arguments' ? 'title' : 
-                         type === 'proverbs' ? 'content' : null;
+        const sortField = type === 'characters' ? 'name' :
+          type === 'arguments' ? 'title' :
+            type === 'proverbs' ? 'content' : null;
         if (sortField) {
           data = this.sortByPinyin(data, sortField);
         }
@@ -476,7 +482,7 @@ export default class CoreSDK {
       if (dailyEntries && dailyEntries.length > 0) {
         return dailyEntries[0];
       }
-      
+
       return null;
     } catch (error) {
       console.error('获取每日论语失败:', error);
@@ -497,7 +503,7 @@ export default class CoreSDK {
     const day = date.getDate();
     const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     const weekday = weekdays[date.getDay()];
-    
+
     return {
       full: `${year}年${month}月${day}日`,
       weekday: weekday,
@@ -507,53 +513,53 @@ export default class CoreSDK {
 
   // [新增] 格式化为相对时间 (例如 “3小时前”)
   formatTimeAgo(dateString) {
-      if (!dateString) return '';
-    
-      const now = new Date();
-      const past = new Date(dateString);
-      // 计算两个日期相差的秒数
-      const seconds = Math.floor((now - past) / 1000);
+    if (!dateString) return '';
 
-      // [新增] 获取当前年份和收藏年份
-      const yearNow = now.getFullYear();
-      const yearPast = past.getFullYear();
+    const now = new Date();
+    const past = new Date(dateString);
+    // 计算两个日期相差的秒数
+    const seconds = Math.floor((now - past) / 1000);
 
-      // 如果小于1分钟
-      if (seconds < 60) {
-          return '刚刚';
-      }
-      // 如果小于1小时
-      const minutes = Math.floor(seconds / 60);
-      if (minutes < 60) {
-          return `${minutes}分钟前`;
-      }
-      // 如果小于1天
-      const hours = Math.floor(minutes / 60);
-      if (hours < 24) {
-          return `${hours}小时前`;
-      }
-      // 如果小于1个月 (简化为30天)
-      const days = Math.floor(hours / 24);
-      if (days < 30) {
-          return `${days}天前`;
-      }
-    
-      // [核心优化] 如果在同一年，则显示月和日
-      if (yearNow === yearPast) {
-          // toLocaleDateString 在不同浏览器和操作系统下表现可能略有差异
-          // 但 'short' 格式通常是 'M/D' 或 'MM/DD'
-          return past.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
-      } else {
-          // 如果跨年了，则显示完整的年月日
-          return past.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
-      }
+    // [新增] 获取当前年份和收藏年份
+    const yearNow = now.getFullYear();
+    const yearPast = past.getFullYear();
+
+    // 如果小于1分钟
+    if (seconds < 60) {
+      return '刚刚';
+    }
+    // 如果小于1小时
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) {
+      return `${minutes}分钟前`;
+    }
+    // 如果小于1天
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+      return `${hours}小时前`;
+    }
+    // 如果小于1个月 (简化为30天)
+    const days = Math.floor(hours / 24);
+    if (days < 30) {
+      return `${days}天前`;
+    }
+
+    // [核心优化] 如果在同一年，则显示月和日
+    if (yearNow === yearPast) {
+      // toLocaleDateString 在不同浏览器和操作系统下表现可能略有差异
+      // 但 'short' 格式通常是 'M/D' 或 'MM/DD'
+      return past.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+    } else {
+      // 如果跨年了，则显示完整的年月日
+      return past.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
   }
-  
+
   // 生成分享链接
   generateShareLinks(entry, currentUrl = window.location.href) {
     const text = `每日论语：${entry.original_text}`;
     const url = currentUrl;
-    
+
     return {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
@@ -595,43 +601,43 @@ export default class CoreSDK {
       console.error('未找到容器元素');
       return;
     }
-    
-    this.entryCache.set(entry.id, entry); 
+
+    this.entryCache.set(entry.id, entry);
 
     const card = document.createElement('div');
-    card.className = 'verse-card'; 
+    card.className = 'verse-card';
     card.setAttribute('data-entry-id', entry.id);
-    
+
     // [核心修正] 调用渲染函数时，明确指出要显示标签 (因为这个函数只用于搜索结果)
     card.innerHTML = this.generateResultCardHTML(entry, { showTags: true });
-    
+
     container.appendChild(card);
     this._ensureIconsRendered();
-    
+
     setTimeout(() => card.classList.add('animate-in'), 10);
   }
 
-// [最终完整版] 生成结果卡片HTML
+  // [最终完整版] 生成结果卡片HTML
   generateResultCardHTML(entry, options = {}) {
-      if (!entry) return '';
+    if (!entry) return '';
 
-      const { showTags = false } = options; // 默认不显示标签
+    const { showTags = false } = options; // 默认不显示标签
 
-      // --- 1. 数据准备 ---
-      const currentKeyword = this.currentFilters?.keyword || '';
-      // [核心修改] 在精简版中，永远不是收藏状态
-      const isFavorited = false;
-      const timeAgo = '';
-    
-      const getRelatedData = (items, field) => 
-        (items || []).map(item => item[field]?.name || item[field]?.title || item[field]?.content).filter(Boolean);
+    // --- 1. 数据准备 ---
+    const currentKeyword = this.currentFilters?.keyword || '';
+    // [核心修改] 在精简版中，永远不是收藏状态
+    const isFavorited = false;
+    const timeAgo = '';
 
-      const characters = getRelatedData(entry.entry_characters, 'characters');
-      const argumentsList = getRelatedData(entry.entry_arguments, 'arguments');
-      const proverbs = getRelatedData(entry.entry_proverbs, 'proverbs');
+    const getRelatedData = (items, field) =>
+      (items || []).map(item => item[field]?.name || item[field]?.title || item[field]?.content).filter(Boolean);
 
-      // --- 2. 构建卡片头部 ---
-      const verseHeaderHTML = `
+    const characters = getRelatedData(entry.entry_characters, 'characters');
+    const argumentsList = getRelatedData(entry.entry_arguments, 'arguments');
+    const proverbs = getRelatedData(entry.entry_proverbs, 'proverbs');
+
+    // --- 2. 构建卡片头部 ---
+    const verseHeaderHTML = `
         <div class="verse-header">
           <div class="verse-header-left">
             <span class="verse-chapter">${this.escapeHtml(entry.chapter)}</span>
@@ -643,32 +649,35 @@ export default class CoreSDK {
         </div>
       `;
 
-      // --- 3. 构建卡片内容区 (包含原文、译文、注释) ---
-      const highlightedOriginal = this.highlightKeywords(entry.original_text, currentKeyword);
-      const highlightedTranslation = entry.translation ? this.highlightKeywords(entry.translation, currentKeyword) : '';
-      const highlightedAnnotation = entry.annotation ? this.highlightKeywords(entry.annotation, currentKeyword) : '';
+    // --- 3. 构建卡片内容区 (包含原文、译文、注释) ---
+    const highlightedOriginal = this.highlightKeywords(entry.original_text, currentKeyword);
+    const highlightedTranslation = entry.translation ? this.highlightKeywords(entry.translation, currentKeyword) : '';
+    // [新增] 对英译文进行关键字高亮处理
+    const highlightedEnglish = entry.english_text ? this.highlightKeywords(entry.english_text, currentKeyword) : '';
+    const highlightedAnnotation = entry.annotation ? this.highlightKeywords(entry.annotation, currentKeyword) : '';
 
-      const contentHTML = `
+    const contentHTML = `
         <blockquote class="verse-original">${highlightedOriginal}</blockquote>
         ${highlightedTranslation ? `<p class="verse-translation">【译文】${highlightedTranslation}</p>` : ''}
+        ${highlightedEnglish ? `<p class="verse-translation">【英译】${highlightedEnglish}</p>` : ''}
         ${highlightedAnnotation ? `<div class="verse-annotation-wrapper">
                                     <div class="verse-annotation-title">【注释】</div>
                                     <div class="verse-annotation">${highlightedAnnotation}</div>
                                   </div>` : ''}
       `;
 
-      // --- 4. 构建标签区 (变为条件化渲染) ---
-      let tagsHTML = '';
-      if (showTags) { // [核心修正] 只有在 showTags 为 true 时才生成标签区HTML
-        // [核心] 定义SVG图标，移除对 lucide.js 的依赖
-        const icons = {
-            users: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-            target: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
-            'message-square-quote': '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
-        };
+    // --- 4. 构建标签区 (变为条件化渲染) ---
+    let tagsHTML = '';
+    if (showTags) { // [核心修正] 只有在 showTags 为 true 时才生成标签区HTML
+      // [核心] 定义SVG图标，移除对 lucide.js 的依赖
+      const icons = {
+        users: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        target: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+        'message-square-quote': '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+      };
 
-        const createTagGroup = (label, items, icon, type) => 
-          items.length > 0 ? `
+      const createTagGroup = (label, items, icon, type) =>
+        items.length > 0 ? `
             <div class="card-tag-group">
               <div class="card-tag-label">${icons[icon] || ''}<span>${label}</span></div>
               <div class="card-tag-items">
@@ -677,31 +686,31 @@ export default class CoreSDK {
             </div>
           ` : '';
 
-        tagsHTML = (characters.length > 0 || argumentsList.length > 0 || proverbs.length > 0) ? `
+      tagsHTML = (characters.length > 0 || argumentsList.length > 0 || proverbs.length > 0) ? `
           <div class="card-tags-section">
             ${createTagGroup('人物', characters, 'users', 'character')}
             ${createTagGroup('论点', argumentsList, 'target', 'argument')}
             ${createTagGroup('谚语', proverbs, 'message-square-quote', 'proverb')}
           </div>
         ` : '';
-      }
+    }
 
-      // --- 5. 构建页脚 ---
-      const footerHTML = this._generateCoreCardFooterHTML(entry);
-    
-      // --- 6. 组合成最终的卡片HTML ---
-      return verseHeaderHTML + contentHTML + tagsHTML + footerHTML;
+    // --- 5. 构建页脚 ---
+    const footerHTML = this._generateCoreCardFooterHTML(entry);
+
+    // --- 6. 组合成最终的卡片HTML ---
+    return verseHeaderHTML + contentHTML + tagsHTML + footerHTML;
   }
-  
+
   // [新增] 精简版的卡片页脚，不包含笔记和编辑功能
   _generateCoreCardFooterHTML(entry) {
-	  // [核心修正] favoriteButtonHTML 已被移除
+    // [核心修正] favoriteButtonHTML 已被移除
     // const favoriteButtonHTML = `...`;
-  
-	  const shareLinks = this.generateShareLinks(entry);
-	  const escapedCopyText = this.escapeHtml(shareLinks.copy).replace(/'/g, "\\'").replace(/\n/g, '\\n');
 
-	  const shareMenuHTML = `
+    const shareLinks = this.generateShareLinks(entry);
+    const escapedCopyText = this.escapeHtml(shareLinks.copy).replace(/'/g, "\\'").replace(/\n/g, '\\n');
+
+    const shareMenuHTML = `
 	    <div class="card-actions-container">
 	      <button class="more-options-btn" title="更多选项">
 	         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
@@ -727,7 +736,7 @@ export default class CoreSDK {
 	    </div>
 	  `;
 
-	  return `
+    return `
 	    <div class="analects-card-footer">
 	      <div class="footer-actions">
           <div class="flex items-center gap-2"></div>
@@ -736,7 +745,7 @@ export default class CoreSDK {
 	    </div>
 	  `;
   }
-  
+
   // 渲染搜索界面
   renderSearchInterface(container) {
     if (!container) {
@@ -814,19 +823,19 @@ export default class CoreSDK {
     `;
   }
 
-// [最终修复版] 创建搜索区域HTML 
-createSearchSection(type, title, className = '') {
-  // [核心] 定义统一的SVG图标映射，不再需要外部JS库
-  const icons = {
-    chapter: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
-    character: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    argument: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
-    proverb: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
-  };
+  // [最终修复版] 创建搜索区域HTML 
+  createSearchSection(type, title, className = '') {
+    // [核心] 定义统一的SVG图标映射，不再需要外部JS库
+    const icons = {
+      chapter: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+      character: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      argument: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+      proverb: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+    };
 
-  const wrapperStyle = className === 'full-width' ? 'style="grid-column: 1 / -1;"' : '';
+    const wrapperStyle = className === 'full-width' ? 'style="grid-column: 1 / -1;"' : '';
 
-  return `
+    return `
     <div class="analects-filter-section" ${wrapperStyle}>
       <div class="analects-filter-header">
         <h4 class="analects-filter-title">
@@ -843,7 +852,7 @@ createSearchSection(type, title, className = '') {
       </div>
     </div>
   `;
-}
+  }
 
   // [优化版] 渲染每日论语组件
   async renderDailyAnalect(container) {
@@ -956,13 +965,13 @@ createSearchSection(type, title, className = '') {
     if (keywordInput) {
       keywordInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-          e.preventDefault(); 
+          e.preventDefault();
           // [核心修正] 不再直接调用搜索，而是触发按钮的点击事件
           // 这样可以确保所有搜索都通过同一个入口，避免事件冲突
           document.getElementById('analects-search-btn')?.click();
         }
       });
-    
+
       keywordInput.addEventListener('input', () => {
         this.markSearchConditionsChanged();
       });
@@ -977,7 +986,7 @@ createSearchSection(type, title, className = '') {
       }
     });
 
-    this.searchEventsInitialized = true; 
+    this.searchEventsInitialized = true;
   }
 
   // 标记搜索条件已改变
@@ -992,7 +1001,7 @@ createSearchSection(type, title, className = '') {
   // 初始化滚动功能
   initializeScrollFeatures() {
     const scrollToTopBtn = document.getElementById('scroll-to-top');
-    
+
     if (scrollToTopBtn) {
       scrollToTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1008,39 +1017,39 @@ createSearchSection(type, title, className = '') {
 
   // 设置自动加载功能
   setupAutoLoad() {
-      // 如果之前存在监听器，先从 window 移除
-      if (this.scrollListener) {
-          window.removeEventListener('scroll', this.scrollListener);
+    // 如果之前存在监听器，先从 window 移除
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
+
+    this.scrollListener = () => {
+      // 检查是否应该加载
+      if (!this.isAutoLoadingEnabled ||
+        this.pagination.isLoading ||
+        !this.pagination.hasMore ||
+        this.pagination.totalLoaded === 0) {
+        return;
       }
 
-      this.scrollListener = () => {
-          // 检查是否应该加载
-          if (!this.isAutoLoadingEnabled || 
-              this.pagination.isLoading || 
-              !this.pagination.hasMore ||
-              this.pagination.totalLoaded === 0) {
-              return;
-          }
+      // 获取结果容器元素
+      const resultsContainer = document.getElementById('analects-results-container');
+      if (!resultsContainer) {
+        return; // 如果容器不存在，则不执行任何操作
+      }
 
-          // 获取结果容器元素
-          const resultsContainer = document.getElementById('analects-results-container');
-          if (!resultsContainer) {
-              return; // 如果容器不存在，则不执行任何操作
-          }
+      // 关键修改：检查 resultsContainer 元素的位置
+      const rect = resultsContainer.getBoundingClientRect();
 
-          // 关键修改：检查 resultsContainer 元素的位置
-          const rect = resultsContainer.getBoundingClientRect();
-        
-          // 当结果容器的底部进入视口，并且距离视口底部小于等于 200px 时，加载更多
-          // rect.bottom 是容器底部相对于视口顶部的距离
-          // window.innerHeight 是视口的高度
-          if (rect.bottom <= window.innerHeight + 200) {
-              this.loadMoreResults();
-          }
-      };
+      // 当结果容器的底部进入视口，并且距离视口底部小于等于 200px 时，加载更多
+      // rect.bottom 是容器底部相对于视口顶部的距离
+      // window.innerHeight 是视口的高度
+      if (rect.bottom <= window.innerHeight + 200) {
+        this.loadMoreResults();
+      }
+    };
 
-      // 监听器仍然绑定在 window 对象上
-      window.addEventListener('scroll', this.scrollListener, { passive: true });
+    // 监听器仍然绑定在 window 对象上
+    window.addEventListener('scroll', this.scrollListener, { passive: true });
   }
 
   // 加载搜索选项
@@ -1059,12 +1068,12 @@ createSearchSection(type, title, className = '') {
       ]);
 
       const searchData = { character: characters, argument: argumentsList, proverb: proverbs, chapter: chapters };
-      
+
       Object.entries(searchData).forEach(([type, data]) => {
         this.updateSearchCount(type, data.length);
         this.renderSearchOptions(`${type}-filters`, data, type);
       });
-      
+
       if (statusDiv) {
         statusDiv.innerHTML = '<div class="analects-success">✅ 搜索选项加载完成</div>';
         setTimeout(() => statusDiv.innerHTML = '', 2000);
@@ -1081,7 +1090,7 @@ createSearchSection(type, title, className = '') {
     if (statusDiv) {
       statusDiv.innerHTML = '<div class="analects-error">❌ 加载搜索选项失败，请检查配置</div>';
     }
-    
+
     ['character', 'argument', 'proverb', 'chapter'].forEach(type => {
       const container = document.getElementById(`${type}-filters`);
       if (container) {
@@ -1146,7 +1155,7 @@ createSearchSection(type, title, className = '') {
     tag.className = `analects-option-tag ${isSelected ? 'selected' : ''}`;
     tag.setAttribute('data-id', id);
     tag.setAttribute('data-name', displayName.toLowerCase());
-    
+
     tag.innerHTML = `
       <input type="checkbox" value="${id}" data-type="${type}" ${isSelected ? 'checked' : ''}>
       <span>${displayName}</span>
@@ -1165,14 +1174,14 @@ createSearchSection(type, title, className = '') {
   handleOptionClick(tag, type, id, displayName) {
     const checkbox = tag.querySelector('input[type="checkbox"]');
     const tagCloud = tag.closest('.analects-tag-cloud');
-    
+
     if (type === 'chapter') {
       // 章节单选逻辑
       tagCloud.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.checked = false;
         cb.closest('.analects-option-tag').classList.remove('selected');
       });
-      
+
       checkbox.checked = true;
       tag.classList.add('selected');
       this.selectedItems.chapter = { id, name: displayName };
@@ -1181,14 +1190,14 @@ createSearchSection(type, title, className = '') {
       const wasChecked = checkbox.checked;
       checkbox.checked = !wasChecked;
       tag.classList.toggle('selected', checkbox.checked);
-      
+
       if (checkbox.checked) {
         this.addSelectedItem(type, id, displayName);
       } else {
         this.removeSelectedItem(type, id);
       }
     }
-    
+
     this.markSearchConditionsChanged();
     this.renderSelectedItems();
   }
@@ -1208,13 +1217,13 @@ createSearchSection(type, title, className = '') {
   renderSelectedItems() {
     const selectedContainer = document.getElementById('selected-items-container');
     const tagsContainer = document.getElementById('selected-tags-container');
-    
+
     if (!selectedContainer || !tagsContainer) return;
 
-    const totalSelected = this.selectedItems.characters.size + 
-                         this.selectedItems.arguments.size + 
-                         this.selectedItems.proverbs.size +
-                         (this.selectedItems.chapter && this.selectedItems.chapter.id !== 'all' ? 1 : 0);
+    const totalSelected = this.selectedItems.characters.size +
+      this.selectedItems.arguments.size +
+      this.selectedItems.proverbs.size +
+      (this.selectedItems.chapter && this.selectedItems.chapter.id !== 'all' ? 1 : 0);
 
     if (totalSelected === 0) {
       selectedContainer.style.display = 'none';
@@ -1260,22 +1269,22 @@ createSearchSection(type, title, className = '') {
   removeSelectedItemById(type, id) {
     if (type === 'chapter') {
       this.selectedItems.chapter = { id: 'all', name: '全部章节' };
-      
+
       const allCheckbox = document.querySelector('input[data-type="chapter"][value="all"]');
       const currentCheckbox = document.querySelector(`input[data-type="chapter"][value="${id}"]`);
-      
+
       if (allCheckbox) {
         allCheckbox.checked = true;
         allCheckbox.closest('.analects-option-tag').classList.add('selected');
       }
-      
+
       if (currentCheckbox) {
         currentCheckbox.checked = false;
         currentCheckbox.closest('.analects-option-tag').classList.remove('selected');
       }
     } else {
       this.removeSelectedItem(type, id);
-      
+
       const checkbox = document.querySelector(`input[data-type="${type}"][value="${id}"]`);
       if (checkbox) {
         checkbox.checked = false;
@@ -1285,7 +1294,7 @@ createSearchSection(type, title, className = '') {
         }
       }
     }
-    
+
     this.markSearchConditionsChanged();
     this.renderSelectedItems();
   }
@@ -1302,7 +1311,7 @@ createSearchSection(type, title, className = '') {
     tags.forEach(tag => {
       const name = tag.getAttribute('data-name');
       const shouldShow = !term || name.includes(term);
-      
+
       tag.style.display = shouldShow ? 'inline-flex' : 'none';
       if (shouldShow) visibleCount++;
     });
@@ -1317,9 +1326,9 @@ createSearchSection(type, title, className = '') {
   // [最终治本版] 执行搜索 (使用任务ID彻底解决竞态问题)
   async performSearch() {
     if (!this.isSearchInitialized) return;
-  
+
     if (this.pagination.isLoading) {
-      return; 
+      return;
     }
 
     // [核心修正1] 为这次搜索生成一个唯一的ID
@@ -1332,7 +1341,7 @@ createSearchSection(type, title, className = '') {
     const loadingMoreDiv = document.getElementById('analects-loading-more');
 
     if (!resultsContainer) return;
-	
+
     this.pagination.isLoading = true;
 
     const selectedCharacters = Array.from(this.selectedItems.characters.keys());
@@ -1360,7 +1369,7 @@ createSearchSection(type, title, className = '') {
     if (loadCompleteDiv) loadCompleteDiv.style.display = 'none';
     if (loadingMoreDiv) loadingMoreDiv.style.display = 'none';
     if (statusDiv) statusDiv.innerHTML = '';
-  
+
     // 定义可复用的骨架屏卡片HTML
     const skeletonCardHTML = `
       <div class="favorite-card-skeleton">
@@ -1377,7 +1386,7 @@ createSearchSection(type, title, className = '') {
 
     try {
       const result = await this.fetchAnalects(this.currentFilters, 0, this.pagination.pageSize);
-    
+
       // [核心修正2] 只有当这次搜索任务还是最新的，才去处理它的结果
       if (searchId === this.latestSearchId) {
         this.isAutoLoadingEnabled = true;
@@ -1401,7 +1410,7 @@ createSearchSection(type, title, className = '') {
   async handleFirstSearchResult(result, statusDiv, resultsContainer) {
     // [核心修正] 在渲染真实数据前，先清空容器内的所有内容（即骨架屏）
     resultsContainer.innerHTML = '';
-	
+
     if (result.data.length === 0) {
       if (statusDiv) {
         statusDiv.innerHTML = '<div class="analects-warning">⚠️ 未找到匹配的章节</div>';
@@ -1424,11 +1433,11 @@ createSearchSection(type, title, className = '') {
     this.pagination.currentPage = 1;
     this.pagination.totalLoaded = uniqueResults.length;
     // [核心修正4] 直接使用从 fetchAnalects 传递过来的、最准确的 hasMore 结果
-    this.pagination.hasMore = result.hasMore; 
+    this.pagination.hasMore = result.hasMore;
 
     if (statusDiv) {
       const totalCount = this.pagination.totalCount > 0 ? this.pagination.totalCount : uniqueResults.length;
-    
+
       if (this.pagination.hasMore) {
         statusDiv.innerHTML = `<div class="analects-success">✅ 找到 ${totalCount} 条结果，每次加载 ${this.pagination.pageSize} 条，滚动自动加载更多</div>`;
       } else {
@@ -1446,7 +1455,7 @@ createSearchSection(type, title, className = '') {
       }, index * 50);
     });
   }
-  
+
   // 重置分页参数
   resetPagination() {
     Object.assign(this.pagination, {
@@ -1492,8 +1501,8 @@ createSearchSection(type, title, className = '') {
 
     try {
       const result = await this.fetchAnalects(
-        this.currentFilters, 
-        this.pagination.currentPage, 
+        this.currentFilters,
+        this.pagination.currentPage,
         this.pagination.pageSize
       );
 
@@ -1542,7 +1551,7 @@ createSearchSection(type, title, className = '') {
   updateScrollStatus() {
     const statusDiv = document.getElementById('analects-search-status');
     const loadCompleteDiv = document.getElementById('analects-load-complete');
-  
+
     if (!statusDiv || this.pagination.totalLoaded === 0) return;
 
     const displayedCount = this.pagination.totalLoaded;
@@ -1564,7 +1573,7 @@ createSearchSection(type, title, className = '') {
       }
     }
   }
-  
+
   // 重置所有搜索内容
   resetSearch() {
     // 清空关键词
@@ -1583,7 +1592,7 @@ createSearchSection(type, title, className = '') {
     // 取消所有选中状态
     const checkboxes = document.querySelectorAll('.analects-tag-cloud input[type="checkbox"]');
     const tags = document.querySelectorAll('.analects-option-tag');
-    
+
     checkboxes.forEach(cb => cb.checked = false);
     tags.forEach(tag => tag.classList.remove('selected'));
 
@@ -1603,7 +1612,7 @@ createSearchSection(type, title, className = '') {
     // 清空结果
     const resultsContainer = document.getElementById('analects-results-container');
     const loadCompleteDiv = document.getElementById('analects-load-complete');
-    
+
     if (resultsContainer) resultsContainer.innerHTML = '';
     if (loadCompleteDiv) loadCompleteDiv.style.display = 'none';
 
@@ -1627,8 +1636,8 @@ createSearchSection(type, title, className = '') {
   showStatusMessage(message, type = 'info', duration = 2000) {
     const statusDiv = document.getElementById('analects-search-status');
     if (statusDiv) {
-      const className = type === 'success' ? 'analects-success' : 
-                      type === 'error' ? 'analects-error' : 'analects-info';
+      const className = type === 'success' ? 'analects-success' :
+        type === 'error' ? 'analects-error' : 'analects-info';
       statusDiv.innerHTML = `<div class="${className}">${message}</div>`;
       if (duration > 0) {
         setTimeout(() => statusDiv.innerHTML = '', duration);
@@ -1647,7 +1656,7 @@ createSearchSection(type, title, className = '') {
     // 如果 lucide 还没准备好，启动一个“轮询器”来等待它
     let attempts = 0;
     const maxAttempts = 20; // 最多尝试20次 (2秒)
-    
+
     const interval = setInterval(() => {
       attempts++;
       if (window.lucide) {
