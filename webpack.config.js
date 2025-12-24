@@ -104,6 +104,7 @@ module.exports = (env, argv) => {
 			  { from: 'public', to: '.', noErrorOnMissing: true }, 
 			  { from: 'chapters', to: 'chapters', noErrorOnMissing: true },
 			  { from: 'stories', to: 'stories', noErrorOnMissing: true },
+        { from: 'articles', to: 'articles', noErrorOnMissing: true },
 		  ]
       })
     ],

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>庄子祠堂记 - 苏轼 - 論語SDK</title>
+  <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    /* 严格沿用已调通的排版 */
+    .story-content p { 
+        font-family: 'Noto Serif SC', serif; 
+        font-size: 1.125rem; 
+        line-height: 2.2; 
+        color: #334155; 
+        margin-bottom: 2rem; 
+        text-align: justify;
+    }
+    .author-bio {
+        margin-top: 4rem;
+        padding: 2rem;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.8;
+    }
+    .author-bio strong { color: #1e293b; }
+  </style>
+</head>
+<body class="page-with-sticky-header">
+  <header id="global-header-wrapper"></header>
+
+  <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+    <nav class="mb-10">
+        <a href="/" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+            返回首页
+        </a>
+    </nav>
+
+    <article class="card p-6 md:p-12 shadow-sm bg-white">
+        <header class="mb-12 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">庄子祠堂记</h1>
+            <p class="text-gray-500">苏轼</p>
+        </header>
+
+        <div class="story-content">
+            <p>庄子者，蒙人也。尝为蒙漆园吏，与梁惠王、齐宣王同时。其学无所不窥，然其要本归于老子之言。故其著书十余万言，大抵率寓言也。</p>
+            <p>予昔读其书，以为其言夸诞而无实。及自颍州移守润州，道经蒙城，入其祠而观其像，叹曰：庄子之学，虽离经叛道，然其于道也，可谓深矣！</p>
+            <p>世之学者，往往谓庄子毁孔子。予观其书，凡所诋毁孔子者，皆寓言也，非实也。庄子盖敬孔子者也。其称孔子之言，往往深远而不可及。夫子之言，如《易》之乾坤，虽不可遍见，然未尝不存也。庄子之言，如风行水上，虽变幻无常，然未尝不循理也。</p>
+            <p>孔子，圣人之极致也；庄子，隐君子之极致也。圣人以礼乐治天下，隐君子以自然养其真。其用虽异，其归则一。夫道，如海也，圣人游其表，隐君子没其深。表深虽异，水则一也。</p>
+            <p>今蒙城之人，即其故居而祠之。予为之记，使后之学者知：儒、道虽殊途，然其追求万物之理、人之本心，未尝有异也。庄子之言，非以乱世，乃以救世也；非以诬孔子，乃以明孔子也。</p>
+
+            <div class="author-bio">
+                <p><strong>作者简介：</strong> 苏轼（1037-1101），北宋著名文学家、书画家、思想家。他一生出入儒道佛三家，主张博观约取，厚积薄发。在《庄子祠堂记》中，他以宏阔的胸襟消解了儒道之争，认为庄子的“自然”与孔子的“仁义”在最高境界上是相通的。</p>
+            </div>
+        </div>
+    </article>
+
+    <nav class="chapter-navigation mt-12">
+        <a href="/articles/wang-xiaobo-guoxue.html" class="nav-prev">
+            <span class="arrow">&larr;</span>
+            <div class="text">
+                <span class="label">上一篇</span>
+                <span class="title">王小波：我看国学</span>
+            </div>
+        </a>
+    </nav>
+  </div>
+
+  <div id="analects-global-widget-container"></div>
+  
+  <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+    <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="/v2/analects.js"></script>
+  <script type="module">
+      /* 沿用王小波篇已调通的初始化逻辑 */
+      const sdk = new AnalectsSDK({
+          headerId: 'global-header-wrapper',
+          footerId: 'analects-global-widget-container'
+      });
+      
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+      
+      if (window.lucide) {
+          lucide.createIcons();
+      }
+  </script>
+</body>
+</html>

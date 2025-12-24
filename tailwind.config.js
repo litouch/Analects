@@ -5,6 +5,7 @@ module.exports = {
     './my-favorites.html',
 	'./chapters/**/*.html',
 	'./stories/**/*.html',
+  './articles/**/*.html',
     './src/**/*.js',
   ],
   theme: {
