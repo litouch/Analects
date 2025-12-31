@@ -2,25 +2,25 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>论语学习平台 | 学生与爱好者的论语笔记、心得与查询工具</title>
+  <title>论语学习与检索平台 | 原文、白话、英译对照与学习笔记</title>
   <link rel="stylesheet" href="/v2/analects.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="description" content="一个专为中小学生、教师及论语爱好者打造的在线学习平台。提供每日论语、全文检索、个人学习笔记与心得分享功能，是您自学和研读《论语》的得力助手。">
-  <meta name="keywords" content="论语,论语学习,学生论语,小学生论语,中学生论语学习,论语自学,论语笔记,论语心得,论语体会,论语全文,论语查询,论语搜索,论语检索,每日论语,论语学习平台,论语SDK,国学经典,孔子,儒家思想,论语爱好者">
+  <meta name="description" content="一个以检索为核心的《论语》学习平台。支持原文、杨伯峻白话本与 James Legge 英译本对照阅读，可按人物、论点与成语谚语检索论语条目，并提供每日论语、收藏与学习笔记分享功能，适合学生、教师与论语学习者使用。">
+  <meta name="keywords" content="论语,论语检索,论语学习,论语原文,杨伯峻论语,James Legge论语,论语笔记,论语心得,论语搜索,每日论语,论语人物,论语成语">
   <meta name="author" content="lehua.li">
 
-  <meta property="og:title" content="论语学习平台 | 学生与爱好者的论语笔记、心得与查询工具">
-  <meta property="og:description" content="一个专为中小学生、教师及论语爱好者打造的在线学习平台。提供每日论语、全文检索、个人学习笔记与心得分享功能，是您自学和研读《论语》的得力助手。">
+  <meta property="og:title" content="论语学习与检索平台 | 原文、白话、英译对照与学习笔记">
+  <meta property="og:description" content="一个以检索为核心的《论语》学习平台。支持原文、杨伯峻白话本与 James Legge 英译本对照阅读，可按人物、论点与成语谚语检索论语条目，并提供每日论语、收藏与学习笔记分享功能，适合学生、教师与论语学习者使用。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.lunyu.xyz/">
   <meta property="og:image" content="https://www.lunyu.xyz/og-image.png">
-  <meta property="og:site_name" content="论语SDK">
+  <meta property="og:site_name" content="论语学习与检索平台 | 原文、白话、英译对照与学习笔记">
   <meta property="og:locale" content="zh_CN">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="论语学习平台 | 学生与爱好者的论语笔记、心得与查询工具">
-  <meta name="twitter:description" content="一个专为中小学生、教师及论语爱好者打造的在线学习平台。提供每日论语、全文检索、个人学习笔记与心得分享功能，是您自学和研读《论语》的得力助手。">
+  <meta name="twitter:title" content="论语学习与检索平台 | 原文、白话、英译对照与学习笔记">
+  <meta name="twitter:description" content="一个以检索为核心的《论语》学习平台。支持原文、杨伯峻白话本与 James Legge 英译本对照阅读，可按人物、论点与成语谚语检索论语条目，并提供每日论语、收藏与学习笔记分享功能，适合学生、教师与论语学习者使用。">
   <meta name="twitter:image" content="https://www.lunyu.xyz/og-image.png">
   
   <link rel="icon" type="image/png" href="https://www.lunyu.xyz/favicon.ico">
@@ -32,10 +32,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "论语SDK",
+    "name": "论语学习与检索平台 | 原文、白话、英译对照与学习笔记",
     "alternateName": "每日论语",
     "url": "https://www.lunyu.xyz/",
-    "description": "一个开源的论语SDK和论语学习平台，提供每日论语、论语查询、随机章句、论语收藏、我的论语笔记等功能，致力于传播中华传统文化。",
+    "description": "一个以检索为核心的《论语》学习平台。支持原文、杨伯峻白话本与 James Legge 英译本对照阅读，可按人物、论点与成语谚语检索论语条目，并提供每日论语、收藏与学习笔记分享功能，适合学生、教师与论语学习者使用",
     "inLanguage": "zh-CN",
     "author": {
       "@type": "Person",
@@ -99,11 +99,20 @@
   <div class="container mx-auto max-w-5xl px-4 py-8">
 
     <header class="text-center mb-8">
-      <h1 class="font-logo text-4xl md:text-5xl font-normal text-gray-900 mb-2">
-        論語SDK
+      <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
+        论语学习与检索平台
       </h1>
-      <p class="text-lg md:text-xl font-medium text-gray-500 tracking-tight">
-        专为学生、教师和论语爱好者打造的学习与笔记平台
+      
+      <p class="text-xl text-slate-500 max-w-2xl mx-auto">
+        原文 · 白话 · 英译 · 笔记
+      </p>
+
+      <p class="mt-6 max-w-3xl mx-auto text-base text-slate-600 leading-relaxed hidden md:block">
+          本站是一个以检索为核心的《论语》学习平台，
+          提供原文、杨伯峻白话本与 James Legge 英译本对照阅读，
+          支持按<strong>人物</strong>、<strong>论点</strong>与<strong>成语谚语</strong>检索论语条目。
+          学习过程中，你可以收藏条目、记录并分享个人心得，
+          逐步建立属于自己的《论语》理解体系。
       </p>
     </header>
     <div id="header-sentinel" style="height: 1px;"></div>
