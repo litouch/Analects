@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>公冶长 | 论语全文检索</title>
+  <link rel="stylesheet" href="/v2/analects.css" />
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* 粘性页头补丁 */
+    .sticky-header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid #f1f5f9; }
+    .breadcrumb-nav { display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 900; color: #94a3b8; letter-spacing: 0.2em; margin-bottom: 40px; text-transform: uppercase; }
+    .breadcrumb-item.active { color: #1e293b; }
+    .breadcrumb-separator { color: #cbd5e1; font-weight: 300; }
+  </style>
+</head>
+<body class="bg-slate-50/50">
+  <header id="global-header-wrapper" class="sticky-header"></header>
+  
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <nav class="breadcrumb-nav">
+      <a href="/" class="hover:text-blue-600">HOME</a>
+      <span class="breadcrumb-separator">/</span>
+      
+        <a href="/people/index.html" class="hover:text-blue-600">PEOPLE</a>
+        <span class="breadcrumb-separator">/</span>
+      
+        <a href="" class="breadcrumb-item active">公冶长</a>
+        
+      
+    </nav>
+
+    <div class="analects-search-container">
+      <div class="analects-results-container">
+        
+    <div class="person-detail-header mb-16">
+      <div class="flex items-center gap-4 mb-6">
+        <h1 class="text-5xl font-black text-slate-900">公冶长</h1>
+        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black rounded-lg border border-blue-100 uppercase">孔子弟子</span>
+      </div>
+      <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+        <p class="text-2xl text-slate-600 leading-relaxed font-serif"></p>
+      </div>
+    </div>
+    <div class="results-title flex items-center gap-4 mb-10">
+      <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">相关论语条目 / 1</h2>
+      <div class="flex-grow h-[1px] bg-slate-100"></div>
+    </div>
+    <div id="static-entries-list">
+  <div class="analect-card" data-entry-id="93">
+    <div class="card-header">
+      <div class="tags-container">
+        <span class="chapter-tag">公冶长篇 第五</span>
+      </div>
+      <div class="actions-container">
+        <button class="action-btn-favorite" data-id="93" title="收藏">
+          <i data-lucide="heart"></i>
+        </button>
+        <button class="action-btn-copy" data-content="5.1子谓公冶长⑴，“可妻⑵也。虽在缧绁⑶之中，非其罪也。”以其子⑷妻之。" title="复制原文">
+          <i data-lucide="copy"></i>
+        </button>
+      </div>
+    </div>
+    <div class="entry-content">
+      <p class="original-text">5.1子谓公冶长⑴，“可妻⑵也。虽在缧绁⑶之中，非其罪也。”以其子⑷妻之。</p>
+    </div>
+    <div class="translations-container">
+      <div class="translation-item">
+        <div class="translation-label">
+          <span class="label-line"></span>白话本 (杨伯峻)
+        </div>
+        <p class="translation-text">孔子说公冶长，“可以把女儿嫁给他。他虽然曾被关在监狱之中，但不是他的罪过。”便把自己的女儿嫁给他。</p>
+      </div>
+      
+      <div class="translation-item">
+        <div class="translation-label">
+          <span class="label-line"></span>English (Legge)
+        </div>
+        <p class="translation-text english">The Master said of Gong Ye Chang that he might be wived; although he was put in bonds, he had not been guilty of any crime. Accordingly, he gave him his own daughter to wife.</p>
+      </div>
+    </div>
+  </div></div>
+  
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-24 py-16 border-t border-slate-100 bg-white text-center">
+    <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">&copy; 2026 www.lunyu.xyz</p>
+  </footer>
+
+  <script type="module">
+    import { AnalectsSDK } from '/v2/analects.js';
+    const sdk = new AnalectsSDK({ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' });
+    window.sdk = sdk;
+    await sdk.init();
+    sdk.renderGlobalHeader();
+    if(window.lucide) window.lucide.createIcons();
+
+    // 激活卡片收藏状态 (水合)
+    const cards = document.querySelectorAll('.analect-card');
+    if (sdk.currentUser && sdk.favoriteIds) {
+      cards.forEach(card => {
+        if (sdk.favoriteIds.has(card.dataset.entryId)) {
+          card.querySelector('.action-btn-favorite')?.classList.add('active');
+        }
+      });
+    }
+    // 绑定事件 (SDK内部逻辑)
+    document.addEventListener('click', async (e) => {
+      const copyBtn = e.target.closest('.action-btn-copy');
+      if (copyBtn) {
+        await navigator.clipboard.writeText(copyBtn.dataset.content);
+        if(window.showToast) showToast('已复制原文');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>阳肤 | 论语全文检索</title>
+  <link rel="stylesheet" href="/v2/analects.css" />
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* 粘性页头补丁 */
+    .sticky-header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid #f1f5f9; }
+    .breadcrumb-nav { display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 900; color: #94a3b8; letter-spacing: 0.2em; margin-bottom: 40px; text-transform: uppercase; }
+    .breadcrumb-item.active { color: #1e293b; }
+    .breadcrumb-separator { color: #cbd5e1; font-weight: 300; }
+  </style>
+</head>
+<body class="bg-slate-50/50">
+  <header id="global-header-wrapper" class="sticky-header"></header>
+  
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <nav class="breadcrumb-nav">
+      <a href="/" class="hover:text-blue-600">HOME</a>
+      <span class="breadcrumb-separator">/</span>
+      
+        <a href="/people/index.html" class="hover:text-blue-600">PEOPLE</a>
+        <span class="breadcrumb-separator">/</span>
+      
+        <a href="" class="breadcrumb-item active">阳肤</a>
+        
+      
+    </nav>
+
+    <div class="analects-search-container">
+      <div class="analects-results-container">
+        
+    <div class="person-detail-header mb-16">
+      <div class="flex items-center gap-4 mb-6">
+        <h1 class="text-5xl font-black text-slate-900">阳肤</h1>
+        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black rounded-lg border border-blue-100 uppercase">其他</span>
+      </div>
+      <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+        <p class="text-2xl text-slate-600 leading-relaxed font-serif">阳肤是《论语》中提及的人物，多在具体政务或处世语境中出现。孔子借相关议论，提醒士人行事应谨慎自守，不可因一时得失而偏离礼义之道，体现了儒家对稳重与分寸的重视。</p>
+      </div>
+    </div>
+    <div class="results-title flex items-center gap-4 mb-10">
+      <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">相关论语条目 / 1</h2>
+      <div class="flex-grow h-[1px] bg-slate-100"></div>
+    </div>
+    <div id="static-entries-list">
+  <div class="analect-card" data-entry-id="503">
+    <div class="card-header">
+      <div class="tags-container">
+        <span class="chapter-tag">子张篇 第十九</span>
+      </div>
+      <div class="actions-container">
+        <button class="action-btn-favorite" data-id="503" title="收藏">
+          <i data-lucide="heart"></i>
+        </button>
+        <button class="action-btn-copy" data-content="19.19孟氏使阳肤⑴为士师，问于曾子。曾子曰：“上失其道，民散⑵久矣。如得其情，则哀矜而勿喜！”" title="复制原文">
+          <i data-lucide="copy"></i>
+        </button>
+      </div>
+    </div>
+    <div class="entry-content">
+      <p class="original-text">19.19孟氏使阳肤⑴为士师，问于曾子。曾子曰：“上失其道，民散⑵久矣。如得其情，则哀矜而勿喜！”</p>
+    </div>
+    <div class="translations-container">
+      <div class="translation-item">
+        <div class="translation-label">
+          <span class="label-line"></span>白话本 (杨伯峻)
+        </div>
+        <p class="translation-text">孟氏任命阳肤做法官，阳肤向曾子求教。曾子道：“现今在上位的人不依规矩行事，百姓早就离心离德了。你假若能够审出罪犯的真情，便应该同情他，可怜他，切不要自鸣得意！”</p>
+      </div>
+      
+      <div class="translation-item">
+        <div class="translation-label">
+          <span class="label-line"></span>English (Legge)
+        </div>
+        <p class="translation-text english">The chief of the Meng family having appointed Yang Fu to be chief criminal judge, the latter consulted the philosopher Zeng. Zeng said, &quot;The rulers have failed in their duties, and the people consequently have been disorganized, for a long time. When you have found out the truth of any accusation, be grieved for and pity them, and do not feel joy at your own ability.&quot;</p>
+      </div>
+    </div>
+  </div></div>
+  
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-24 py-16 border-t border-slate-100 bg-white text-center">
+    <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">&copy; 2026 www.lunyu.xyz</p>
+  </footer>
+
+  <script type="module">
+    import { AnalectsSDK } from '/v2/analects.js';
+    const sdk = new AnalectsSDK({ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' });
+    window.sdk = sdk;
+    await sdk.init();
+    sdk.renderGlobalHeader();
+    if(window.lucide) window.lucide.createIcons();
+
+    // 激活卡片收藏状态 (水合)
+    const cards = document.querySelectorAll('.analect-card');
+    if (sdk.currentUser && sdk.favoriteIds) {
+      cards.forEach(card => {
+        if (sdk.favoriteIds.has(card.dataset.entryId)) {
+          card.querySelector('.action-btn-favorite')?.classList.add('active');
+        }
+      });
+    }
+    // 绑定事件 (SDK内部逻辑)
+    document.addEventListener('click', async (e) => {
+      const copyBtn = e.target.closest('.action-btn-copy');
+      if (copyBtn) {
+        await navigator.clipboard.writeText(copyBtn.dataset.content);
+        if(window.showToast) showToast('已复制原文');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+/* 单列. 产品感. 框体为主但更大气. 不像 blog */
+    :root{
+      --max: 1120px;
+      --page: #f8fafc;
+      --bg: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --muted2: #64748b;
+      --border: rgba(226,232,240,1);
+      --border2: rgba(203,213,225,.9);
+      --card: #ffffff;
+      --shadow: 0 1px 2px rgba(15,23,42,.05);
+      --shadow2: 0 16px 40px rgba(15,23,42,.10);
+      --r: 22px;
+    }
+
+    body{
+      background:
+        radial-gradient(1200px 700px at 50% -140px, rgba(15,23,42,.06), transparent 70%),
+        linear-gradient(to bottom, var(--page), var(--bg));
+      color: var(--ink);
+      scroll-behavior: smooth;
+    }
+
+    /* 头像与标题对齐. 不改 SDK 结构. 只统一高度与对齐 */
+    #global-header-wrapper .global-header-inner { height: 64px; }
+    #global-header-wrapper .header-left-area,
+    #global-header-wrapper .header-right-area { align-items: center; }
+    #global-header-wrapper .user-menu-button,
+    #global-header-wrapper .header-login-btn{
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+    }
+    #global-header-wrapper .user-avatar-display{ width:32px; height:32px; }
+
+    /* Header 两态. 参考 mercury. 顶部无分割线. 下滑后出现 */
+    body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled){
+      background: transparent !important;
+      border-bottom-color: transparent !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+    }
+    body:has(#header-sentinel) #global-header-wrapper.is-scrolled{
+      background: rgba(255,255,255,0.92) !important;
+      border-bottom: 1px solid rgba(226,232,240,0.95) !important;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.06) !important;
+      backdrop-filter: saturate(180%) blur(10px);
+    }
+
+
+    /* 基础字体与标题. 与 index 保持一致 */
+    body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    h1,h2,h3,h4,h5,h6{ font-family:'Noto Serif SC', serif; font-weight:600; }
+    .font-logo{ font-family:'Zen Antique Soft', serif; }
+
+    /* 修复全局页头. 站点标题与右侧菜单垂直居中 */
+    #global-header-wrapper .global-header-inner{
+      display:flex;
+      align-items:center;
+      min-height:64px;
+    }
+    #global-header-wrapper .header-mini-logo,
+    #global-header-wrapper h1,
+    #global-header-wrapper .header-title{
+      display:flex;
+      align-items:center;
+      line-height:1;
+      font-family:'Zen Antique Soft', serif;
+      font-weight:600;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    #global-header-wrapper .header-left-area,
+    #global-header-wrapper .header-right-area{
+      display:flex;
+      align-items:center;
+    }
+
+    /* 让 link 样式也适用于 button */
+    button.link{
+      appearance:none;
+      background: none;
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    
+    /* 全局页头垂直居中对齐. 强制对齐到同一中线 */
+    #global-header-wrapper .global-header-inner{
+      display:flex;
+      align-items:center;
+    }
+    #global-header-wrapper .header-mini-logo{
+      display:inline-flex;
+      align-items:center;
+      line-height: 1;
+    }
+    #global-header-wrapper .header-left-area,
+    #global-header-wrapper .header-right-area{
+      display:flex;
+      align-items:center;
+    }
+
+    /* 让 qbtn 也适用于 button */
+    button.qbtn{
+      appearance:none;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    /* 嵌入代码模态框. 纯 CSS 版本 */
+    #embedModal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      z-index: 4000;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .28s ease;
+    }
+    #embedModal.open{ opacity:1; pointer-events:auto; }
+    #modalContent{
+      width: min(720px, 100%);
+      max-height: 90vh;
+      background: rgba(255,255,255,.98);
+      border: 1px solid rgba(15,23,42,.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(15,23,42,.28);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      transform: scale(.96);
+      transition: transform .28s ease;
+    }
+    #embedModal.open #modalContent{ transform: scale(1); }
+    .embedModalHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+    }
+    #modalTitle{ margin:0; font-size:16px; font-weight:650; color: var(--ink); }
+    .embedClose{
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.92);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 22px;
+      line-height: 1;
+      color: rgba(15,23,42,.7);
+    }
+    .embedBody{ padding: 16px; overflow:auto; }
+    .embedHint{
+      font-size: 13px;
+      color: rgba(15,23,42,.72);
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.18);
+      border-left: 4px solid rgba(59,130,246,.55);
+      padding: 10px 12px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+    .codeBox{
+      position:relative;
+      background: rgba(15,23,42,.94);
+      color: rgba(226,232,240,.92);
+      border-radius: 14px;
+      padding: 14px;
+      overflow:hidden;
+    }
+    .codeBox pre{
+      margin:0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      padding-right: 72px;
+    }
+    .copyBtn{
+      position:absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,.25);
+      background: rgba(148,163,184,.18);
+      color: rgba(248,250,252,.95);
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor:pointer;
+    }
+    .copyBtn:hover{ background: rgba(148,163,184,.28); }
+
+    /* toast 显示/隐藏 */
+    #toast{
+      transform: translateX(120%);
+      transition: transform .28s ease;
+    }
+    #toast.show{ transform: translateX(0); }
+    #toast.error{ background-color: #e53e3e; }
+
+
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0px 16px 44px;
+      overflow: visible;
+    }
+
+    /* Hero. 更像产品落地页 */
+    .hero{
+      padding: 40px 10px 16px;
+      text-align: center;
+    }
+    .hero h1{
+      font-size: clamp(36px, 4.4vw, 64px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin: 0;
+      color: var(--ink);
+    }
+    .hero .subtitle{
+      margin-top: 12px;
+      font-size: 17px;
+      color: var(--muted2);
+    }
+    .hero .desc{
+      margin: 20px auto 0;
+      max-width: 880px;
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--muted);
+    }
+
+    /* 快速入口. 单列内的一条“控制台”式按钮行 */
+    .quick{
+      margin-top: 26px;
+      display:flex;
+      gap: 10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .qbtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 11px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border2);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      text-decoration:none;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--ink);
+      transition: box-shadow .15s ease, background .15s ease, transform .15s ease;
+      white-space: nowrap;
+    }
+    .qbtn:hover{
+      background:#fff;
+      box-shadow: var(--shadow2);
+      transform: translateY(-1px);
+    }
+    .qbtn.primary{
+      border-color: rgba(37,99,235,.35);
+      background: rgba(37,99,235,.06);
+    }
+
+    /* 主内容. 单列框体 */
+    .stack{
+      margin-top: 22px;
+      display: grid;
+      gap: 16px;
+      overflow: visible;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow: visible; /* 避免弹层被裁切 */
+    }
+
+    /* 搜索卡. 主体. 大留白. */
+    .search-card{
+      padding: 18px 18px 22px;
+    }
+    @media (min-width: 768px){
+      .search-card{ padding: 22px 22px 26px; }
+    }
+
+    .card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .card-title{
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      color: #1e293b;
+    }
+    .card-sub{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted2);
+    }
+
+    .link{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border2);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      text-decoration:none;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--ink);
+      white-space: nowrap;
+      transition: box-shadow .15s ease, background .15s ease, transform .15s ease;
+    }
+    .link:hover{
+      background:#fff;
+      box-shadow: var(--shadow2);
+      transform: translateY(-1px);
+    }
+
+    /* 每日论语. 放在搜索上方作为“横向信息条”. 不占太多纵向 */
+    .daily-strip{
+      padding: 14px 14px;
+    }
+    @media (min-width: 768px){
+      .daily-strip{ padding: 16px 18px; }
+    }
+    .daily-shell{
+      background: rgba(248,250,252,1);
+      border: 1px solid rgba(226,232,240,.8);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    /* 首页只保留关键词搜索 */
+    .analects-selected-items,
+    .analects-advanced-filters{
+      display:none !important;
+    }
+
+    /* 禁止在祖先上做 overflow 裁切 */
+    .wrap, .stack { overflow: visible; }
+
+    /* Footer */
+    .footer{
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      color: var(--muted2);
+      font-size: 13px;
+    }
+    .footer a{ color: #2563eb; text-decoration:none; }
+    .footer a:hover{ text-decoration:underline; }
+  
+    /* Q&A / 使用指南. 为 SEO 保留纯文本. 视觉更轻. 不抢搜索主卡 */
+    .qa-section {
+      margin-top: 16px;
+    }
+    .qa-shell{
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.75);
+      padding: 18px 18px 10px;
+    }
+    @media (min-width: 768px){
+      .qa-shell{ padding: 22px 22px 12px; }
+    }
+    .qa-shell h2, .qa-shell h3{
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .qa-shell h2{
+      font-size: 18px;
+      font-weight: 850;
+      margin: 0 0 14px;
+    }
+    .qa-shell h3{
+      font-size: 15px;
+      font-weight: 800;
+      margin: 16px 0 8px;
+    }
+    .qa-shell p, .qa-shell li{
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 14px;
+    }
+    .qa-shell ul, .qa-shell ol{
+      padding-left: 18px;
+      margin: 8px 0 0;
+    }
+
+/* 首页初始状态：透明，但保留极轻边框 */
+body:has(#header-sentinel)
+  #global-header-wrapper:not(.is-scrolled)
+  .header-login-btn,
+body:has(#header-sentinel)
+  #global-header-wrapper:not(.is-scrolled)
+  .user-menu-button{
+  background: transparent !important;
+  border: 1px solid rgba(203,213,225,0.55) !important; /* 关键：未 hover 也有框 */
+  box-shadow: none !important;
+}
+
+/* hover 时稍微强化一点存在感 */
+body:has(#header-sentinel)
+  #global-header-wrapper:not(.is-scrolled)
+  .header-login-btn:hover,
+body:has(#header-sentinel)
+  #global-header-wrapper:not(.is-scrolled)
+  .user-menu-button:hover{
+  background: rgba(15,23,42,0.04) !important;
+  border-color: rgba(148,163,184,0.9) !important;
+}
+  
+@media (max-width: 768px){
+  .hero{ padding: 26px 8px 12px; }
+  .subtitle{ font-size: 15px; }
+  .hero .desc{
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+}
+
+/* ===============================
+   Home page fixed header (Mercury style)
+   =============================== */
+
+/* 1. 首页 header 始终固定在顶部 */
+body:has(#header-sentinel) #global-header-wrapper{
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* 2. 给首页内容让位，避免被 header 盖住 */
+body:has(#header-sentinel) .wrap{
+  padding-top: 72px;
+}
+
+/* 3. 顶部初始态：透明、无分割线、无阴影 */
+body:has(#header-sentinel)
+  #global-header-wrapper:not(.is-scrolled){
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+/* 4. 下滑后：出现分割线 + 轻磨砂（Mercury 风格） */
+body:has(#header-sentinel)
+  #global-header-wrapper.is-scrolled{
+  background: rgba(255,255,255,0.92) !important;
+  border-bottom: 1px solid rgba(226,232,240,0.95) !important;
+  box-shadow: 0 6px 16px rgba(15,23,42,0.06) !important;
+  backdrop-filter: saturate(180%) blur(10px);
+}
+
+/* ===============================
+   Home header. always fixed + show logo at top
+   =============================== */
+
+/* 1) 首页页头始终固定 */
+body:has(#header-sentinel) #global-header-wrapper{
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* 2) 首页内容整体下移. 避免被 header 遮挡 */
+body:has(#header-sentinel) .wrap{
+  padding-top: 84px; /* 64px header + breathing space */
+}
+
+/* 3) 复刻 mercury 两态 */
+body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled){
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+body:has(#header-sentinel) #global-header-wrapper.is-scrolled{
+  background: rgba(255,255,255,0.92) !important;
+  border-bottom: 1px solid rgba(226,232,240,0.95) !important;
+  box-shadow: 0 6px 16px rgba(15,23,42,0.06) !important;
+  backdrop-filter: saturate(180%) blur(10px);
+}
+
+/* 4) 关键. 首页未滚动时也显示 header mini logo
+   analects.css 默认让它 opacity:0. 这里只在首页强制显示 */
+body:has(#header-sentinel) #global-header-wrapper .header-mini-logo{
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* 5) 把布局改成左 logo. 右登录. 不动 SDK DOM 结构 */
+body:has(#header-sentinel) #global-header-wrapper .global-header-inner{
+  justify-content: flex-start !important;
+  gap: 12px;
+}
+body:has(#header-sentinel) #global-header-wrapper .header-left-area{
+  display: none !important; /* 欢迎语区域先隐藏掉. 让 logo 真的靠左 */
+}
+body:has(#header-sentinel) #global-header-wrapper .header-right-area{
+  margin-left: auto !important;
+  flex: 0 0 auto !important;
+}
+
+/* 6) 防止移动端 analects.css 的 top:28px 干扰 */
+@media (max-width: 767px){
+  body:has(#header-sentinel) #global-header-wrapper{
+    top: 0 !important;
+  }
+}

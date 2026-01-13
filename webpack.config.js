@@ -87,6 +87,7 @@ module.exports = (env, argv) => {
       new CopyWebpackPlugin({
         patterns: [
 		    { from: 'index.html', to: 'index.html', noErrorOnMissing: true },
+        { from: 'new.html', to: 'new.html', noErrorOnMissing: true },
         { from: 'test.html', to: 'test.html', noErrorOnMissing: true },
 		    { from: 'og-image.png', to: 'og-image.png', noErrorOnMissing: true },
 		    { from: 'robots.txt', to: 'robots.txt', noErrorOnMissing: true },
@@ -105,6 +106,7 @@ module.exports = (env, argv) => {
 			  { from: 'chapters', to: 'chapters', noErrorOnMissing: true },
 			  { from: 'stories', to: 'stories', noErrorOnMissing: true },
         { from: 'articles', to: 'articles', noErrorOnMissing: true },
+        { from: 'people', to: 'people', noErrorOnMissing: true },
 		  ]
       })
     ],

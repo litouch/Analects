@@ -1,5 +1,16 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
+    { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/favicon.ico", "destination": "/favicon.ico" },
+
+    { "source": "/people", "destination": "/people/index.html" },
+    { "source": "/people/", "destination": "/people/index.html" },
+    { "source": "/people/:path*", "destination": "/people/:path*" },
+
+    { "source": "/:path*", "destination": "/index.html" }
+  ]
 }

@@ -1,0 +1,1220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>人物索引 | 论语全文检索平台</title>
+  <link rel="stylesheet" href="/v2/analects.css" />
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sticky-header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid #f1f5f9; }
+    .breadcrumb-item:not(:last-child)::after { content: '/'; margin: 0 10px; color: #cbd5e1; font-weight: 300; }
+    .role-pill.active { background: #2563eb !important; color: white !important; border-color: #2563eb !important; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+    .sort-btn.active { color: #2563eb !important; font-weight: 800; border-bottom: 2px solid #2563eb; }
+  </style>
+</head>
+<body class="bg-slate-50/50">
+  <header id="global-header-wrapper" class="sticky-header"></header>
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <nav class="flex items-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-12">
+      <a href="/" class="hover:text-blue-600 transition-colors breadcrumb-item">HOME</a>
+      <span class="text-slate-900 breadcrumb-item">PEOPLE</span>
+    </nav>
+    <div class="analects-results-container">
+       
+    <div class="mb-16">
+      <h1 class="text-5xl font-black text-slate-900 mb-4 tracking-tight">人物索引</h1>
+      <p class="text-slate-400 font-serif italic text-lg">Index of personas and historical figures in Analects.</p>
+    </div>
+    <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 mb-12 shadow-sm">
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-wrap items-center gap-3"><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="全部">全部</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="孔子">孔子</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="孔子弟子">孔子弟子</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="先贤">先贤</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="先王">先王</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="隐士">隐士</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="诸侯">诸侯</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="卿大夫">卿大夫</button><button class="role-pill px-5 py-2 rounded-full border border-slate-200 bg-white text-xs font-black text-slate-500 hover:border-blue-500 transition-all uppercase tracking-widest" data-role="其他">其他</button></div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-8 border-t border-slate-50">
+          <div class="flex items-center gap-8">
+            <button id="sort-freq" class="sort-btn active text-[10px] font-black uppercase tracking-widest text-slate-400">BY FREQUENCY</button>
+            <button id="sort-alpha" class="sort-btn text-[10px] font-black uppercase tracking-widest text-slate-400">BY NAME</button>
+          </div>
+          <div class="relative w-full max-w-sm">
+            <input id="q-input" type="search" placeholder="SEARCH NAME..." class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-xs font-bold tracking-widest focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-ye-chang.html'"
+        data-role="孔子弟子" data-name="公冶长" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-ye-chang.html">公冶长</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/kang-zi.html'"
+        data-role="卿大夫" data-name="康子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/kang-zi.html">康子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/shi-shu.html'"
+        data-role="卿大夫" data-name="世叔（子太叔，游吉）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/shi-shu.html">世叔（子太叔，游吉）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-fu-jing-bo.html'"
+        data-role="卿大夫" data-name="子服景伯（子服何）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-fu-jing-bo.html">子服景伯（子服何）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yuan-rang.html'"
+        data-role="其他" data-name="原壤" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yuan-rang.html">原壤</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ru-bei.html'"
+        data-role="其他" data-name="孺悲" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ru-bei.html">孺悲</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/chang-ju-jie-ni.html'"
+        data-role="隐士" data-name="长沮、桀溺（两人）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/chang-ju-jie-ni.html">长沮、桀溺（两人）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">隐士</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhou.html'"
+        data-role="先王" data-name="纣" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhou.html">纣</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先王</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gao-yao.html'"
+        data-role="先贤" data-name="皋陶" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gao-yao.html">皋陶</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/lao.html'"
+        data-role="其他" data-name="牢" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/lao.html">牢</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/nan-rong.html'"
+        data-role="孔子弟子" data-name="南容（子容/南宫适）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/nan-rong.html">南容（子容/南宫适）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-jian.html'"
+        data-role="孔子弟子" data-name="子贱（宓不齐）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-jian.html">子贱（宓不齐）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/meng-jing-zi.html'"
+        data-role="卿大夫" data-name="孟敬子（仲孙捷）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/meng-jing-zi.html">孟敬子（仲孙捷）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-xi-hua.html'"
+        data-role="孔子弟子" data-name="公西华（子华/公西赤）" data-count="5">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-xi-hua.html">公西华（子华/公西赤）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">5 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/shen-cheng.html'"
+        data-role="孔子弟子" data-name="申枨（申党）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/shen-cheng.html">申枨（申党）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/kong-wen-zi.html'"
+        data-role="卿大夫" data-name="孔文子（孔圉，仲叔圉）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/kong-wen-zi.html">孔文子（孔圉，仲叔圉）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-chan.html'"
+        data-role="卿大夫" data-name="子产（公孙侨）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-chan.html">子产（公孙侨）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yan-ying.html'"
+        data-role="卿大夫" data-name="晏婴（晏平仲）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yan-ying.html">晏婴（晏平仲）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-xia.html'"
+        data-role="孔子弟子" data-name="子夏（卜商）" data-count="20">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-xia.html">子夏（卜商）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">20 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-qin.html'"
+        data-role="孔子弟子" data-name="子禽（陈亢）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-qin.html">子禽（陈亢）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/meng-xi-zi.html'"
+        data-role="孔子弟子" data-name="孟懿子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/meng-xi-zi.html">孟懿子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ran-you.html'"
+        data-role="孔子弟子" data-name="冉有（冉求）" data-count="16">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ran-you.html">冉有（冉求）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">16 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-wen.html'"
+        data-role="卿大夫" data-name="子文（鬬谷于菟）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-wen.html">子文（鬬谷于菟）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/cui-zi.html'"
+        data-role="卿大夫" data-name="崔子（崔杼）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/cui-zi.html">崔子（崔杼）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/chen-wen-zi.html'"
+        data-role="卿大夫" data-name="陈文子（须无）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/chen-wen-zi.html">陈文子（须无）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/qi-zhuang-gong.html'"
+        data-role="诸侯" data-name="齐庄公" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/qi-zhuang-gong.html">齐庄公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ji-wen-zi.html'"
+        data-role="卿大夫" data-name="季文子（季孙行父）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ji-wen-zi.html">季文子（季孙行父）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ning-wu-zi.html'"
+        data-role="卿大夫" data-name="宁武子（宁俞）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ning-wu-zi.html">宁武子（宁俞）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zuo-qiu-ming.html'"
+        data-role="其他" data-name="左丘明" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zuo-qiu-ming.html">左丘明</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/bo-yi-shu-qi.html'"
+        data-role="先贤" data-name="伯夷、叔齐" data-count="4">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/bo-yi-shu-qi.html">伯夷、叔齐</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">4 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yuan-si.html'"
+        data-role="孔子弟子" data-name="原思（原宪/子思）
+" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yuan-si.html">原思（原宪/子思）
+</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/min-zi-qian.html'"
+        data-role="孔子弟子" data-name="闵子骞（闵损）" data-count="5">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/min-zi-qian.html">闵子骞（闵损）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">5 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/meng-zhi-fan.html'"
+        data-role="其他" data-name="孟之反（孟之侧）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/meng-zhi-fan.html">孟之反（孟之侧）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhu-tuo.html'"
+        data-role="卿大夫" data-name="祝佗（子鱼，史鳅）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhu-tuo.html">祝佗（子鱼，史鳅）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-zi-zhao.html'"
+        data-role="其他" data-name="公子朝（宋朝）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-zi-zhao.html">公子朝（宋朝）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/nan-zi.html'"
+        data-role="其他" data-name="南子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/nan-zi.html">南子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yao-shun-yu.html'"
+        data-role="先王" data-name="尧舜禹" data-count="10">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yao-shun-yu.html">尧舜禹</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">10 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先王</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/lao-peng.html'"
+        data-role="其他" data-name="老彭" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/lao-peng.html">老彭</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/meng-gong-chuo.html'"
+        data-role="卿大夫" data-name="孟公绰" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/meng-gong-chuo.html">孟公绰</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/fan-chi.html'"
+        data-role="孔子弟子" data-name="樊迟（子迟）" data-count="6">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/fan-chi.html">樊迟（子迟）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">6 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/meng-wu-bo.html'"
+        data-role="卿大夫" data-name="孟武伯" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/meng-wu-bo.html">孟武伯</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-zhang.html'"
+        data-role="孔子弟子" data-name="子张（颛孙师）" data-count="18">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-zhang.html">子张（颛孙师）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">18 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/lu-ai-gong.html'"
+        data-role="诸侯" data-name="鲁哀公" data-count="5">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/lu-ai-gong.html">鲁哀公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">5 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ji-kang-zi.html'"
+        data-role="卿大夫" data-name="季康子" data-count="7">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ji-kang-zi.html">季康子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">7 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ji-ping-zi.html'"
+        data-role="卿大夫" data-name="季平子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ji-ping-zi.html">季平子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/san-huan.html'"
+        data-role="卿大夫" data-name="三桓" data-count="12">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/san-huan.html">三桓</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">12 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/lin-fang.html'"
+        data-role="其他" data-name="林放" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/lin-fang.html">林放</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wang-sun-gu.html'"
+        data-role="卿大夫" data-name="王孙贾" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wang-sun-gu.html">王孙贾</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/lu-ding-gong.html'"
+        data-role="诸侯" data-name="鲁定公" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/lu-ding-gong.html">鲁定公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yan-hui.html'"
+        data-role="孔子弟子" data-name="颜回（颜渊/子渊）" data-count="21">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yan-hui.html">颜回（颜渊/子渊）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">21 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/guan-zhong.html'"
+        data-role="先贤" data-name="管仲" data-count="4">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/guan-zhong.html">管仲</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">4 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/qi-diao-kai.html'"
+        data-role="孔子弟子" data-name="漆雕开（子开）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/qi-diao-kai.html">漆雕开（子开）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ran-bo-niu.html'"
+        data-role="孔子弟子" data-name="冉伯牛（冉耕）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ran-bo-niu.html">冉伯牛（冉耕）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wei-zi.html'"
+        data-role="先贤" data-name="微子（名启）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wei-zi.html">微子（名启）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-xi.html'"
+        data-role="卿大夫" data-name="子西（公孙夏）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-xi.html">子西（公孙夏）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wei-gong-zi-jing.html'"
+        data-role="其他" data-name="卫公子荆" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wei-gong-zi-jing.html">卫公子荆</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/qi-jing-gong.html'"
+        data-role="诸侯" data-name="齐景公" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/qi-jing-gong.html">齐景公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/chen-cheng-zi.html'"
+        data-role="卿大夫" data-name="陈成子（陈恒）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/chen-cheng-zi.html">陈成子（陈恒）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wei-ling-gong.html'"
+        data-role="诸侯" data-name="卫灵公" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wei-ling-gong.html">卫灵公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/qi-jian-gong.html'"
+        data-role="诸侯" data-name="齐简公" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/qi-jian-gong.html">齐简公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/qu-bo-yu.html'"
+        data-role="卿大夫" data-name="蘧伯玉（蘧瑗）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/qu-bo-yu.html">蘧伯玉（蘧瑗）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/shao-hu.html'"
+        data-role="卿大夫" data-name="召忽" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/shao-hu.html">召忽</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/jin-wen-gong.html'"
+        data-role="诸侯" data-name="晋文公（重耳）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/jin-wen-gong.html">晋文公（重耳）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/qi-huan-gong.html'"
+        data-role="诸侯" data-name="齐桓公（小白）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/qi-huan-gong.html">齐桓公（小白）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhuan.html'"
+        data-role="卿大夫" data-name="僎" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhuan.html">僎</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-shu-wen-zi.html'"
+        data-role="卿大夫" data-name="公叔文子" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-shu-wen-zi.html">公叔文子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/bian-zhuang-zi.html'"
+        data-role="其他" data-name="卞庄子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/bian-zhuang-zi.html">卞庄子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/bo-yan.html'"
+        data-role="卿大夫" data-name="伯偃（伯氏）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/bo-yan.html">伯偃（伯氏）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/pi-chen.html'"
+        data-role="卿大夫" data-name="裨谌" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/pi-chen.html">裨谌</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ao.html'"
+        data-role="其他
+" data-name="奡" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ao.html">奡</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他
+</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yi.html'"
+        data-role="其他
+" data-name="羿" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yi.html">羿</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他
+</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-ming-jia.html'"
+        data-role="孔子弟子" data-name="公明贾" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-ming-jia.html">公明贾</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-yu.html'"
+        data-role="卿大夫" data-name="子羽（公孙挥）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-yu.html">子羽（公孙挥）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-bo-liao.html'"
+        data-role="孔子弟子" data-name="公伯寮（子周，公伯僚）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-bo-liao.html">公伯寮（子周，公伯僚）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ji-zi-cheng.html'"
+        data-role="卿大夫" data-name="棘子成" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ji-zi-cheng.html">棘子成</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/you-zi.html'"
+        data-role="孔子弟子" data-name="有子（有若/子有）" data-count="4">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/you-zi.html">有子（有若/子有）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">4 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-lu.html'"
+        data-role="孔子弟子" data-name="子路（季路/仲由）" data-count="39">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-lu.html">子路（季路/仲由）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">39 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zeng-zi.html'"
+        data-role="孔子弟子" data-name="曾子（曾参）" data-count="15">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zeng-zi.html">曾子（曾参）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">15 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yin-gao-zong.html'"
+        data-role="先王" data-name="殷高宗" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yin-gao-zong.html">殷高宗</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先王</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/liu-xia-hui.html'"
+        data-role="卿大夫" data-name="柳下惠（展获，字禽，展季）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/liu-xia-hui.html">柳下惠（展获，字禽，展季）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/mian.html'"
+        data-role="其他" data-name="冕（乐师）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/mian.html">冕（乐师）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhou-ren.html'"
+        data-role="先贤" data-name="周任" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhou-ren.html">周任</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yang-hu.html'"
+        data-role="卿大夫" data-name="阳虎（阳货）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yang-hu.html">阳虎（阳货）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-shan-fu-rao.html'"
+        data-role="卿大夫" data-name="公山弗扰（疑公山不狃）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-shan-fu-rao.html">公山弗扰（疑公山不狃）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/fo-xi.html'"
+        data-role="卿大夫" data-name="佛肸" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/fo-xi.html">佛肸</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ji-zi.html'"
+        data-role="先贤" data-name="箕子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ji-zi.html">箕子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/bi-gan.html'"
+        data-role="先贤" data-name="比干" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/bi-gan.html">比干</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ji-huan-zi.html'"
+        data-role="卿大夫" data-name="季桓子（季孙斯）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ji-huan-zi.html">季桓子（季孙斯）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/jie-yu.html'"
+        data-role="隐士" data-name="接舆" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/jie-yu.html">接舆</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">隐士</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yu-zhong-yi-yi-zhu-zhang-shao-lian.html'"
+        data-role="隐士" data-name="虞仲、夷逸、朱张、少连（四人）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yu-zhong-yi-yi-zhu-zhang-shao-lian.html">虞仲、夷逸、朱张、少连（四人）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">隐士</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/meng-zhuang-zi.html'"
+        data-role="其他" data-name="孟庄子（仲孙速）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/meng-zhuang-zi.html">孟庄子（仲孙速）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yang-fu.html'"
+        data-role="其他" data-name="阳肤" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yang-fu.html">阳肤</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/kong-zi.html'"
+        data-role="孔子" data-name="孔子（夫子）" data-count="463">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/kong-zi.html">孔子（夫子）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">463 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/tang.html'"
+        data-role="先王" data-name="汤" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/tang.html">汤</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先王</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yi-yin.html'"
+        data-role="先贤" data-name="伊尹" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yi-yin.html">伊尹</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/gong-sun-chao.html'"
+        data-role="其他" data-name="公孙朝（卫）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/gong-sun-chao.html">公孙朝（卫）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-you.html'"
+        data-role="孔子弟子" data-name="子游（言偃）" data-count="8">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-you.html">子游（言偃）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">8 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zang-wen-zhong.html'"
+        data-role="卿大夫" data-name="臧文仲（臧孙辰）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zang-wen-zhong.html">臧文仲（臧孙辰）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zeng-xi.html'"
+        data-role="孔子弟子" data-name="曾晳" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zeng-xi.html">曾晳</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/yan-lu.html'"
+        data-role="孔子弟子" data-name="颜路" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/yan-lu.html">颜路</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhou-wu-wang.html'"
+        data-role="先王" data-name="周武王" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhou-wu-wang.html">周武王</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先王</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/kong-li.html'"
+        data-role="孔子弟子" data-name="孔鲤（伯鱼）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/kong-li.html">孔鲤（伯鱼）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wei-sheng-mu.html'"
+        data-role="其他" data-name="微生亩" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wei-sheng-mu.html">微生亩</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/bo-qin.html'"
+        data-role="诸侯" data-name="伯禽（鲁公）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/bo-qin.html">伯禽（鲁公）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/si-ma-niu.html'"
+        data-role="孔子弟子" data-name="司马牛（子牛）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/si-ma-niu.html">司马牛（子牛）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-gao.html'"
+        data-role="孔子弟子" data-name="子羔（高柴）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-gao.html">子羔（高柴）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhou-wen-wang.html'"
+        data-role="先王" data-name="周文王" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhou-wen-wang.html">周文王</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先王</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-gong.html'"
+        data-role="孔子弟子" data-name="子贡（端木赐）" data-count="37">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-gong.html">子贡（端木赐）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">37 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zai-wo.html'"
+        data-role="孔子弟子" data-name="宰我（子我，宰予）" data-count="5">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zai-wo.html">宰我（子我，宰予）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">5 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhong-gong.html'"
+        data-role="孔子弟子" data-name="仲弓（冉雍）" data-count="7">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhong-gong.html">仲弓（冉雍）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">7 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zang-wu-zhong.html'"
+        data-role="卿大夫" data-name="臧武仲（臧孙纥）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zang-wu-zhong.html">臧武仲（臧孙纥）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/shu-sun-wu-shu.html'"
+        data-role="卿大夫" data-name="叔孙武叔（州仇）" data-count="2">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/shu-sun-wu-shu.html">叔孙武叔（州仇）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">2 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wei-sheng-gao.html'"
+        data-role="其他" data-name="微生高" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wei-sheng-gao.html">微生高</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zi-sang-bo-zi.html'"
+        data-role="其他" data-name="子桑伯子" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zi-sang-bo-zi.html">子桑伯子</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/dan-tai-mie-ming.html'"
+        data-role="孔子弟子" data-name="澹台灭明（子羽）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/dan-tai-mie-ming.html">澹台灭明（子羽）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/zhou-gong-dan.html'"
+        data-role="先贤" data-name="周公旦" data-count="4">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/zhou-gong-dan.html">周公旦</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">4 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wei-chu-gong.html'"
+        data-role="诸侯" data-name="卫出公（辄）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wei-chu-gong.html">卫出公（辄）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/ye-gong.html'"
+        data-role="卿大夫" data-name="叶公（沈诸梁，子高）" data-count="3">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/ye-gong.html">叶公（沈诸梁，子高）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">3 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/huan-tui.html'"
+        data-role="卿大夫" data-name="桓魋（向魋）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/huan-tui.html">桓魋（向魋）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">卿大夫</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/chen-si-bai.html'"
+        data-role="其他" data-name="陈司败" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/chen-si-bai.html">陈司败</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">其他</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/wu-ma-shi.html'"
+        data-role="孔子弟子" data-name="巫马施（子期）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/wu-ma-shi.html">巫马施（子期）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">孔子弟子</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/lu-zhao-gong.html'"
+        data-role="诸侯" data-name="鲁昭公" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/lu-zhao-gong.html">鲁昭公</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">诸侯</span>
+    </li>
+    <li class="bg-white rounded-[2rem] border border-slate-100 p-8 hover:border-blue-400 hover:shadow-xl transition-all group cursor-pointer" 
+        onclick="location.href='/people/tai-bo.html'"
+        data-role="先贤" data-name="泰伯（太伯）" data-count="1">
+      <div class="flex justify-between items-start mb-6">
+        <a class="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors" href="/people/tai-bo.html">泰伯（太伯）</a>
+        <span class="text-[10px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-100">1 条</span>
+      </div>
+      <span class="text-[10px] font-black text-slate-400 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 uppercase tracking-widest">先贤</span>
+    </li></ul>
+    </div>
+  </main>
+  <footer class="mt-24 py-16 border-t border-slate-100 bg-white">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">&copy; 2026 www.lunyu.xyz</p>
+    </div>
+  </footer>
+  <script type="module">
+    import { AnalectsSDK } from '/v2/analects.js';
+    const sdk = new AnalectsSDK({ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' });
+    window.sdk = sdk;
+    await sdk.init();
+    sdk.renderGlobalHeader();
+    if(window.lucide) window.lucide.createIcons();
+    
+    const cards = document.querySelectorAll('.analect-card');
+    if (sdk.currentUser && sdk.favoriteIds) {
+      cards.forEach(card => {
+        if (sdk.favoriteIds.has(card.dataset.entryId)) {
+          const btn = card.querySelector('.action-btn-favorite');
+          if (btn) {
+            btn.classList.add('text-red-500', 'bg-red-50');
+            btn.querySelector('i')?.setAttribute('fill', 'currentColor');
+          }
+        }
+      });
+    }
+    document.addEventListener('click', (e) => {
+       const copyBtn = e.target.closest('.action-btn-copy');
+       if (copyBtn) {
+         navigator.clipboard.writeText(copyBtn.dataset.content);
+         if(window.showToast) showToast('已复制原文'); else alert('已复制原文');
+       }
+    });
+    
+    const grid = document.getElementById('grid');
+    const input = document.getElementById('q-input');
+    const pills = document.querySelectorAll('.role-pill');
+    let activeRole = '全部';
+    function update() {
+      const q = input.value.toLowerCase();
+      Array.from(grid.children).forEach(li => {
+        const mRole = activeRole === '全部' || li.dataset.role === activeRole;
+        const mText = li.dataset.name.toLowerCase().includes(q);
+        li.style.display = (mRole && mText) ? '' : 'none';
+      });
+    }
+    pills.forEach(p => p.onclick = () => {
+      pills.forEach(b => b.classList.remove('active')); p.classList.add('active');
+      activeRole = p.dataset.role; update();
+    });
+    pills[0].classList.add('active');
+    input.oninput = update;
+    document.getElementById('sort-freq').onclick = (e) => {
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
+      Array.from(grid.children).sort((a,b) => b.dataset.count - a.dataset.count).forEach(li => grid.appendChild(li));
+    };
+    document.getElementById('sort-alpha').onclick = (e) => {
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
+      Array.from(grid.children).sort((a,b) => a.dataset.name.localeCompare(b.dataset.name, 'zh')).forEach(li => grid.appendChild(li));
+    };
+  
+  </script>
+</body>
+</html>

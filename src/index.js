@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import CoreSDK from './CoreSDK'; // [核心修改] 引入基类
+import './styles/home.css';
 
 // 论语 SDK - 完整功能版
 class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
