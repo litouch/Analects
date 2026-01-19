@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>先进篇 第十一 - 论语SDK</title>
+  <title>先进篇 第十一 - 论语XYZ</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="description" content="在线阅读和学习《论语》先进篇 第十一 全文、译文及注释。提供逐句收藏和笔记功能，深入理解儒家经典。">
   
-  <link rel="canonical" href="https://www.lunyu.xyz/chapters/xian-jin-11.html/">
+  <link rel="canonical" href="https://www.lunyu.xyz/chapters/xian-jin-11.html">
 
   <link rel="stylesheet" href="/v2/analects.css">
   <script defer src="https://unpkg.com/lucide@latest"></script>
@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "先进篇 第十一",
-    "url": "https://www.lunyu.xyz/chapters/xian-jin-11.html/",
+    "url": "https://www.lunyu.xyz/chapters/xian-jin-11.html",
     "author": {
       "@type": "Person",
       "name": "孔子"
@@ -30,7 +30,17 @@
     "description": "《论语》先进篇 第十一 全文及译注。"
   }
   </script>
-
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.lunyu.xyz/" },
+    { "@type": "ListItem", "position": 2, "name": "论语二十篇", "item": "https://www.lunyu.xyz/chapters/index.html" },
+    { "@type": "ListItem", "position": 3, "name": "先进篇 第十一", "item": "https://www.lunyu.xyz/chapters/xian-jin-11.html" }
+  ]
+}
+</script>
   <style>
     .metadata-grid {
       display: grid;
@@ -65,17 +75,41 @@
    </style>
 </head>
 
-<body class="page-with-sticky-header text-gray-800 antialiased">
+<body class="page-with-sticky-header page-fixed-nav text-gray-800 antialiased">
   
-  <header id="global-header-wrapper"></header>
+  <header id="global-header-wrapper">
+  <div class="global-header-inner">
+    <div class="header-left-area">
+      <a class="header-brand" href="/">論語XYZ</a>
+      <span class="header-welcome-message" aria-live="polite"></span>
+    </div>
 
-  <div class="container mx-auto max-w-3xl px-4 py-8">
+    <nav class="header-center-nav" aria-label="站点导航">
+        <a class="header-anchor" href="/chapters/index.html">论语二十篇</a>
+        <a class="header-anchor" href="/people/index.html">论语人物</a>
+        <a class="header-anchor" href="/topics/index.html">论语主题</a>
+        <a class="header-anchor" href="/proverbs/index.html">论语成语</a>
+    </nav>
 
+    <div class="header-right-area">
+  <div class="header-skeleton avatar" aria-hidden="true"></div>
+  <noscript><a class="header-login-btn" href="/login.html">登录 / 注册</a></noscript>
+</div>
+  </div>
+</header>
+
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="面包屑">
+    <a href="/">首页</a>
+    <span class="sep">/</span>
+    <a href="/chapters/index.html">论语二十篇</a>
+    <span class="sep">/</span>
+    <span aria-current="page">先进篇 第十一</span>
+    </nav>
     <article>
-      <header class="chapter-page-header text-center mb-8 border-b pb-6 page-header">
+      <header class="text-center mb-8 border-b pb-6 page-header">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900">先进篇 第十一</h1>
         <p class="text-lg text-gray-500 mt-2">主要记录孔子对弟子们的评价和教育言论。</p>
-        <a href="https://www.lunyu.xyz/chapters.html" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回论语二十篇章节目录</a>
       </header>
 	  
 	  <button id="print-pdf-btn" class="print-button">
@@ -312,8 +346,8 @@
       });
 
       // 渲染与此页面相关的动态组件
-      sdk.renderGlobalHeader();
       await sdk.init();
+      sdk.renderGlobalHeader();
 
       sdk.initializeChapterPage();
 
@@ -349,7 +383,7 @@ if (printBtn) {
   </script>
 <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
     <div class="text-center text-sm text-gray-500">
-        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+        <p>&copy; <span id="year"></span> 论语XYZ. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
     </div>
 </footer>
 

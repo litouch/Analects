@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>论语主题索引 - 論語XYZ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="按主题浏览与检索《论语》条目. 支持关键词搜索与排序.">
+  <link rel="canonical" href="https://www.lunyu.xyz/topics/index.html">
+
+  <link rel="stylesheet" href="/v2/analects.css">
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "论语主题",
+  "url": "https://www.lunyu.xyz/topics/index.html",
+  "description": "按主题浏览与检索《论语》条目. 支持关键词搜索与排序."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://www.lunyu.xyz"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "论语主题",
+      "item": "https://www.lunyu.xyz/topics/index.html"
+    }
+  ]
+}
+</script>
+
+  
+<style>
+  .segmented{display:inline-flex;width:100%;border:1px solid rgba(15,23,42,.12);background:#fff;border-radius:12px;overflow:hidden}
+  .segmented-btn{flex:1;border:0;background:transparent;padding:10px 12px;font-size:14px;cursor:pointer;color:#0f172a}
+  .segmented-btn + .segmented-btn{border-left:1px solid rgba(15,23,42,.10)}
+  .segmented-btn.is-active{background:rgba(37,99,235,.10);color:#1d4ed8}
+</style>
+</head>
+<body class="page-with-sticky-header page-fixed-nav text-gray-800 antialiased">
+  
+<header id="global-header-wrapper">
+  <div class="global-header-inner">
+    <div class="header-left-area">
+      <a class="header-brand" href="/">論語XYZ</a>
+      <span class="header-welcome-message" aria-live="polite"></span>
+    </div>
+
+    <nav class="header-center-nav" aria-label="站点导航">
+      <a class="header-anchor" href="/chapters/index.html">论语二十篇</a>
+      <a class="header-anchor" href="/people/index.html">论语人物</a>
+      <a class="header-anchor" href="/topics/index.html">论语主题</a>
+      <a class="header-anchor" href="/idioms/index.html">论语成语</a>
+    </nav>
+
+    <div class="header-right-area">
+  <div class="header-skeleton avatar" aria-hidden="true"></div>
+  <noscript><a class="header-login-btn" href="/login.html">登录 / 注册</a></noscript>
+</div>
+  </div>
+</header>
+
+  <div class="page-container px-4 py-8">
+    <nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span class="sep">/</span><span aria-current="page">论语主题</span>
+</nav>
+
+    <header class="text-center mb-8 border-b pb-6 page-header">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">论语主题索引</h1>
+      <p class="text-lg text-gray-500 mt-2">按主题浏览与检索</p>
+    </header>
+
+    <section class="people-controls mb-6 bg-white rounded-lg border border-gray-200 p-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label for="topics-search" class="block text-xs font-medium text-gray-500 mb-1">搜索</label>
+          <input id="topics-search" class="w-full rounded-lg border border-gray-200 px-3 py-3 md:py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="搜索主题. 支持标题与说明" aria-label="搜索主题" inputmode="search" autocomplete="off" />
+          <div class="mt-3 text-sm text-gray-500">当前显示 <span id="topics-count" class="font-semibold text-gray-700">75</span> 个主题</div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">排序</label>
+
+          <select id="topics-sort" class="sr-only" aria-label="排序">
+            <option value="mentions">按论语条目</option>
+            <option value="alpha">按字母表</option>
+          </select>
+
+          <div class="segmented" id="topics-sort-chips" role="radiogroup" aria-label="排序">
+            <button type="button" class="segmented-btn is-active" data-value="mentions">按论语条目</button>
+            <button type="button" class="segmented-btn" data-value="alpha">按字母表</button>
+          </div>
+
+          <div class="mt-2 text-xs text-gray-400">默认按论语条目数排序. 可切换为字母表</div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <div id="topics-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="/topics/7.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="夸奖" data-desc="" data-count="25">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">夸奖</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">25</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/8.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="安乐/富贵/温饱" data-desc="" data-count="8">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">安乐/富贵/温饱</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">8</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/9.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="音乐" data-desc="" data-count="10">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">音乐</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">10</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/10.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="器量" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">器量</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/11.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="祭祀" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">祭祀</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/12.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="尚书" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">尚书</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/13.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="诗经" data-desc="" data-count="8">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">诗经</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">8</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/14.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="礼貌" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">礼貌</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/15.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="见义勇为" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">见义勇为</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/16.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="举直措枉" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">举直措枉</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/17.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="知" data-desc="" data-count="7">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">知</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">7</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/18.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="异端" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">异端</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/19.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="小人" data-desc="" data-count="9">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">小人</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">9</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/20.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="刑法" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">刑法</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/21.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="廉耻" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">廉耻</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/22.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="知己和知人" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">知己和知人</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/24.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="善良" data-desc="" data-count="4">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">善良</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">4</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/25.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="庄重" data-desc="" data-count="15">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">庄重</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">15</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/26.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="中庸" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">中庸</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/27.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="德" data-desc="" data-count="14">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">德</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">14</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/28.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="举一反三" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">举一反三</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/29.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="谨言慎行" data-desc="" data-count="8">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">谨言慎行</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">8</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/30.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="节俭" data-desc="" data-count="8">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">节俭</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">8</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/31.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="谄媚" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">谄媚</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/32.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="谦逊" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">谦逊</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/33.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="忠厚" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">忠厚</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/34.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="事君" data-desc="" data-count="11">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">事君</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">11</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/35.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="爱" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">爱</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/36.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="色" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">色</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/37.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="施政" data-desc="" data-count="27">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">施政</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">27</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/39.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="礼" data-desc="" data-count="38">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">礼</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">38</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/40.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="道" data-desc="" data-count="12">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">道</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">12</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/41.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="使民" data-desc="" data-count="6">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">使民</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">6</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/43.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="巧言令色" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">巧言令色</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/44.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="快乐" data-desc="" data-count="6">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">快乐</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">6</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/45.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="作乱" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">作乱</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/46.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="交友" data-desc="" data-count="9">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">交友</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">9</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/47.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="君子-在位者" data-desc="" data-count="5">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">君子-在位者</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">5</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/48.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="君子-有德者" data-desc="" data-count="32">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">君子-有德者</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">32</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/49.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="恕" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">恕</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/50.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="信" data-desc="" data-count="12">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">信</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">12</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/51.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="忠" data-desc="" data-count="12">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">忠</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">12</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/52.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="孝悌" data-desc="" data-count="19">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">孝悌</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">19</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/53.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="义" data-desc="" data-count="8">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">义</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">8</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/54.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="仁" data-desc="" data-count="33">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">仁</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">33</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/55.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="好学" data-desc="" data-count="21">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">好学</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">21</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/6.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="为官之道" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">为官之道</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/5.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="浮云" data-desc="" data-count="0">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">浮云</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">0</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/42.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="自省" data-desc="" data-count="5">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">自省</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">5</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/38.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="贫贱" data-desc="" data-count="5">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">贫贱</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">5</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/56.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="改过" data-desc="" data-count="6">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">改过</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">6</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/57.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="恩惠" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">恩惠</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/59.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="利益" data-desc="" data-count="4">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">利益</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">4</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/60.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="贤" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">贤</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/23.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="勤劳敏捷" data-desc="" data-count="7">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">勤劳敏捷</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">7</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/61.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="约束" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">约束</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/62.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="有道无道" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">有道无道</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/63.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="口才" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">口才</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/58.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="刚毅" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">刚毅</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/64.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="仇恨" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">仇恨</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/65.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="伪善正直" data-desc="" data-count="5">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">伪善正直</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">5</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/66.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="志向" data-desc="" data-count="4">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">志向</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">4</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/67.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="从政、为官之道" data-desc="" data-count="9">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">从政、为官之道</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">9</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/68.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="天命" data-desc="" data-count="7">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">天命</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">7</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/69.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="圣" data-desc="" data-count="4">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">圣</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">4</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/70.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="人才" data-desc="" data-count="2">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">人才</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">2</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/71.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="自嘲" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">自嘲</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/72.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="授业教育" data-desc="" data-count="16">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">授业教育</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">16</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/73.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="生死" data-desc="" data-count="7">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">生死</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">7</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/74.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="婚丧嫁娶" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">婚丧嫁娶</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/75.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="信念" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">信念</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/76.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="军事" data-desc="" data-count="3">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">军事</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">3</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/77.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="榜样" data-desc="" data-count="6">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">榜样</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">6</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/78.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="直率" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">直率</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+<a href="/topics/79.html" class="chapter-card flex flex-col h-full p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300" data-name="恒心" data-desc="" data-count="1">
+  <div class="flex items-start justify-between gap-3">
+  <h2 class="font-semibold text-lg text-gray-800 mb-1 leading-snug">恒心</h2>
+  <span class="text-xs text-gray-500 whitespace-nowrap">
+    提及条目 · <span class="font-semibold text-gray-700">1</span>
+  </span>
+</div>
+  
+</a>
+      </div>
+    </main>
+  </div>
+
+  
+<div id="analects-global-widget-container"></div>
+<div id="toast" class="fixed top-5 right-5 bg-green-600 text-white py-2 px-5 rounded-lg shadow-lg transform translate-x-[120%] opacity-0 transition-all duration-300 ease-in-out z-50"></div>
+
+  
+<script type="module" src="/v2/analects.js"></script>
+<script type="module">
+  (async () => {
+    const sdk = new AnalectsSDK({
+      supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+      supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+    });
+
+    await sdk.init();
+    sdk.renderGlobalHeader();
+
+    
+
+    if (window.lucide) window.lucide.createIcons();
+
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+  })();
+</script>
+
+  <script type="module">
+    const grid = document.getElementById('topics-grid');
+    const countEl = document.getElementById('topics-count');
+    const searchEl = document.getElementById('topics-search');
+    const sortEl = document.getElementById('topics-sort');
+
+    const collator = new Intl.Collator('zh-Hans-u-co-pinyin', { numeric: true, sensitivity: 'base' });
+    const allCards = Array.from(grid.querySelectorAll('a.chapter-card'));
+
+    function apply() {
+      const q = (searchEl.value || '').trim().toLowerCase();
+      const sort = sortEl.value || 'mentions';
+
+      const filtered = allCards.filter(card => {
+        const name = (card.dataset.name || '').toLowerCase();
+        const desc = (card.dataset.desc || '').toLowerCase();
+        if (!q) return true;
+        return name.includes(q) || desc.includes(q);
+      });
+
+      filtered.sort((a, b) => {
+        if (sort === 'alpha') {
+          return collator.compare(a.dataset.name || '', b.dataset.name || '');
+        }
+        const ca = Number(a.dataset.count || 0);
+        const cb = Number(b.dataset.count || 0);
+        if (cb !== ca) return cb - ca;
+        return collator.compare(a.dataset.name || '', b.dataset.name || '');
+      });
+
+      grid.innerHTML = '';
+      filtered.forEach(c => grid.appendChild(c));
+      countEl.textContent = String(filtered.length);
+    }
+
+    searchEl.addEventListener('input', apply);
+    sortEl.addEventListener('change', apply);
+
+    // Bridge segmented buttons to hidden select.
+    const sortChips = document.getElementById('topics-sort-chips');
+    if (sortChips) {
+      sortChips.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-value]');
+        if (!btn) return;
+
+        sortEl.value = btn.dataset.value || 'mentions';
+        sortChips.querySelectorAll('button').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+
+        sortEl.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+
+    apply();
+  </script>
+
+  
+<footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
+  <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
+    <p>&copy; <span id="year"></span> 論語XYZ. Made by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+  </div>
+</footer>
+</body>
+</html>

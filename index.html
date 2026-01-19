@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>论语学习与检索平台 | 原文、白话、英译对照与学习笔记</title>
+
   <link rel="stylesheet" href="/v2/analects.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="description" content="一个以检索为核心的《论语》学习平台。支持原文、杨伯峻白话本与 James Legge 英译本对照阅读，可按人物、论点与成语谚语检索论语条目，并提供每日论语、收藏与学习笔记分享功能，适合学生、教师与论语学习者使用。">
-  <meta name="keywords" content="论语,论语检索,论语学习,论语原文,杨伯峻论语,James Legge论语,论语笔记,论语心得,论语搜索,每日论语,论语人物,论语成语">
+  <meta name="keywords" content="论语,论语检索,论语学习,论语原文,杨伯峻论语,James Legge论语,论语笔记,论语心得,论语搜索,每日论语,论语人物,论语成语,论语谚语,论语索引,论语二十篇,论语学习工具,论语学习网站">
   <meta name="author" content="lehua.li">
 
   <meta property="og:title" content="论语学习与检索平台 | 原文、白话、英译对照与学习笔记">
@@ -22,12 +23,11 @@
   <meta name="twitter:title" content="论语学习与检索平台 | 原文、白话、英译对照与学习笔记">
   <meta name="twitter:description" content="一个以检索为核心的《论语》学习平台。支持原文、杨伯峻白话本与 James Legge 英译本对照阅读，可按人物、论点与成语谚语检索论语条目，并提供每日论语、收藏与学习笔记分享功能，适合学生、教师与论语学习者使用。">
   <meta name="twitter:image" content="https://www.lunyu.xyz/og-image.png">
-  
-  <link rel="icon" type="image/png" href="https://www.lunyu.xyz/favicon.ico">
-  <link rel="apple-touch-icon" href="https://www.lunyu.xyz/logo.png">
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <link rel="canonical" href="https://www.lunyu.xyz/">
-
+  <link rel="icon" type="image/png" href="https://www.lunyu.xyz/favicon.ico">
+  <link rel="apple-touch-icon" href="https://www.lunyu.xyz/logo.png">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -64,275 +64,180 @@
     ]
   }
   </script>
-  <script defer src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Custom styles to complement Tailwind CSS */
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc; /* Lighter gray background */
-      scroll-behavior: smooth;
+    /* 头像与标题对齐. 不改 SDK 结构. 只统一高度与对齐 */
+    #global-header-wrapper .global-header-inner { height: 56px; }
+    #global-header-wrapper .header-left-area,
+    #global-header-wrapper .header-right-area { align-items: center; }
+    #global-header-wrapper .user-menu-button,
+    #global-header-wrapper .header-login-btn{
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
     }
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Noto Serif SC', serif;
-      font-weight: 600;
-    }
-    .font-logo {
-      font-family: 'Zen Antique Soft', serif;
-    }
-    .font-serif-quote {
-      font-family: 'Noto Serif SC', serif;
-    }
-    .btn-primary {
-      @apply bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-all duration-300 transform hover:-translate-y-0.5;
-    }
-    .card {
-      @apply bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200/80;
-    }
-    /* #toast {
-      z-index: 2000 !important;
-    } */
-  </style>
+    #global-header-wrapper .user-avatar-display{ width:32px; height:32px; }
 
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 16px 44px;
+      overflow: visible;
+    }
+
+    /* Hero. 更像产品落地页 */
+    .hero{
+      padding: 54px 10px 12px;
+      text-align: center;
+    }
+    .hero h1{
+      font-size: clamp(42px, 5.0vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin: 0;
+      color: var(--ink);
+    }
+    .hero .subtitle{
+      margin-top: 12px;
+      font-size: 18px;
+      color: var(--muted2);
+    }
+    .hero .desc{
+      margin: 22px auto 0;
+      max-width: 920px;
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    /* 快速入口. 单列内的一条“控制台”式按钮行 */
+    .quick{
+      margin: 26px auto 0;
+      max-width: 980px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    /* ===== Patch: mobile typography and hero actions layout ===== */
+@media (max-width: 520px){
+  .hero{
+    padding: 38px 6px 10px;
+    text-align: center;
+  }
+  .hero h1{
+    font-size: clamp(34px, 9vw, 48px);
+    line-height: 1.10;
+    letter-spacing: -0.02em;
+  }
+  .hero .subtitle{
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .intro{
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .quick{
+    margin-top: 18px;
+    max-width: 520px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .qbtn{
+    width: 100%;
+    padding: 10px 10px;
+    font-size: 13px;
+    border-radius: 999px;
+  }
+  .qbtn.primary,
+  .qbtn.tertiary{
+    grid-column: 1 / -1;
+  }
+}
+</style>
 </head>
-<body class="text-gray-800 antialiased">
-  <header id="global-header-wrapper"></header>
-  <div class="container mx-auto max-w-5xl px-4 py-8">
 
-    <header class="text-center mb-8">
-      <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
-        论语学习与检索平台
-      </h1>
-      
-      <p class="text-xl text-slate-500 max-w-2xl mx-auto">
-        原文 · 白话 · 英译 · 笔记
-      </p>
-
-      <p class="mt-6 max-w-3xl mx-auto text-base text-slate-600 leading-relaxed hidden md:block">
-          本站是一个以检索为核心的《论语》学习平台，
-          提供原文、杨伯峻白话本与 James Legge 英译本对照阅读，
-          支持按<strong>人物</strong>、<strong>论点</strong>与<strong>成语谚语</strong>检索论语条目。
-          学习过程中，你可以收藏条目、记录并分享个人心得，
-          逐步建立属于自己的《论语》理解体系。
-      </p>
-    </header>
-    <div id="header-sentinel" style="height: 1px;"></div>
-
-    <main class="space-y-6">
-
-      <section id="daily" class="card">
-        <div class="p-6 md:p-8 pb-0">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-3 sm:mb-0">📅 每日论语</h2>
-            <button class="btn-primary flex items-center gap-2" onclick="showEmbedModal('daily')">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-              获取嵌入代码
-            </button>
-          </div>
-		  <div id="daily-analect" class="bg-gray-50 rounded-lg p-4 min-h-[100px]">
-		    <div class="daily-analect-skeleton">
-		      <div class="skeleton-block" style="height: 30px; width: 40%; margin: 0 auto 16px;"></div>
-		      <div class="skeleton-block" style="height: 20px; width: 60%; margin: 0 auto 48px;"></div>
-		      <div class="skeleton-block" style="height: 80px; width: 100%; margin-bottom: 24px;"></div>
-		      <div class="skeleton-block" style="height: 50px; width: 80%; margin: 0 auto;"></div>
-		    </div>
-		  </div>
-        </div>
-      </section>
-	  
-      <section class="mb-8 bg-white/80 backdrop-blur-sm border border-gray-200/80 p-6 rounded-xl shadow-md">
-         <div class="text-left text-gray-600 space-y-4 text-sm md:text-base leading-relaxed">
-            <p><strong class="font-bold text-gray-900">《论语》</strong>是孔子及其弟子言论的汇编，由孔子门生及再传弟子集录整理（疑为曾参弟子），是儒家重要经典。南宋朱熹将其定为四书之首并做集注，明清科举更不出四书，论语的影响由此深远。论语中的教育、道德、伦理、政治思想和言语已经深深融入华夏文化的血脉和思维。今通行本《论语》共20篇，约1.2万字。</p>
-            <p><strong class="font-bold text-gray-900">孔子</strong>（公元前551—479年），名丘，字仲尼，终年七十二岁。春秋末期鲁国人，伟大的思想家、教育家，儒家思想的奠基人，被誉为"万世师表"。</p>
-        </div>
-      </section>
-	  
-
-<section id="chapters" class="card">
-  <div class="p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">论语二十篇</h2>
-      <div id="chapter-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-          <a href="/chapters/xue-er-1.html" class="chapter-item block">
-              <h4 class="font-semibold text-gray-900 text-base mb-1">学而第一</h4>
-              <p class="text-gray-500">主要讲“务本”的道理</p>
-          </a>
-          <a href="/chapters/wei-zheng-2.html" class="chapter-item block">
-              <h4 class="font-semibold text-gray-900 text-base mb-1">为政第二</h4>
-              <p class="text-gray-500">主要讲治理国家的道理</p>
-          </a>
-          <a href="/chapters/li-ren-4.html" class="chapter-item block">
-              <h4 class="font-semibold text-gray-900 text-base mb-1">里仁第四</h4>
-              <p class="text-gray-500">主要讲仁德的道理</p>
-          </a>
-          <a href="/chapters/shu-er-7.html" class="chapter-item block">
-              <h4 class="font-semibold text-gray-900 text-base mb-1">述而第七</h4>
-              <p class="text-gray-500">主要记录孔子的容貌和言行</p>
-          </a>
-          <a href="/chapters/yan-yuan-12.html" class="chapter-item block">
-              <h4 class="font-semibold text-gray-900 text-base mb-1">颜渊第十二</h4>
-              <p class="text-gray-500">主要讲如何实行仁德</p>
-          </a>
-          <a href="/chapters/zi-lu-13.html" class="chapter-item block">
-              <h4 class="font-semibold text-gray-900 text-base mb-1">子路第十三</h4>
-              <p class="text-gray-500">主要记录孔子论述为人和为政</p>
-          </a>
+<body class="page-home text-gray-800 antialiased home-collapsible">
+  <header id="global-header-wrapper">
+    <div class="global-header-inner">
+      <div class="header-left-area">
+        <a class="header-brand" href="/">論語XYZ</a>
+        <span class="header-welcome-message" aria-live="polite"></span>
       </div>
-      <div class="text-center mt-8">
-          <a href="/chapters.html" class="btn-primary">查看全部二十篇</a>
+
+      <nav class="header-center-nav" aria-label="站点导航">
+        <a class="header-anchor" href="/chapters/index.html">论语二十篇</a>
+        <a class="header-anchor" href="/people/index.html">论语人物</a>
+        <a class="header-anchor" href="/topics/index.html">论语主题</a>
+        <a class="header-anchor" href="/idioms/index.html">论语成语</a>
+      </nav>
+
+      <div class="header-right-area">
+  <div class="header-skeleton avatar" aria-hidden="true"></div>
+  <noscript><a class="header-login-btn" href="/login.html">登录 / 注册</a></noscript>
+</div>
+    </div>
+  </header>
+  <div id="header-sentinel" aria-hidden="true"></div>
+<div class="wrap">
+        <section class="hero" aria-label="首页导览">
+      <h1>论语学习与检索平台</h1>
+      <p class="subtitle">原文、白话与英译对照阅读，逐条理解并记录你的《论语》学习笔记。</p>
+
+      <div class="intro">
+        <p>本站提供《论语》原文、杨伯峻白话本与 James Legge 英译本的对照阅读，支持按章节、人物、主题与成语检索论语条目。</p>
+        <p>你可以收藏条目、记录并分享个人心得笔记，并对照他人笔记学习，逐步建立属于自己的《论语》理解。</p>
       </div>
-  </div>
-</section>
-      
-      <section id="search" class="card">
-        <div class="p-6 md:p-8">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-3 sm:mb-0">🔍 论语查询</h2>
-            <button class="btn-primary flex items-center gap-2" onclick="showEmbedModal('search')">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-              获取嵌入代码
-            </button>
+
+      <nav class="quick" id="hero-actions" aria-label="开始方式">
+        <a class="qbtn primary" href="/chapters/index.html">从篇目开始阅读</a>
+        <a class="qbtn" href="/people/index.html">人物索引</a>
+        <a class="qbtn" href="/topics/index.html">主题索引</a>
+        <a class="qbtn" href="/idioms/index.html">成语索引</a>
+        <a class="qbtn tertiary" href="/advanced-search.html">高级搜索 ↗</a>
+      </nav>
+    </section>
+    <main class="stack">
+      <!-- 每日论语. 作为紧凑信息条 -->
+      <section class="card daily-strip" id="today">
+        <div class="card-head">
+          <div>
+            <div class="card-title">TODAY</div>
+            <div class="card-sub">每日一条. 用于开启当天的论语阅读</div>
           </div>
-          <div id="analects-search">
-            </div>
+          <button class="link embed-code-trigger" type="button" data-embed-code-trigger>获取嵌入代码</button>
         </div>
-      </section>
-      
-      <section id="quotes">
-        <div class="space-y-8">
-			<h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语核心解读</h2>
-            <div class="border-l-4 border-blue-500 pl-6 py-2">
-              <blockquote class="text-gray-700 leading-relaxed">
-                <p class="font-serif-quote text-lg">孔子对曾参说："吾道一以贯之。"曾参告诉其它同学说："夫子之道，忠恕而已矣。"（4.15）"吾道"就是孔子自己的整个思想体系，而贯穿这个思想体系的，必然是它的核心。分别讲是"忠恕"，概括讲是"仁"。孔子自己曾给"恕"下了定义："己所不欲，勿施于人。"（15.24）这是"仁"的消极面。另一面是积极面："己欲立而立人，己欲达而达人。"（6.30）</p>
-              </blockquote>
-              <cite class="block text-right mt-3 text-sm text-gray-500 not-italic">— 杨伯峻</cite>
+        <div class="daily-shell">
+          <div id="daily-analect" class="min-h-[100px]">
+            <div class="daily-analect-skeleton">
+              <div class="skeleton-block" style="height: 30px; width: 40%; margin: 0 auto 16px;"></div>
+              <div class="skeleton-block" style="height: 20px; width: 60%; margin: 0 auto 48px;"></div>
+              <div class="skeleton-block" style="height: 80px; width: 100%; margin-bottom: 24px;"></div>
+              <div class="skeleton-block" style="height: 50px; width: 80%; margin: 0 auto;"></div>
             </div>
-            <div class="border-l-4 border-blue-500 pl-6 py-2">
-              <blockquote class="text-gray-700 leading-relaxed">
-                 <p class="font-serif-quote text-lg">尽己之心以待人谓之忠，推己之心以及人谓之恕。</p>
-              </blockquote>
-              <cite class="block text-right mt-3 text-sm text-gray-500 not-italic">— 钱穆</cite>
-            </div>
-            <div class="border-l-4 border-blue-500 pl-6 py-2">
-              <blockquote class="text-gray-700 leading-relaxed">
-                 <p class="font-serif-quote text-lg">儒教的精神因为孔子的死而寿终正寝了；而颜回的死，则断绝了其后继。理想并不是能传承的东西。留下来的弟子们不过是在那走向法则的社会里枉然地沉浮罢了。《论语》就是把这样的一个儒家模式进行了记录。正因为如此，我们才能够从这里面抽取出孔子的伟大之处。</p>
-              </blockquote>
-              <cite class="block text-right mt-3 text-sm text-gray-500 not-italic">— 白川静</cite>
-            </div>
-        </div>
-      </section>
-	  
-      <section id="thinkers-articles" class="card">
-        <div class="p-6 md:p-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">名家深思：论语、儒家、国学</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="flex flex-col group">
-                    <h3 class="font-semibold text-xl text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
-                        <a href="/articles/wang-xiaobo-guoxue.html">《我看国学》</a>
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed flex-grow">
-                        王小波以现代自由主义的视角，重新审视了以《论语》为核心的国学传统。他探讨了思想的多元性与“智慧”本身的代价，是理解传统文化在现代语境下位置的必读之作。
-                    </p>
-                    <div class="mt-4 flex items-center justify-between">
-                        <span class="text-xs text-gray-400">作者：王小波</span>
-                        <a href="/articles/wang-xiaobo-guoxue.html" class="text-blue-600 text-sm font-medium hover:underline">阅读全文 &rarr;</a>
-                    </div>
-                </div>
-
-                <div class="flex flex-col group">
-                    <h3 class="font-semibold text-xl text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
-                        <a href="/articles/su-shi-zhuangzi.html">《庄子祠堂记》</a>
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed flex-grow">
-                        在这篇著名的碑记中，苏轼深刻阐述了“孔颜心学”与庄子思想的隐秘联系。他认为真正的儒者与道家在精神高处是相通的，为我们理解孔子的出世与入世提供了瑰丽的视角。
-                    </p>
-                    <div class="mt-4 flex items-center justify-between">
-                        <span class="text-xs text-gray-400">作者：苏轼</span>
-                        <a href="/articles/su-shi-zhuangzi.html" class="text-blue-600 text-sm font-medium hover:underline">阅读全文 &rarr;</a>
-                    </div>
-                </div>
-
-              </div>
-                <div class="text-center mt-10">
-                <a href="/articles.html" class="btn-primary"></a>
-            </div>
+          </div>
         </div>
       </section>
 
-	    <section id="stories" class="card">
-  <div class="p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语典故</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-          <div class="flex flex-col p-6 bg-gray-50/80 rounded-lg border border-gray-200 hover:shadow-md hover:border-blue-300 hover:bg-white transition-all duration-300">
-              <h3 class="font-semibold text-lg text-gray-800 mb-3">崔杼弑君与史官精神</h3>
-              <p class="text-gray-600 text-sm leading-relaxed flex-grow">
-                  “崔杼弑其君”不仅是一桩历史事件，更是对史官“秉笔直书”精神的最高检验。面对屠刀，齐国太史一家前仆后继，用生命捍卫了记录历史真相的原则。
-              </p>
-              <a href="/stories/cui-zhu-shi-jun.html" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors mt-4 self-start">查看详情 &rarr;</a>
+      <!-- 搜索 + 结果. 主功能 -->
+      <section class="card search-card" id="search">
+        <div class="card-head">
+          <div>
+            <div class="card-title">SEARCH</div>
+            <div class="card-sub">仅关键词搜索. 结果较多时可滚动加载</div>
           </div>
-
-          <div class="flex flex-col p-6 bg-gray-50/80 rounded-lg border border-gray-200 hover:shadow-md hover:border-blue-300 hover:bg-white transition-all duration-300">
-              <h3 class="font-semibold text-lg text-gray-800 mb-3">孔门三杰：颜回、子路与子贡</h3>
-              <p class="text-gray-600 text-sm leading-relaxed flex-grow">
-                  孔子门下弟子三千，贤者七十二，其中颜回、子路、子贡三人性格迥异，却都是孔子最器重的学生。他们分别代表了德行、勇武与才辩的极致。
-              </p>
-              <a href="/stories/three-disciples.html" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors mt-4 self-start">查看详情 &rarr;</a>
-          </div>
-
-          <div class="flex flex-col p-6 bg-gray-50/80 rounded-lg border border-gray-200 hover:shadow-md hover:border-blue-300 hover:bg-white transition-all duration-300">
-              <h3 class="font-semibold text-lg text-gray-800 mb-3">庄子：孔颜心学的隐秘传人</h3>
-              <p class="text-gray-600 text-sm leading-relaxed flex-grow">
-                  苏轼与章太炎等人认为，庄子看似批判儒家，其内核却继承了孔子与颜回所代表的、追求精神自由与道德理想的儒家道统。
-              </p>
-              <a href="/stories/zhuangzi-and-yanhui.html" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors mt-4 self-start">查看详情 &rarr;</a>
-          </div>
-
-          <div class="flex flex-col p-6 bg-gray-50/80 rounded-lg border border-gray-200 hover:shadow-md hover:border-blue-300 hover:bg-white transition-all duration-300">
-              <h3 class="font-semibold text-lg text-gray-800 mb-3">德之贼：孔子为何厌恶“乡愿”</h3>
-              <p class="text-gray-600 text-sm leading-relaxed flex-grow">
-                  在乡里有口皆碑的“老好人”，为何被孔子称为“德之贼”？了解“乡愿”这一概念，看穿那些没有原则的“伪善”。
-              </p>
-              <a href="/stories/xiang-yuan.html" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors mt-4 self-start">查看详情 &rarr;</a>
-          </div>
-
-      </div>
-	  <div class="text-center mt-8">
-	            <a href="/stories.html" class="btn-primary">探索更多典故</a>
-	        </div>
-      </div>
-</section>
-
-      <section id="books" class="card">
-        <div class="p-6 md:p-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">论语著作推荐</h2>
-			<p class="text-center text-gray-500 mb-8">书香四溢 · 尽在纸书</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800">论语译注</h3>
-                    <p class="text-gray-500 text-sm mt-1">杨伯峻 著</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800">论语新解</h3>
-                    <p class="text-gray-500 text-sm mt-1">钱穆 著</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800">匏瓜</h3>
-                    <p class="text-gray-500 text-sm mt-1">刘勃 著</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800">樊登漫画《论语》</h3>
-                    <p class="text-gray-500 text-sm mt-1">樊登读书团队 著</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800">孔子传</h3>
-                    <p class="text-gray-500 text-sm mt-1">百川静 著 吴守钢 译</p>
-                </div>
-            </div>
+          <a class="link" href="/advanced-search.html">高级搜索 ↗</a>
         </div>
+
+        <div id="analects-search"></div>
       </section>
 
-      <section id="user-guide" class="card">
-        <div class="p-6 md:p-8">
+<section class="qa-section" id="qa">
+  <div class="qa-shell">
+    <div class="p-6 md:p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">用户操作指南 (Q&A)</h2>
             <div class="space-y-6 text-gray-700 text-sm md:text-base leading-relaxed max-w-4xl mx-auto">
                 
@@ -361,12 +266,7 @@
 
                 <div>
                     <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 内容的来源和版本是什么？</h3>
-                    <p><strong>A:</strong> 本站《论语》的白话翻译和注释主要参考了**杨伯峻先生的《论语译注》**版本，该版本被公认为现代最权威、最严谨的注本之一。我们鼓励深度学习者购买正版纸质书籍进行研读与收藏。人物/论点/谚语部分则属于作者学习归纳总结，如有纰漏或者补充，敬请联系作者处理。</p>
-                </div>
-
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800 mb-2">Q: 未来有什么计划吗？比如英文版？</h3>
-                    <p><strong>A:</strong> 作为一个开源项目，我们欢迎各种形式的贡献。目前站点的数据库和后端设计已支持多语言内容的扩充，但**暂时不提供英文或其他语言版本的《论语》**。我们期待未来有更多志愿者加入，共同丰富和完善这个平台。</p>
+                    <p><strong>A:</strong> 本站《论语》的白话翻译和注释主要参考了杨伯峻先生的《论语译注》版本，该版本被公认为现代最权威、最严谨的注本之一；英文翻译采用James Legge译本。我们鼓励深度学习者购买正版纸质书籍进行研读与收藏。人物/论点/谚语部分则属于作者学习归纳总结，如有纰漏或者补充，敬请联系作者处理。</p>
                 </div>
 
                 <div>
@@ -376,208 +276,120 @@
                                 
             </div>
         </div>
-      </section>
+  </div>
+</section>
+
 
     </main>
 
-    <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            <div>
-                <h4 class="font-semibold text-base text-gray-800 mb-3">📚 开源项目</h4>
-                <a href="https://github.com/litouch/Analects" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">GitHub 仓库</a>
-                <p class="text-sm text-gray-500 mt-1">
-                查看源码、提交 Issue 或贡献代码。或直接邮件至 <a href="mailto:contact@lunyu.xyz" class="text-blue-600 hover:underline">contact@lunyu.xyz</a> 提出建议。
-              </p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-base text-gray-800 mb-3">👨‍💻 作者博客</h4>
-                <a href="https://lehua.li" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">lehua.li</a>
-                <p class="text-sm text-gray-500 mt-1">更多技术分享与项目介绍。</p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-base text-gray-800 mb-3">📖 关于项目</h4>
-                <p class="text-sm text-gray-500 mt-1">论语SDK 致力于传播中华传统文化，让更多人能轻松学习和分享论语。</p>
-            </div>
+    <footer class="footer">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left" style="margin-top: 22px;">
+        <div>
+          <div class="font-semibold text-slate-800 mb-2">开源项目</div>
+          <a href="https://github.com/litouch/Analects" target="_blank" rel="noopener noreferrer">GitHub 仓库</a>
+          <div class="mt-1">邮件. <a href="mailto:contact@lunyu.xyz">contact@lunyu.xyz</a></div>
         </div>
-        <div class="mt-10 text-center text-sm text-gray-500">
-            <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+        <div>
+          <div class="font-semibold text-slate-800 mb-2">作者博客</div>
+          <a href="https://lehua.li" target="_blank" rel="noopener noreferrer">lehua.li</a>
         </div>
+        <div>
+          <div class="font-semibold text-slate-800 mb-2">关于项目</div>
+          <div>「论语XYZ」让更多人能轻松学习和分享论语。</div>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center" style="margin-top: 18px;">
+        © <span id="year"></span> 论语XYZ. Made with ❤️ by <a href="https://lehua.li">lehua.li</a>
+      </div>
     </footer>
-
   </div>
-
-  <div id="embedModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-[2000] transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div id="modalContent" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform scale-95 transition-all duration-300">
-      <div class="flex justify-between items-center p-5 border-b border-gray-200">
-        <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">嵌入代码</h3>
-        <button onclick="closeEmbedModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
-      </div>
-      <div class="p-6 overflow-y-auto">
-        <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-r-lg mb-5 text-sm">
-          <strong>使用说明：</strong> 复制下方代码，粘贴到您网页的 HTML 中即可。
-        </div>
-        <div class="bg-gray-900 rounded-lg p-4 relative font-mono text-sm text-gray-200">
-          <button onclick="copyEmbedCode(this)" class="absolute top-3 right-3 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1 px-3 rounded-md transition-colors">复制</button>
-          <pre id="embedCode" class="overflow-x-auto whitespace-pre-wrap"></pre>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="toast" class="fixed top-5 right-5 bg-green-600 text-white py-2 px-5 rounded-lg shadow-lg transform translate-x-[120%] transition-transform duration-300 ease-in-out z-50">
-    代码已复制到剪贴板！
-  </div>
-
 
   <div id="analects-global-widget-container"></div>
 
   <script type="module" src="/v2/analects.js"></script>
-<script type="module">
+  <script type="module">
     (async () => {
-      // --- 1. SDK 初始化 ---
-      let sdk;
       try {
-        sdk = new AnalectsSDK({
-            supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-            supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+        const sdk = new AnalectsSDK({
+          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
         });
-        
-        // --- [核心优化] 调整执行顺序 ---
 
-        // 1. 立即开始加载“每日论语”，不等待用户信息
-        //    这个函数是异步的，但我们不使用 await，让它在后台独立运行
-        sdk.renderDailyAnalect(document.getElementById('daily-analect'));
-        
-        // 2. 立即开始渲染“论语查询”界面骨架
         sdk.renderSearchInterface(document.getElementById('analects-search'));
+        sdk.renderDailyAnalect(document.getElementById('daily-analect'));
 
-        // 3. 与此同时，在后台初始化用户会话（这步会花费一些网络时间）
-        await sdk.init(); 
-        
-        // 4. 当用户会话准备好后，再渲染依赖登录状态的组件（如页头）
-        sdk.renderGlobalHeader(); 
-        sdk._initializeHeaderAnimation(); // 启动页头动画
+        wireAdvancedToggle(document.getElementById('analects-search'));
+        function wireAdvancedToggle(searchRoot){
+  if (!searchRoot) return;
+
+  // 只在首页启用折叠
+  document.body.classList.add('home-collapsible');
+
+  const actions = searchRoot.querySelector('.analects-search-actions');
+  if (!actions) return;
+
+  // 避免重复插入
+  if (actions.querySelector('#analects-advanced-toggle')) return;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.id = 'analects-advanced-toggle';
+  btn.className = 'analects-btn analects-btn-ghost';
+  btn.setAttribute('aria-expanded', document.body.classList.contains('advanced-open') ? 'true' : 'false');
+  btn.textContent = document.body.classList.contains('advanced-open') ? '⬆ 收起筛选' : '⚙ 高级筛选';
+
+  btn.addEventListener('click', () => {
+    const open = document.body.classList.toggle('advanced-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.textContent = open ? '⬆ 收起筛选' : '⚙ 高级筛选';
+
+    // 可选. 展开后滚到筛选区域顶部
+    if (open) {
+      searchRoot.querySelector('.analects-advanced-filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // 放在“开始搜索”前面
+  actions.prepend(btn);
+}
+
+
+        // 首页只保留关键词搜索
+        //const tweakSearchUI = () => {
+         // const root = document.getElementById('analects-search');
+         // if (!root) return;
+         // root.querySelectorAll('.analects-advanced-filters, .analects-selected-items')
+          //  .forEach(el => el.style.display = 'none');
+        //};
+        //tweakSearchUI();
+        //new MutationObserver(tweakSearchUI)
+        //  .observe(document.getElementById('analects-search'), { childList: true, subtree: true });
+
+        await sdk.init();
+        sdk.renderGlobalHeader();
 
       } catch (e) {
-          console.error("AnalectsSDK failed to initialize.", e);
+        console.error('AnalectsSDK failed to initialize.', e);
       }
-
-      // --- 2. 页面其他同步内容和事件监听 (这部分代码保持不变) ---
       document.getElementById('year').textContent = new Date().getFullYear();
-
-      // --- 3. 模态窗口等全局函数 (这部分代码保持不变) ---
-      const embedModal = document.getElementById('embedModal');
-      const modalContent = document.getElementById('modalContent');
-      const modalTitle = document.getElementById('modalTitle');
-      const embedCodeEl = document.getElementById('embedCode');
-      let codeToCopy = '';
-
-          function showEmbedModal(type) {
-            const sdkUrl = 'https://www.lunyu.xyz';
-            const supabaseCreds = `{ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' }`;
-            const dailySkeletonHTML = `<div class="daily-analect-skeleton"><div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div><div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div></div>`;
-
-            if (type === 'daily') {
-              modalTitle.textContent = '每日论语 - 嵌入代码';
-              codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
-                           `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
-                           `<div id="daily-analect-embed" style="background-color:#f9fafb; padding:1rem; border-radius:0.5rem; min-height:100px;">${dailySkeletonHTML}<\/div>\n\n` +
-                           `<script>\n` +
-                           `  document.addEventListener('DOMContentLoaded', async function() {\n` +
-                           `    const sdk = new AnalectsSDK(${supabaseCreds});\n` +
-                           `    await sdk.init();\n` +
-                           `    sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));\n` +
-                           `  });\n` +
-                           `<\/script>`;
-            } else {
-              modalTitle.textContent = '论语查询 - 嵌入代码';
-              codeToCopy = `<link rel="stylesheet" href="${sdkUrl}/v1/analects.css">\n` +
-                           `<script defer src="${sdkUrl}/v1/analects.js"><\/script>\n\n` +
-                           `<div id="analects-search-embed"></div>\n\n` +
-                           `<script>\n` +
-                           `  document.addEventListener('DOMContentLoaded', async function() {\n` +
-                           `    const sdk = new AnalectsSDK(${supabaseCreds});\n` +
-                           `    await sdk.init();\n` +
-                           `    sdk.renderSearchInterface(document.getElementById('analects-search-embed'));\n` +
-                           `  });\n` +
-                           `<\/script>`;
-            }
-        
-            embedCodeEl.textContent = codeToCopy;
-            embedModal.classList.remove('opacity-0', 'pointer-events-none');
-            modalContent.classList.remove('scale-95');
-            modalContent.classList.add('scale-100');
-          }
-      window.showEmbedModal = showEmbedModal;
-
-      function closeEmbedModal() {
-        embedModal.classList.add('opacity-0');
-        modalContent.classList.remove('scale-100');
-        modalContent.classList.add('scale-95');
-        setTimeout(() => embedModal.classList.add('pointer-events-none'), 300);
-      }
-      window.closeEmbedModal = closeEmbedModal;
-
-      function copyEmbedCode(button) {
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(codeToCopy).then(() => {
-            showToast('代码已复制到剪贴板！');
-            button.textContent = '已复制!';
-            setTimeout(() => { button.textContent = '复制'; }, 2000);
-          }).catch(() => {
-            fallbackCopyTextToClipboard(button, codeToCopy);
-          });
-        } else {
-          fallbackCopyTextToClipboard(button, codeToCopy);
-        }
-      }
-      window.copyEmbedCode = copyEmbedCode;
-
-      function fallbackCopyTextToClipboard(button, text) {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        try {
-          if (document.execCommand('copy')) {
-            showToast('代码已复制到剪贴板！');
-            button.textContent = '已复制!';
-            setTimeout(() => { button.textContent = '复制'; }, 2000);
-          } else {
-            showToast('复制失败，请手动操作', true);
-          }
-        } catch (err) {
-          showToast('复制失败，请手动操作', true);
-        }
-        document.body.removeChild(textArea);
-      }
-      
-      window.showToast = function(message = '...', isError = false) {
-        const toast = document.getElementById('toast');
-        toast.innerHTML = message; 
-        toast.className = 'fixed top-5 right-5 text-white py-2 px-5 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out z-50';
-        toast.classList.add(isError ? 'bg-red-600' : 'bg-green-600');
-        toast.classList.remove('translate-x-[120%]');
-        setTimeout(() => {
-          toast.classList.add('translate-x-[120%]');
-        }, 3000);
-      }
-      
-      if (embedModal) {
-        embedModal.addEventListener('click', (e) => {
-          if (e.target === embedModal) closeEmbedModal();
-        });
-      }
-      
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !embedModal.classList.contains('pointer-events-none')) {
-            closeEmbedModal();
-        }
-      });
-
     })();
   </script>
+
+  <!-- Embed code modal -->
+  <div id="embed-code-modal" class="modal-overlay" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="embed-code-title">
+      <div class="modal-header">
+        <h3 id="embed-code-title">「每日论语」嵌入代码</h3>
+      </div>
+      <p class="modal-sub">复制下方代码段. 即可在任意页面嵌入“每日论语”组件.</p>
+      <pre class="code-block"><code id="embed-code-content"></code></pre>
+      <div class="modal-actions">
+        <button type="button" class="btn" data-copy-code>复制代码</button>
+        <button type="button" class="btn ghost" data-modal-close>关闭</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -31,7 +31,7 @@ export default class CoreSDK {
       characters: new Map(),
       arguments: new Map(),
       proverbs: new Map(),
-      chapter: { id: 'all', name: '全部章节' }
+      chapter: { id: 'all', name: '全部篇目' }
     };
 
     this.pagination = {
@@ -360,7 +360,7 @@ export default class CoreSDK {
     });
   }
 
-  // 章节排序
+  // 篇目排序
   sortChaptersByNumber(chapters) {
     return chapters.sort((a, b) => {
       const getChapterNumber = (chapterName) => {
@@ -689,8 +689,8 @@ export default class CoreSDK {
       tagsHTML = (characters.length > 0 || argumentsList.length > 0 || proverbs.length > 0) ? `
           <div class="card-tags-section">
             ${createTagGroup('人物', characters, 'users', 'character')}
-            ${createTagGroup('论点', argumentsList, 'target', 'argument')}
-            ${createTagGroup('谚语', proverbs, 'message-square-quote', 'proverb')}
+            ${createTagGroup('主题', argumentsList, 'target', 'argument')}
+            ${createTagGroup('成语', proverbs, 'message-square-quote', 'proverb')}
           </div>
         ` : '';
     }
@@ -787,16 +787,16 @@ export default class CoreSDK {
             <h3 class="analects-advanced-title">高级搜索</h3>
             
             <div class="analects-filters-grid single-column">
-              ${this.createSearchSection('chapter', '章节')}
+              ${this.createSearchSection('chapter', '篇目')}
             </div>
             
             <div class="analects-filters-grid">
               ${this.createSearchSection('character', '人物')}
-              ${this.createSearchSection('argument', '论点')}
+              ${this.createSearchSection('argument', '主题')}
             </div>
 
             <div class="analects-filters-grid">
-              ${this.createSearchSection('proverb', '谚语', 'full-width')}
+              ${this.createSearchSection('proverb', '成语', 'full-width')}
             </div>
           </div>
 
@@ -1127,11 +1127,11 @@ export default class CoreSDK {
     tagCloud.className = 'analects-tag-cloud';
     tagCloud.setAttribute('data-type', type);
 
-    // 为章节添加"全部"选项
+    // 为篇目添加"全部"选项
     if (type === 'chapter') {
-      const allTag = this.createOptionTag('all', '全部章节', type, true);
+      const allTag = this.createOptionTag('all', '全部篇目', type, true);
       tagCloud.appendChild(allTag);
-      this.selectedItems.chapter = { id: 'all', name: '全部章节' };
+      this.selectedItems.chapter = { id: 'all', name: '全部篇目' };
     }
 
     options.forEach(option => {
@@ -1176,7 +1176,7 @@ export default class CoreSDK {
     const tagCloud = tag.closest('.analects-tag-cloud');
 
     if (type === 'chapter') {
-      // 章节单选逻辑
+      // 篇目单选逻辑
       tagCloud.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.checked = false;
         cb.closest('.analects-option-tag').classList.remove('selected');
@@ -1233,7 +1233,7 @@ export default class CoreSDK {
     selectedContainer.style.display = 'block';
     tagsContainer.innerHTML = '';
 
-    // 渲染章节标签（仅当不是"全部"时）
+    // 渲染篇目标签（仅当不是"全部"时）
     if (this.selectedItems.chapter && this.selectedItems.chapter.id !== 'all') {
       const tag = this.createSelectedTag('chapter', this.selectedItems.chapter.id, this.selectedItems.chapter.name);
       tagsContainer.appendChild(tag);
@@ -1268,7 +1268,7 @@ export default class CoreSDK {
   // 通过ID移除选中项目
   removeSelectedItemById(type, id) {
     if (type === 'chapter') {
-      this.selectedItems.chapter = { id: 'all', name: '全部章节' };
+      this.selectedItems.chapter = { id: 'all', name: '全部篇目' };
 
       const allCheckbox = document.querySelector('input[data-type="chapter"][value="all"]');
       const currentCheckbox = document.querySelector(`input[data-type="chapter"][value="${id}"]`);
@@ -1596,7 +1596,7 @@ export default class CoreSDK {
     checkboxes.forEach(cb => cb.checked = false);
     tags.forEach(tag => tag.classList.remove('selected'));
 
-    // 章节重置为"全部"
+    // 篇目重置为"全部"
     const allCheckbox = document.querySelector('input[data-type="chapter"][value="all"]');
     if (allCheckbox) {
       allCheckbox.checked = true;
@@ -1607,7 +1607,7 @@ export default class CoreSDK {
     this.selectedItems.characters.clear();
     this.selectedItems.arguments.clear();
     this.selectedItems.proverbs.clear();
-    this.selectedItems.chapter = { id: 'all', name: '全部章节' };
+    this.selectedItems.chapter = { id: 'all', name: '全部篇目' };
 
     // 清空结果
     const resultsContainer = document.getElementById('analects-results-container');

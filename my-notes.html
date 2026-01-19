@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>我的笔记 - 论语SDK</title>
+  <title>我的笔记 - 论语XYZ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/v2/analects.css">
   <script defer src="https://unpkg.com/lucide@latest"></script>
@@ -13,10 +13,46 @@
       z-index: 2000 !important;
     }
   </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.lunyu.xyz/" },
+    { "@type": "ListItem", "position": 2, "name": "我的笔记", "item": "https://www.lunyu.xyz/my-notes.html" }
+  ]
+}
+</script>
+
 </head>
-<body class="page-with-sticky-header text-gray-800 antialiased">
-  <header id="global-header-wrapper"></header>
-  <div class="container mx-auto max-w-3xl px-4 py-8">
+<body class="page-with-sticky-header page-fixed-nav text-gray-800 antialiased">
+  <header id="global-header-wrapper">
+  <div class="global-header-inner">
+    <div class="header-left-area">
+      <a class="header-brand" href="/">論語XYZ</a>
+      <span class="header-welcome-message" aria-live="polite"></span>
+    </div>
+
+    <nav class="header-center-nav" aria-label="站点导航">
+        <a class="header-anchor" href="/chapters/index.html">论语二十篇</a>
+        <a class="header-anchor" href="/people/index.html">论语人物</a>
+        <a class="header-anchor" href="/topics/index.html">论语主题</a>
+        <a class="header-anchor" href="/proverbs/index.html">论语成语</a>
+      </nav>
+
+    <div class="header-right-area">
+  <div class="header-skeleton avatar" aria-hidden="true"></div>
+  <noscript><a class="header-login-btn" href="/login.html">登录 / 注册</a></noscript>
+</div>
+  </div>
+</header>
+
+  <div class="page-container">
+  <nav class="breadcrumb" aria-label="面包屑">
+  <a href="/">首页</a>
+  <span class="sep">/</span>
+  <span aria-current="page">我的笔记</span>
+</nav>
 
 	<header class="text-center mb-8 border-b pb-4 page-header">
 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 notes-title-grid"><span>我的笔记</span>
@@ -26,7 +62,6 @@
   </span>
 </h1>
 	      <p class="text-lg text-gray-500 mt-2">温故而知新，可以为师矣</p>
-	      <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回首页</a>
 
 	      <div class="mt-6 max-w-lg mx-auto">
 	        <div class="relative">
@@ -76,7 +111,7 @@
 
   <footer class="container mx-auto max-w-3xl px-4 mt-10 md:mt-12 pt-10 border-t border-gray-200">
     <div class="text-center text-sm text-gray-500">
-        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+        <p>&copy; <span id="year"></span> 论语XYZ. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
     </div>
   </footer>
 
@@ -92,8 +127,8 @@
       supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
     });
 
-    sdk.renderGlobalHeader();
     await sdk.init();
+    sdk.renderGlobalHeader();
 
     // [修改] 调用更新后的函数名和容器ID
     await sdk.renderMyNotesPage(document.getElementById('notes-list-container'));

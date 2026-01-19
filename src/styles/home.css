@@ -22,60 +22,10 @@
       scroll-behavior: smooth;
     }
 
-    /* 头像与标题对齐. 不改 SDK 结构. 只统一高度与对齐 */
-    #global-header-wrapper .global-header-inner { height: 64px; }
-    #global-header-wrapper .header-left-area,
-    #global-header-wrapper .header-right-area { align-items: center; }
-    #global-header-wrapper .user-menu-button,
-    #global-header-wrapper .header-login-btn{
-      height: 40px;
-      display: inline-flex;
-      align-items: center;
-    }
-    #global-header-wrapper .user-avatar-display{ width:32px; height:32px; }
-
-    /* Header 两态. 参考 mercury. 顶部无分割线. 下滑后出现 */
-    body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled){
-      background: transparent !important;
-      border-bottom-color: transparent !important;
-      box-shadow: none !important;
-      backdrop-filter: none !important;
-    }
-    body:has(#header-sentinel) #global-header-wrapper.is-scrolled{
-      background: rgba(255,255,255,0.92) !important;
-      border-bottom: 1px solid rgba(226,232,240,0.95) !important;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.06) !important;
-      backdrop-filter: saturate(180%) blur(10px);
-    }
-
-
     /* 基础字体与标题. 与 index 保持一致 */
     body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
     h1,h2,h3,h4,h5,h6{ font-family:'Noto Serif SC', serif; font-weight:600; }
     .font-logo{ font-family:'Zen Antique Soft', serif; }
-
-    /* 修复全局页头. 站点标题与右侧菜单垂直居中 */
-    #global-header-wrapper .global-header-inner{
-      display:flex;
-      align-items:center;
-      min-height:64px;
-    }
-    #global-header-wrapper .header-mini-logo,
-    #global-header-wrapper h1,
-    #global-header-wrapper .header-title{
-      display:flex;
-      align-items:center;
-      line-height:1;
-      font-family:'Zen Antique Soft', serif;
-      font-weight:600;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    #global-header-wrapper .header-left-area,
-    #global-header-wrapper .header-right-area{
-      display:flex;
-      align-items:center;
-    }
 
     /* 让 link 样式也适用于 button */
     button.link{
@@ -86,22 +36,6 @@
       cursor: pointer;
     }
 
-    
-    /* 全局页头垂直居中对齐. 强制对齐到同一中线 */
-    #global-header-wrapper .global-header-inner{
-      display:flex;
-      align-items:center;
-    }
-    #global-header-wrapper .header-mini-logo{
-      display:inline-flex;
-      align-items:center;
-      line-height: 1;
-    }
-    #global-header-wrapper .header-left-area,
-    #global-header-wrapper .header-right-area{
-      display:flex;
-      align-items:center;
-    }
 
     /* 让 qbtn 也适用于 button */
     button.qbtn{
@@ -220,37 +154,53 @@
 
     /* Hero. 更像产品落地页 */
     .hero{
-      padding: 40px 10px 16px;
-      text-align: center;
-    }
-    .hero h1{
-      font-size: clamp(36px, 4.4vw, 64px);
-      line-height: 1.04;
-      letter-spacing: -0.03em;
-      margin: 0;
-      color: var(--ink);
-    }
-    .hero .subtitle{
-      margin-top: 12px;
-      font-size: 17px;
-      color: var(--muted2);
-    }
-    .hero .desc{
-      margin: 20px auto 0;
-      max-width: 880px;
-      font-size: 15px;
-      line-height: 1.85;
-      color: var(--muted);
-    }
+  padding: 84px 12px 28px;
+  text-align: center;
+}
+@media (min-width: 768px){
+  .hero{ padding: 84px 14px 40px; }
+}
 
+    .hero h1, .hero-title{
+  font-size: clamp(44px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
+}
+
+    .hero .subtitle{
+  margin-top: 18px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+    
     /* 快速入口. 单列内的一条“控制台”式按钮行 */
     .quick{
-      margin-top: 26px;
-      display:flex;
-      gap: 10px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
+  margin-top: 34px;
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero .intro{
+  margin-top: 18px;
+  max-width: 58rem;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--muted2);
+  font-size: 15px;
+  line-height: 1.85;
+}
+.hero .intro p{ margin: 0 0 10px; }
+.hero .intro p:last-child{ margin-bottom: 0; }
     .qbtn{
       display:inline-flex;
       align-items:center;
@@ -272,7 +222,15 @@
       box-shadow: var(--shadow2);
       transform: translateY(-1px);
     }
-    .qbtn.primary{
+    .qbtn.ghost{
+  background: transparent;
+  border-color: rgba(15,23,42,.14);
+}
+.qbtn.ghost:hover{
+  background: rgba(255,255,255,.72);
+}
+
+.qbtn.primary{
       border-color: rgba(37,99,235,.35);
       background: rgba(37,99,235,.06);
     }
@@ -359,7 +317,7 @@
     /* 首页只保留关键词搜索 */
     .analects-selected-items,
     .analects-advanced-filters{
-      display:none !important;
+      /*display:none !important;*/
     }
 
     /* 禁止在祖先上做 overflow 裁切 */
@@ -446,97 +404,260 @@ body:has(#header-sentinel)
   }
 }
 
-/* ===============================
-   Home page fixed header (Mercury style)
-   =============================== */
 
-/* 1. 首页 header 始终固定在顶部 */
-body:has(#header-sentinel) #global-header-wrapper{
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
+/* 首页固定页头占位. 防止内容被遮挡 */
+body:has(#header-sentinel) .wrap{ padding-top: 64px; }
+
+/* Typography tune. small uplift for readability */
+.hero .subtitle{
+  font-size: 1.15rem;
+  line-height: 1.65;
 }
 
-/* 2. 给首页内容让位，避免被 header 盖住 */
-body:has(#header-sentinel) .wrap{
-  padding-top: 72px;
+.hero .intro,
+.hero p{
+  font-size: 0.98rem;
+  line-height: 1.9;
+  color: rgba(15,23,42,0.72);
 }
 
-/* 3. 顶部初始态：透明、无分割线、无阴影 */
-body:has(#header-sentinel)
-  #global-header-wrapper:not(.is-scrolled){
-  background: transparent !important;
-  border-bottom-color: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-}
-
-/* 4. 下滑后：出现分割线 + 轻磨砂（Mercury 风格） */
-body:has(#header-sentinel)
-  #global-header-wrapper.is-scrolled{
-  background: rgba(255,255,255,0.92) !important;
-  border-bottom: 1px solid rgba(226,232,240,0.95) !important;
-  box-shadow: 0 6px 16px rgba(15,23,42,0.06) !important;
-  backdrop-filter: saturate(180%) blur(10px);
+.section-hint,
+.card .hint,
+.block-hint{
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(15,23,42,0.62);
 }
 
 /* ===============================
-   Home header. always fixed + show logo at top
+   Home hero final (typography + spacing)
    =============================== */
 
-/* 1) 首页页头始终固定 */
-body:has(#header-sentinel) #global-header-wrapper{
-  position: fixed !important;
-  top: 0 !important;
-  left: 0;
-  right: 0;
-  z-index: 50;
+.wrap{ position: relative; }
+
+.hero{
+  padding: 48px 14px 44px;
+  text-align: center;
 }
 
-/* 2) 首页内容整体下移. 避免被 header 遮挡 */
-body:has(#header-sentinel) .wrap{
-  padding-top: 84px; /* 64px header + breathing space */
+.hero h1{
+  font-size: clamp(42px, 4.6vw, 62px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
 }
 
-/* 3) 复刻 mercury 两态 */
-body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled){
-  background: transparent !important;
-  border-bottom-color: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-}
-body:has(#header-sentinel) #global-header-wrapper.is-scrolled{
-  background: rgba(255,255,255,0.92) !important;
-  border-bottom: 1px solid rgba(226,232,240,0.95) !important;
-  box-shadow: 0 6px 16px rgba(15,23,42,0.06) !important;
-  backdrop-filter: saturate(180%) blur(10px);
+.hero .subtitle{
+  margin: 22px auto 0;
+  max-width: 58rem;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: rgba(15,23,42,0.82);
 }
 
-/* 4) 关键. 首页未滚动时也显示 header mini logo
-   analects.css 默认让它 opacity:0. 这里只在首页强制显示 */
-body:has(#header-sentinel) #global-header-wrapper .header-mini-logo{
-  opacity: 1 !important;
-  transform: none !important;
+.hero .intro{
+  margin: 22px auto 0;
+  max-width: 60rem;
+  text-align: center;
+  font-size: 0.98rem;
+  line-height: 1.9;
+  color: rgba(15,23,42,0.68);
 }
 
-/* 5) 把布局改成左 logo. 右登录. 不动 SDK DOM 结构 */
-body:has(#header-sentinel) #global-header-wrapper .global-header-inner{
-  justify-content: flex-start !important;
-  gap: 12px;
-}
-body:has(#header-sentinel) #global-header-wrapper .header-left-area{
-  display: none !important; /* 欢迎语区域先隐藏掉. 让 logo 真的靠左 */
-}
-body:has(#header-sentinel) #global-header-wrapper .header-right-area{
-  margin-left: auto !important;
-  flex: 0 0 auto !important;
+.hero .intro p{
+  margin: 0 0 12px;
 }
 
-/* 6) 防止移动端 analects.css 的 top:28px 干扰 */
-@media (max-width: 767px){
-  body:has(#header-sentinel) #global-header-wrapper{
-    top: 0 !important;
+.hero .intro p:last-child{
+  margin-bottom: 0;
+}
+
+.hero .quick{
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 主按钮更像 CTA. 其它保持克制 */
+.hero .qbtn.primary{
+  padding: 12px 16px;
+}
+
+.hero .qbtn.tertiary{
+  background: transparent;
+  border-color: rgba(15,23,42,0.12);
+}
+
+/* 小屏更紧凑 */
+@media (max-width: 640px){
+  body:has(#header-sentinel) .wrap{ padding-top: 56px; }
+
+  .hero{
+    padding-top: 34px;
+    padding-bottom: 34px;
   }
+
+  .hero h1{
+    font-size: clamp(34px, 8vw, 44px);
+  }
+
+  .hero .subtitle{
+    font-size: 1.05rem;
+    margin-top: 16px;
+  }
+
+  .hero .intro{
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+
+  .hero .quick{
+    gap: 8px;
+    margin-top: 22px;
+  }
+
+  .hero .qbtn{
+    padding: 10px 12px;
+  }
+}
+
+/* ===== Hero tune. put at END of home.css ===== */
+
+/* 1) more breathing room for the first screen */
+.hero,
+.hero-section,
+#hero{
+  padding-top: 72px;
+  padding-bottom: 28px;
+}
+
+/* 1) add space between hero and first module */
+.hero + .stack,
+.hero-section + .stack,
+#hero + .stack{
+  margin-top: 18px;
+}
+
+/* 3) intro readability. keep SEO, reduce visual weight */
+.hero .intro,
+.hero p.intro,
+.hero .hero-intro{
+  font-size: clamp(0.95rem, 1.1vw, 1.02rem);
+  line-height: 1.95;
+  color: rgba(15, 23, 42, 0.70);
+  margin-top: 10px;
+}
+
+/* 2) actions hierarchy. primary stronger, secondary lighter */
+.hero .actions,
+.hero .hero-actions,
+.hero .action-row{
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+
+/* primary action button. you may need to adjust selector to your real primary class */
+.hero .btn-primary,
+.hero a.primary,
+.hero .action-primary{
+  border-color: rgba(59, 130, 246, 0.40);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+/* secondary actions */
+.hero .btn-secondary,
+.hero a.secondary,
+.hero .action-secondary{
+  border-color: rgba(15, 23, 42, 0.10);
+  box-shadow: none;
+}
+
+/* ===== Patch: align embed-code button with "高级搜索" link style ===== */
+.daily-strip .embed-code-trigger.link{
+  /* force identical look to .link anchors */
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border2);
+  background: rgba(255,255,255,.92);
+  box-shadow: var(--shadow);
+  text-decoration:none;
+  font-size: 13px;
+  font-weight: 850;
+  color: var(--ink);
+  white-space: nowrap;
+  transition: box-shadow .15s ease, background .15s ease, transform .15s ease;
+}
+.daily-strip .embed-code-trigger.link:hover{
+  background:#fff;
+  box-shadow: var(--shadow2);
+  transform: translateY(-1px);
+}
+
+/* ===== Patch: mobile typography and hero actions layout ===== */
+@media (max-width: 520px){
+  .hero{
+    padding: 38px 6px 10px;
+    text-align: center;
+  }
+  .hero h1{
+    font-size: clamp(34px, 9vw, 48px);
+    line-height: 1.10;
+    letter-spacing: -0.02em;
+  }
+  .hero .subtitle{
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .intro{
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .quick{
+    margin-top: 18px;
+    max-width: 520px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .qbtn{
+    width: 100%;
+    padding: 10px 10px;
+    font-size: 13px;
+    border-radius: 999px;
+  }
+  .qbtn.primary,
+  .qbtn.tertiary{
+    grid-column: 1 / -1;
+  }
+}
+
+/* 首页. 高级筛选默认折叠. 通过 body.advanced-open 展开 */
+body.home-collapsible:not(.advanced-open) .analects-advanced-filters{
+  display: none !important;
+}
+
+/* 可选. 折叠时让按钮区更紧凑一点 */
+body.home-collapsible:not(.advanced-open) .analects-search-actions{
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* 折叠按钮样式. 复用 analects-btn, 叠一层“幽灵按钮”外观 */
+.analects-btn-ghost{
+  background: rgba(15,23,42,.04) !important;
+  border: 1px solid rgba(15,23,42,.12) !important;
+  color: rgba(15,23,42,.82) !important;
+}
+.analects-btn-ghost:hover{
+  background: rgba(15,23,42,.07) !important;
 }

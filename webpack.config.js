@@ -101,12 +101,14 @@ module.exports = (env, argv) => {
 		    { from: 'account.html', to: 'account.html', noErrorOnMissing: true },
         { from: 'share-management.html', to: 'share-management.html', noErrorOnMissing: true },
 			  { from: 'stories.html', to: 'stories.html', noErrorOnMissing: true },
-        { from: 'chapters.html', to: 'chapters.html', noErrorOnMissing: true },
+        { from: 'advanced-search.html', to: 'advanced-search.html', noErrorOnMissing: true },
 			  { from: 'public', to: '.', noErrorOnMissing: true }, 
 			  { from: 'chapters', to: 'chapters', noErrorOnMissing: true },
 			  { from: 'stories', to: 'stories', noErrorOnMissing: true },
         { from: 'articles', to: 'articles', noErrorOnMissing: true },
         { from: 'people', to: 'people', noErrorOnMissing: true },
+        { from: 'topics', to: 'topics', noErrorOnMissing: true },
+        { from: 'idioms', to: 'idioms', noErrorOnMissing: true },
 		  ]
       })
     ],

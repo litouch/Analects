@@ -104,7 +104,7 @@ body {
   padding: 48px 32px;
   text-align: center;
   position: relative;
-  box-shadow: var(--shadow);
+  box-shadow: none;
   margin-bottom: 32px;
   transition: all 0.3s ease;
 }
@@ -206,7 +206,7 @@ body {
 
 .analects-share-btn:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .analects-share-btn.twitter:hover { 
@@ -283,7 +283,7 @@ body {
   border-radius: var(--radius-lg);
   padding: 32px;
   margin-bottom: 24px;
-  box-shadow: var(--shadow);
+  box-shadow: none;
   border: 1px solid var(--border);
 }
 
@@ -602,7 +602,7 @@ body {
 .analects-btn:hover {
   background: #2c5aa0;
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .analects-btn:active { transform: translateY(0); }
@@ -2084,34 +2084,60 @@ body {
 
 /* --- 1. 页头容器 --- */
 #global-header-wrapper {
-    /* 初始状态：绝对定位，与页面大标题对齐 (只在首页生效) */
-    position: absolute;
-    top: 32px; /* [核心修改] 直接与主容器的上边距对齐 */
+    /* 全站固定页头. 首屏与背景融合. 滚动后再出现“mercury 风格”的分隔与轻底色 */
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    background-color: transparent;
+
+    /* 初始状态与页面背景融合 */
+    background: transparent;
     border-bottom: 1px solid transparent;
-    transition: all 0.3s ease-in-out;
+    box-shadow: none;
+
+    transition: background-color 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
-/* 在非首页 (收藏页/账户页)，页头直接就是粘性样式 */
-body:not(:has(#header-sentinel)) #global-header-wrapper {
-    position: fixed;
-    top: 0;
-    background-color: #f8fafc;
-    border-bottom-color: #e2e8f0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+/* 在非首页也保持同样的 fixed 行为. 仅样式由 is-scrolled 控制即可 */
+/* 非首页背景由 body:not(.page-home) 规则统一控制 */
+
+/* 滚动后的激活状态. 只由 is-scrolled 控制分割线出现.
+   说明.
+   - 首页: 页头始终保持更“透”的玻璃底色. 滚动后只增加分割线.
+   - 其他页: 页头始终保持更实的玻璃底色. 滚动后只增加分割线.
+*/
+body.page-home #global-header-wrapper,
+body:not(.page-home) #global-header-wrapper{
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-/* 滚动后的激活状态 (只在首页生效) */
-#global-header-wrapper.is-scrolled {
-    position: fixed;
-    top: 0;
-    background-color: #f8fafc;
-    border-bottom-color: #e2e8f0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+/* 滚动后: 仍保持同一背景. 仅触发分割线伪元素 */
+#global-header-wrapper.is-scrolled{
+  border-bottom-color: transparent;
+  box-shadow: none;
 }
+
+/* Mercury 风格的“柔和分隔线”. 两端渐隐 */
+#global-header-wrapper.is-scrolled::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        rgba(148, 163, 184, 0),
+        rgba(148, 163, 184, 0.45),
+        rgba(148, 163, 184, 0)
+    );
+    pointer-events: none;
+}
+
 
 /* --- 2. 页头内部布局 --- */
 .global-header-inner {
@@ -2120,7 +2146,7 @@ body:not(:has(#header-sentinel)) #global-header-wrapper {
     align-items: center;
     max-width: 1000px;
     margin: 0 auto;
-    padding: 8px 16px;
+    padding: 6px 16px;
     height: 56px; 
 }
 
@@ -2150,13 +2176,13 @@ body:not(:has(#header-sentinel)) #global-header-wrapper {
 }
 /* 滚动后或在非首页时，显示小标题 */
 #global-header-wrapper.is-scrolled .header-mini-logo,
-body:not(:has(#header-sentinel)) .header-mini-logo {
+body:not(.page-home) .header-mini-logo {
     opacity: 1;
     transform: translateY(0);
 }
 
 /* 在首页初始状态下，隐藏欢迎语，只显示两边的控件 */
-body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welcome-message {
+body.page-home #global-header-wrapper:not(.is-scrolled) .header-welcome-message {
     display: none;
 }
 
@@ -2164,11 +2190,11 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
 /* --- 4. 登录/注册按钮、用户菜单按钮、下拉菜单样式 --- */
 .header-login-btn {
   padding: 8px 16px; border: 1px solid var(--border); border-radius: 999px;
-  background-color: var(--bg); color: var(--primary); font-size: 14px;
-  font-weight: 500; cursor: pointer; box-shadow: var(--shadow);
+  background-color: transparent; color: var(--primary); font-size: 14px;
+  font-weight: 500; cursor: pointer; box-shadow: none;
   transition: all 0.2s ease;
 }
-.header-login-btn:hover { background-color: var(--card-bg); transform: translateY(-1px); }
+.header-login-btn:hover { background-color: rgba(255,255,255,0.6); transform: translateY(-1px); }
 
 .user-avatar-container { position: relative; }
 .user-menu-button {
@@ -2184,7 +2210,10 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
 
 .user-dropdown-menu {
   position: absolute; top: calc(100% + 8px); right: 0; width: 200px;
-  background-color: var(--bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+ border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
   border: 1px solid var(--border); padding: 8px; opacity: 0;
   transform: translateY(10px); pointer-events: none; transition: all 0.2s ease-out; z-index: 1100;
 }
@@ -2201,7 +2230,7 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
 /* --- 5. 深色模式适配 --- */
 @media (prefers-color-scheme: dark) {
     #global-header-wrapper.is-scrolled,
-    body:not(:has(#header-sentinel)) #global-header-wrapper {
+    body:not(.page-home) #global-header-wrapper {
         background-color: #1a202c;
         border-bottom-color: #4a5568;
     }
@@ -2225,7 +2254,8 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   - 然后选中它下面的 .container 容器
   - 这个方法比之前更直接、更稳定
 */
-.page-with-sticky-header .container {  
+.page-with-sticky-header .container,
+.page-with-sticky-header .page-container {  
   /*
     把上边距设置为 88px。
     计算方式: 56px (页头高度) + 32px (原有的 py-8 上边距) = 88px
@@ -2436,9 +2466,9 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: none;
-  border: none;
-  color: var(--light-gray);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--primary);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -2493,7 +2523,7 @@ body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) .header-welc
   top: calc(100% + 4px); /* 定位在按钮下方，有4px间距 */
   right: 0;
   width: 180px;
-  background-color: var(--bg);
+  background-color: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
@@ -2792,13 +2822,13 @@ a.chapter-item p {
 @media (max-width: 767px) {
 
   /* -- 1. 首页初始状态大Logo与按钮对齐微调 -- */
-  body:has(#header-sentinel) #global-header-wrapper:not(.is-scrolled) {
+  body.page-home #global-header-wrapper:not(.is-scrolled) {
     top: 28px; /* 将绝对定位的页头向上微调，以实现视觉居中 */
   }
 
   /* -- 2. 粘性页头绝对垂直居中 -- */
   #global-header-wrapper.is-scrolled .global-header-inner,
-  body:not(:has(#header-sentinel)) .global-header-inner {
+  body:not(.page-home) .global-header-inner {
     height: 56px;
   }
   .global-header-inner {
@@ -3130,7 +3160,7 @@ a.chapter-item p {
   border-radius: var(--radius-lg);
   padding: 24px; /* 卡片式的紧凑间距 */
   margin-bottom: 24px;
-  box-shadow: var(--shadow);
+  box-shadow: none;
   transition: all 0.3s ease;
 }
 
@@ -3345,3 +3375,516 @@ a.chapter-item p {
   grid-column: 3;
   justify-self: start;
 }
+
+/* ========================================= */
+
+/* ========================================= */
+/* Header. single source of truth (cleanup)  */
+/* ========================================= */
+
+/* Hide legacy mini logo and welcome message. keep DOM compatibility */
+#global-header-wrapper .header-mini-logo{ display: none !important; }
+#global-header-wrapper .header-welcome-message{ display: none !important; }
+
+/* Ensure dropdown is not clipped */
+#global-header-wrapper,
+#global-header-wrapper .global-header-inner{
+  overflow: visible;
+}
+#global-header-wrapper .global-header-inner{
+  position: relative;
+}
+
+/* Center nav. no layout shift. shown only when JS adds .center-nav-visible */
+#global-header-wrapper .header-center-nav{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateY(-2px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+
+  color: rgba(15, 23, 42, 0.65);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+#global-header-wrapper.center-nav-visible .header-center-nav{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+/* Non-home pages. center nav is always visible in the header on desktop */
+body:not(.page-home) #global-header-wrapper .header-center-nav{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+#global-header-wrapper .header-center-nav .header-anchor{
+  color: inherit;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 999px;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+#global-header-wrapper .header-center-nav .header-anchor:hover{
+  background: rgba(15, 23, 42, 0.06);
+  color: rgba(15, 23, 42, 0.82);
+}
+@media (max-width: 900px){
+  #global-header-wrapper .header-center-nav{ display: none; }
+}
+
+/* Dropdown. ensure icon elements render consistently */
+.dropdown-item i,
+.dropdown-item svg{
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+.dropdown-item i{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+
+/* ================================
+   Header + modal. cleanup patch
+   ================================ */
+
+/* 1) Header left brand. bigger */
+#global-header-wrapper .header-brand{
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  color: rgba(15, 23, 42, 0.92);
+  text-decoration: none;
+}
+#global-header-wrapper .header-brand:hover{
+  color: rgba(15, 23, 42, 1);
+}
+@media (min-width: 768px){
+  #global-header-wrapper .header-brand{ font-size: 1.5rem; }
+}
+
+/* 2) Mobile portrait. move center nav into dropdown when available */
+#global-header-wrapper.nav-in-dropdown .header-center-nav{
+  display: none !important;
+}
+#global-header-wrapper .dropdown-divider{
+  height: 1px;
+  background: rgba(15, 23, 42, 0.10);
+  margin: 8px 0;
+}
+#global-header-wrapper .user-dropdown-menu [data-mobile-nav]{
+  margin-top: 6px;
+}
+
+/* 3) Embed code modal */
+body.modal-open{ overflow: hidden; }
+
+#embed-code-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(2, 6, 23, 0.55);
+}
+
+#embed-code-modal[hidden]{
+  display: none !important;
+}
+
+#embed-code-modal .modal-card{
+  width: min(760px, 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.20);
+  padding: 16px;
+}
+
+#embed-code-modal .modal-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+#embed-code-modal .modal-header h3{
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: rgba(15, 23, 42, 0.92);
+}
+
+#embed-code-modal .modal-close{
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: rgba(15, 23, 42, 0.75);
+}
+
+#embed-code-modal .modal-sub{
+  margin: 6px 0 12px;
+  font-size: 13px;
+  color: rgba(15, 23, 42, 0.62);
+  line-height: 1.65;
+}
+
+#embed-code-modal .code-block{
+  margin: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: rgba(2, 6, 23, 0.90);
+  color: rgba(226, 232, 240, 0.95);
+  padding: 14px;
+  overflow: auto;
+  max-height: min(56vh, 520px);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+#embed-code-modal .modal-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+#embed-code-modal .btn{
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#embed-code-modal .btn.ghost{
+  background: transparent;
+}
+
+
+/* ========================================================= */
+/* Chapters and other non-home pages: fixed center nav + divider */
+/* Usage: add class "page-fixed-nav" on <body>                 */
+/* ========================================================= */
+
+/* 1) Always show the center nav on pages that opt-in */
+body.page-fixed-nav #global-header-wrapper .header-center-nav{
+  display: flex;
+}
+
+/* 3) Avoid the homepage-specific mobile "top: 28px" tweak leaking into non-home pages that also use a sentinel */
+@media (max-width: 767px){
+  body.page-fixed-nav #global-header-wrapper:not(.is-scrolled){
+    top: 0 !important;
+  }
+}
+
+/* 4) Mobile portrait: hide center nav in header, move to user dropdown (handled by JS injection) */
+@media (max-width: 767px) and (orientation: portrait){
+  body.page-fixed-nav #global-header-wrapper .header-center-nav{
+    display: none;
+  }
+}
+
+
+/* ========================================================= */
+/* Header responsive utilities: desktop-only and mobile-only */
+/* ========================================================= */
+
+#global-header-wrapper .desktop-only{ display: inline-flex; }
+#global-header-wrapper .mobile-only{ display: none; }
+
+@media (max-width: 900px){
+  #global-header-wrapper .desktop-only{ display: none !important; }
+  #global-header-wrapper .mobile-only{ display: flex !important; }
+}
+
+/* 移动端也保持与桌面端一致的页头背景逻辑.
+   - 首页: 更透的玻璃底色
+   - 其他页: 更实的玻璃底色
+   分割线仍只由 is-scrolled 触发
+*/
+@media (max-width: 900px){
+  body.page-home #global-header-wrapper,
+  body:not(.page-home) #global-header-wrapper{
+    background-color: var(--page, #f8fafc);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+
+/* Header background. always match the page base background, opaque */
+#global-header-wrapper{
+  background-color: var(--page, #f8fafc);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+
+/* =========================================================
+   Header background patch.
+   Fix.
+   - Remove transparency on scroll.
+   - Keep same background as page with subtle glass effect to mask content.
+   Notes.
+   - This block is placed at the END to override earlier, more-specific rules.
+   ========================================================= */
+:root{
+  --header-glass-bg: rgba(248, 250, 252, 0.88);
+  --header-glass-bg-strong: rgba(248, 250, 252, 0.94);
+  --header-glass-blur: 12px;
+  --header-glass-sat: 180%;
+}
+
+/* Always give the header a real background (both home and non-home). */
+body.page-home #global-header-wrapper,
+body:not(.page-home) #global-header-wrapper{
+  background: var(--header-glass-bg);
+  background: color-mix(in srgb, var(--page, #f8fafc) 88%, transparent);
+  backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-sat));
+  -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-sat));
+}
+
+/* Fallback for browsers without backdrop-filter. */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){
+  body.page-home #global-header-wrapper,
+  body:not(.page-home) #global-header-wrapper{
+    background: var(--header-glass-bg-strong);
+  }
+}
+
+/* Mobile. keep the same glass logic (override earlier mobile reset). */
+@media (max-width: 900px){
+  body.page-home #global-header-wrapper,
+  body:not(.page-home) #global-header-wrapper{
+    background: rgba(248, 250, 252, 0.90);
+    background: color-mix(in srgb, var(--page, #f8fafc) 90%, transparent);
+    backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-sat));
+    -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-sat));
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark){
+  body.page-home #global-header-wrapper,
+  body:not(.page-home) #global-header-wrapper{
+    background: rgba(2, 6, 23, 0.70);
+    background: color-mix(in srgb, rgba(2, 6, 23, 1) 70%, transparent);
+  }
+}
+
+
+/* ============================================================
+   Patch v2.
+   Fixes:
+   1. Header initial background matches page background (no lighter band).
+   2. Glass effect only when scrolled (masks content while scrolling).
+   3. Mobile home header should be flush to the top (override prior top:28px).
+   4. Logged out mobile menu button should not show an avatar placeholder.
+   ============================================================ */
+
+:root{
+  --header-base-bg: var(--page, #f8fafc);
+  --header-glass-blur-v2: 12px;
+  --header-glass-sat-v2: 180%;
+}
+
+/* Default (not scrolled). Opaque and identical to page base background */
+#global-header-wrapper{
+  background-color: var(--header-base-bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Scrolled. Glass effect to mask content under the fixed header */
+#global-header-wrapper.is-scrolled{
+  background: rgba(248, 250, 252, 0.88) !important;
+  background: color-mix(in srgb, var(--header-base-bg) 88%, transparent) !important;
+  backdrop-filter: blur(var(--header-glass-blur-v2)) saturate(var(--header-glass-sat-v2)) !important;
+  -webkit-backdrop-filter: blur(var(--header-glass-blur-v2)) saturate(var(--header-glass-sat-v2)) !important;
+}
+
+/* Keep divider behavior. Only is-scrolled shows the soft line (already implemented by ::after) */
+
+/* Mobile home. The header must start at top:0 (override old top:28px tweak) */
+@media (max-width: 767px){
+  body.page-home #global-header-wrapper:not(.is-scrolled){
+    top: 0 !important;
+  }
+}
+
+/* Logged out mobile menu button. Menu icon only */
+#global-header-wrapper .logged-out-menu-button{
+  gap: 0;
+  padding: 10px;
+}
+#global-header-wrapper .logged-out-menu-button .menu-icon{
+  margin-left: 0;
+}
+
+/* Dark mode consistency */
+@media (prefers-color-scheme: dark){
+  #global-header-wrapper{
+    background-color: rgba(2, 6, 23, 0.92) !important;
+    background-color: color-mix(in srgb, rgba(2, 6, 23, 1) 92%, transparent) !important;
+  }
+  #global-header-wrapper.is-scrolled{
+    background: rgba(2, 6, 23, 0.70) !important;
+    background: color-mix(in srgb, rgba(2, 6, 23, 1) 70%, transparent) !important;
+  }
+}
+
+
+/* ============================================================
+   Patch v3.
+   Fixes:
+   1) First paint (not scrolled): header background must match the page's top gradient (avoid a lighter band).
+   2) Desktop (>=901px): never show the hamburger menu button. Keep behavior aligned with chapter pages.
+   Notes:
+   - We intentionally apply the same radial overlay used by the page background, then pin to --page.
+   - Glass effect remains only when .is-scrolled.
+   ============================================================ */
+
+/* 1) First paint background match (home and non-home). */
+body.page-home #global-header-wrapper:not(.is-scrolled),
+body:not(.page-home) #global-header-wrapper:not(.is-scrolled){
+  /* Match the page top shading (same geometry as page background). */
+  background: radial-gradient(1200px 700px at 50% -140px, rgba(15,23,42,.06), transparent 70%),
+              var(--page, #f8fafc) !important;
+  background-color: var(--page, #f8fafc) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2) Desktop: hide hamburger menu button explicitly (even if some rule flips mobile-only). */
+@media (min-width: 901px){
+  #global-header-wrapper .logged-out-menu-button{
+    display: none !important;
+  }
+}
+
+.breadcrumb{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+  font-size:14px;
+  line-height:1.4;
+  margin: 8px 0 14px 0;
+  opacity: 0.92;
+}
+.breadcrumb a{
+  text-decoration:none;
+}
+.breadcrumb a:hover{
+  text-decoration:underline;
+}
+.breadcrumb .sep{
+  opacity:0.6;
+}
+@media (max-width: 520px){
+  .breadcrumb{ font-size: 13px; margin: 6px 0 12px 0; }
+}
+
+.page-container{
+  max-width: 64rem; /* 相当于 max-w-4xl */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.people-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.chip{
+  border:1px solid rgba(15,23,42,.12);
+  background:#fff;
+  color:#0f172a;
+  border-radius:9999px;
+  padding:8px 10px;
+  font-size:13px;
+  line-height:1;
+  cursor:pointer;
+  user-select:none;
+}
+
+.chip:hover{ background: rgba(15,23,42,.04); }
+
+.chip-active{
+  background: rgba(37,99,235,.10);
+  border-color: rgba(37,99,235,.22);
+  color:#1d4ed8;
+}
+
+.segmented{
+  display:inline-flex;
+  width:100%;
+  border:1px solid rgba(15,23,42,.12);
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.segmented-btn{
+  flex:1;
+  border:0;
+  background:transparent;
+  padding:10px 12px;
+  font-size:14px;
+  cursor:pointer;
+  color:#0f172a;
+}
+
+.segmented-btn + .segmented-btn{
+  border-left:1px solid rgba(15,23,42,.10);
+}
+
+.segmented-btn.is-active{
+  background: rgba(37,99,235,.10);
+  color:#1d4ed8;
+}
+
+/* 非首页. 未滚动状态. 登录后的头像菜单按钮保持与首页一致的“透明 + 细边框”观感 */
+body:not(.page-home) #global-header-wrapper:not(.is-scrolled) .user-menu-button{
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(203,213,225,0.55) !important;
+}
+
+body:not(.page-home) #global-header-wrapper:not(.is-scrolled) .user-menu-button:hover{
+  background: rgba(15,23,42,0.04) !important;
+  border-color: rgba(148,163,184,0.9) !important;
+}
+
+html { scrollbar-gutter: stable; }

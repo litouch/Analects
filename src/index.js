@@ -49,6 +49,13 @@ class AnalectsSDK extends CoreSDK { // [核心修改] 继承 CoreSDK
   async init() {
     await this._initializeSession();
     this._initializeGlobalEventListeners(); // 将事件监听器的启动也放在这里
+    
+    this._initializeHeaderAnimation();
+    
+    // 首页与通用页头的交互逻辑
+    try { this._initializeHeaderCenterNavVisibility(); } catch (e) {}
+    try { this._wireEmbedCodeModal(); } catch (e) {}
+
   }
 
   // [最终修复版] 采用主动、完整的状态同步流程
@@ -603,8 +610,8 @@ if (activeCardDropdown && !event.target.closest('.card-actions-container')) {
         tagsHTML = (characters.length > 0 || argumentsList.length > 0 || proverbs.length > 0) ? `
           <div class="card-tags-section">
             ${createTagGroup('人物', characters, 'users', 'character')}
-            ${createTagGroup('论点', argumentsList, 'target', 'argument')}
-            ${createTagGroup('谚语', proverbs, 'message-square-quote', 'proverb')}
+            ${createTagGroup('主题', argumentsList, 'target', 'argument')}
+            ${createTagGroup('成语', proverbs, 'message-square-quote', 'proverb')}
           </div>
         ` : '';
       }
@@ -694,6 +701,67 @@ renderGlobalHeader() {
     const headerWrapper = document.getElementById('global-header-wrapper');
     if (!headerWrapper) return;
 
+    // 如果页面已提供静态页头骨架. 则不要重绘整段 DOM. 仅更新动态区（欢迎语 + 登录态）
+    const hasStatic = !!headerWrapper.querySelector('.header-brand');
+    if (hasStatic) {
+        const welcomeEl = headerWrapper.querySelector('.header-welcome-message');
+        const rightEl = headerWrapper.querySelector('.header-right-area');
+
+        // 不在页头展示欢迎语. 统一隐藏（避免信息噪音. 也避免首屏布局抖动）
+        if (welcomeEl) {
+            welcomeEl.innerHTML = '';
+            welcomeEl.style.display = 'none';
+        }
+
+        if (rightEl) {
+            // 会话未确认前. 保持静态 HTML 中的占位（通常是登录按钮）. 避免首屏闪动
+            if (this.sessionInitialized && this.currentUser) {
+                const avatarHTML = this._getAvatarHTML(this.currentUser);
+                const userEmail = this.escapeHtml(this.currentUser.email);
+                rightEl.innerHTML = `
+                    <div class="user-avatar-container">
+                        <button class="user-menu-button" title="用户菜单"><i data-lucide="menu" class="menu-icon"></i><div class="user-avatar-display">${avatarHTML}</div></button>
+                        <div class="user-dropdown-menu">
+                            <div class="dropdown-user-info"><span class="email">${userEmail}</span></div>
+                            <a href="/my-notes.html" class="dropdown-item"><i data-lucide="bookmark"></i><span>我的笔记</span></a>
+                            <a href="/shared-with-me.html" class="dropdown-item"><i data-lucide="users"></i><span>共享空间</span></a>
+                            <a href="/share-management.html" class="dropdown-item"><i data-lucide="share-2"></i><span>分享管理</span></a>
+                            <a href="/account.html" class="dropdown-item"><i data-lucide="settings"></i><span>账户设置</span></a>
+                            <button class="dropdown-item logout"><i data-lucide="log-out"></i><span>登出</span></button>
+                            <div class="dropdown-nav" data-mobile-nav style="display:none"></div>
+                        </div>
+                    </div>
+                `;
+            } else if (this.sessionInitialized && !this.currentUser) {
+                rightEl.innerHTML = `
+                  <div class="user-avatar-container logged-out-menu">
+                    <a class="header-login-btn desktop-only" href="/login.html">登录 / 注册</a>
+                    <button class="user-menu-button mobile-only logged-out-menu-button" title="菜单">
+                      <i data-lucide="menu" class="menu-icon"></i>
+                    </button>
+                    <div class="user-dropdown-menu">
+                      <a href="/login.html" class="dropdown-item"><i data-lucide="log-in"></i><span>登录 / 注册</span></a>
+                      <div class="dropdown-nav" data-mobile-nav style="display:none"></div>
+                    </div>
+                  </div>
+                `;
+            }
+        }
+
+        // 绑定事件与图标渲染（幂等）
+        this._attachHeaderEvents();
+        try { this._initializeHeaderCenterNavVisibility(); } catch (e) {}
+
+        // 兜底：静态页头分支内动态插入了 lucide 图标（dropdown 左侧图标等）。
+        // 某些页面不会触发全局重绘时的 createIcons，这里强制刷新一次，避免出现“图标空白”。
+        if (window.lucide && window.lucide.createIcons) {
+            try { window.lucide.createIcons(); } catch (e) {}
+        }
+
+        return;
+    }
+
+    // 兼容：页面未提供静态页头时. 使用原来的整段渲染逻辑
     let innerHTML = '';
 
     // 状态一：如果初始会话还未确认，则显示骨架屏
@@ -712,18 +780,18 @@ renderGlobalHeader() {
         const userEmail = this.escapeHtml(this.currentUser.email);
         innerHTML = `
             <div class="global-header-inner">
-                <div class="header-left-area"><div class="header-welcome-message">欢迎, <span class="email">${userEmail}</span></div></div>
+                <div class="header-left-area"><div class="header-user-area"><div class="header-welcome-message">欢迎, <span class="email">${userEmail}</span></div></div></div>
                 <a href="/" class="header-mini-logo">論語SDK</a>
                 <div class="header-right-area">
                     <div class="user-avatar-container">
-                        <button class="user-menu-button" title="用户菜单"><i data-lucide="menu" class="menu-icon"></i><div class="user-avatar-display">${avatarHTML}</div></button>
+                        <button class="user-menu-button" title="账户菜单" aria-haspopup="true" aria-expanded="false"><i data-lucide="menu"></i><div class="user-avatar-display">${avatarHTML}</div></button>
                         <div class="user-dropdown-menu">
                             <div class="dropdown-user-info"><span class="email">${userEmail}</span></div>
                             <a href="/my-notes.html" class="dropdown-item"><i data-lucide="bookmark"></i><span>我的笔记</span></a>
                             <a href="/shared-with-me.html" class="dropdown-item"><i data-lucide="users"></i><span>共享空间</span></a>
                             <a href="/share-management.html" class="dropdown-item"><i data-lucide="share-2"></i><span>分享管理</span></a>
-                            <a href="/account.html" class="dropdown-item"><i data-lucide="settings"></i><span>账户设置</span></a>
-                            <button class="dropdown-item logout"><i data-lucide="log-out"></i><span>登出</span></button>
+                            <div class="dropdown-divider"></div>
+                            <button id="logout-button" class="dropdown-item logout"><i data-lucide="log-out"></i><span>退出登录</span></button>
                         </div>
                     </div>
                 </div>
@@ -734,7 +802,7 @@ renderGlobalHeader() {
     else {
         innerHTML = `
             <div class="global-header-inner">
-                <div class="header-left-area"><div class="header-welcome-message">欢迎访问论语 SDK</div></div>
+                <div class="header-left-area"><div class="header-user-area"><div class="header-welcome-message"></div></div></div>
                 <a href="/" class="header-mini-logo">論語SDK</a>
                 <div class="header-right-area"><div class="header-user-area"><button id="header-login-btn" class="header-login-btn">登录 / 注册</button></div></div>
             </div>
@@ -742,68 +810,391 @@ renderGlobalHeader() {
     }
 
     headerWrapper.innerHTML = innerHTML;
-    
+
     if (this.sessionInitialized) {
         this._attachHeaderEvents();
     }
 }
 
+
   // [最终修正版] 为全局页头绑定所有必要的事件
+  // [最终修正版] 为全局页头绑定所有必要的事件（幂等）
   _attachHeaderEvents() {
-    // 1. 为登录按钮绑定事件 (这部分不变)
-    const loginBtn = document.getElementById('header-login-btn');
-    if (loginBtn) {
-      loginBtn.addEventListener('click', () => this.showAuthModal('login'));
+    const headerWrapper = document.getElementById('global-header-wrapper');
+    if (!headerWrapper) return;
+
+    // 1) 事件委托：移动端下拉菜单里的“登录 / 注册”不是 .header-login-btn，且右侧区域可能被重渲染。
+//    使用委托可确保无论元素如何替换，都能稳定弹出登录框。
+    if (!document.documentElement.dataset.authLinkDelegated) {
+      document.documentElement.dataset.authLinkDelegated = '1';
+      document.addEventListener('click', (e) => {
+        const link = e.target && e.target.closest
+          ? e.target.closest('a[href="/login.html"], a[href="/login"], a[data-auth="login"]')
+          : null;
+        if (!link) return;
+
+        // 仅拦截页头内的登录入口，避免影响正文中可能存在的普通链接
+        const wrapper = document.getElementById('global-header-wrapper');
+        if (!wrapper || !wrapper.contains(link)) return;
+
+        // 在 /login.html 本页仍允许默认跳转（避免自我拦截）
+        const path = (window.location && window.location.pathname) ? window.location.pathname : '';
+        if (path.endsWith('/login.html') || path === '/login') return;
+
+        e.preventDefault();
+        this.showAuthModal('login');
+      }, { capture: true });
     }
 
-    // 2. [核心修正] 为页面上“所有”的用户菜单按钮绑定事件
-    document.querySelectorAll('.user-menu-button').forEach(button => {
+// 1) 登录按钮：静态骨架使用 .header-login-btn；旧模板也有 #header-login-btn
+    const loginBtn = headerWrapper.querySelector('.header-login-btn, #header-login-btn');
+    if (loginBtn && !loginBtn.dataset.bound) {
+      loginBtn.dataset.bound = '1';
+      loginBtn.addEventListener('click', (e) => {
+        // 若你希望保持跳转 /login.html，则删除下面两行
+        e.preventDefault();
+        this.showAuthModal('login');
+      });
+    }
+
+    // 2) 所有用户菜单按钮
+    headerWrapper.querySelectorAll('.user-menu-button').forEach((button) => {
+      if (button.dataset.bound) return;
+      button.dataset.bound = '1';
+
       button.addEventListener('click', (e) => {
-        e.stopPropagation(); // 阻止事件冒泡，防止触发下面的全局点击事件
-        
+        e.stopPropagation();
+
         const dropdown = button.nextElementSibling;
-        
+
         if (dropdown && dropdown.classList.contains('user-dropdown-menu')) {
           const wasActive = dropdown.classList.contains('active');
-          
-          document.querySelectorAll('.user-dropdown-menu').forEach(d => d.classList.remove('active'));
-          
-          if (!wasActive) {
-            dropdown.classList.add('active');
-          }
+
+          document
+            .querySelectorAll('.user-dropdown-menu.active')
+            .forEach((d) => d.classList.remove('active'));
+
+          if (!wasActive) dropdown.classList.add('active');
         }
       });
     });
 
-    // 3. [核心修正] 为页面上“所有”的登出按钮绑定事件
-    document.querySelectorAll('.dropdown-item.logout').forEach(logoutBtn => {
-      logoutBtn.addEventListener('click', () => this.signOut());
+    // 3) 所有登出按钮
+    headerWrapper.querySelectorAll('.dropdown-item.logout, #logout-button').forEach((logoutBtn) => {
+      if (logoutBtn.dataset.bound) return;
+      logoutBtn.dataset.bound = '1';
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.signOut();
+      });
     });
-    
-    // 4. 确保图标被正确渲染
+
+    // 4) 点击页面其他位置关闭菜单（只绑定一次）
+    if (!document.body.dataset.headerMenuBound) {
+      document.body.dataset.headerMenuBound = '1';
+      document.addEventListener('click', () => {
+        document
+          .querySelectorAll('.user-dropdown-menu.active')
+          .forEach((d) => d.classList.remove('active'));
+      });
+    }
+
+    // 5) 确保图标被正确渲染
     this._ensureIconsRendered();
   }
+
+	
+	// [最终统一版] 初始化页头动态效果
 	
 	// [最终统一版] 初始化页头动态效果
 	_initializeHeaderAnimation() {
-	    const sentinel = document.getElementById('header-sentinel');
 	    const headerWrapper = document.getElementById('global-header-wrapper');
+	    if (!headerWrapper) return;
 
-	    if (!sentinel || !headerWrapper) return;
+	    const THRESHOLD = 8; // 轻微下拉后进入 sticky 状态
 
-	    const observer = new IntersectionObserver(
-	        ([entry]) => {
-	            const isScrolled = !entry.isIntersecting;
-	            headerWrapper.classList.toggle('is-scrolled', isScrolled);
-	        },
-	        {
-	            root: null,
-	            threshold: 0,
-	        }
-	    );
+	    // 允许多次调用. 移除旧监听器
+	    if (this._headerScrollHandler) {
+	      window.removeEventListener('scroll', this._headerScrollHandler);
+	      window.removeEventListener('resize', this._headerScrollHandler);
+	      window.removeEventListener('orientationchange', this._headerScrollHandler);
+	    }
 
-	    observer.observe(sentinel);
+	    let rafId = null;
+
+	    const update = () => {
+	      rafId = null;
+	      const y = window.scrollY || window.pageYOffset || 0;
+	      headerWrapper.classList.toggle('is-scrolled', y > THRESHOLD);
+	    };
+
+	    const onScroll = () => {
+	      if (rafId) return;
+	      rafId = requestAnimationFrame(update);
+	    };
+
+	    this._headerScrollHandler = onScroll;
+
+	    window.addEventListener('scroll', onScroll, { passive: true });
+	    window.addEventListener('resize', onScroll);
+	    window.addEventListener('orientationchange', onScroll);
+
+	    // 首次计算
+	    update();
 	}
+
+  // [新增] 控制页头中间索引菜单的显示时机
+  // 触发条件: (1) header 底边超过 Hero action 区域(以 action 区域 bottom 为准)
+  //        或 (2) 进入每日论语区域(#today)
+
+  _initializeHeaderCenterNavVisibility() {
+    const headerWrapper = document.getElementById('global-header-wrapper');
+    if (!headerWrapper) return;
+
+    const actionNav =
+      document.getElementById('hero-actions') ||
+      document.querySelector('.hero #hero-actions');
+
+    const todaySection = document.getElementById('today');
+
+    const centerNav = headerWrapper.querySelector('.header-center-nav');
+    if (!centerNav) return;
+
+    const OFFSET = 8; // 轻微缓冲. 让出现时机更自然
+
+    // 允许多次调用. 始终移除旧监听器
+    if (this._centerNavVisibilityHandler) {
+      window.removeEventListener('scroll', this._centerNavVisibilityHandler);
+      window.removeEventListener('resize', this._centerNavVisibilityHandler);
+      window.removeEventListener('orientationchange', this._centerNavVisibilityHandler);
+    }
+
+    let rafId = null;
+
+    const update = () => {
+      rafId = null;
+
+      const headerRect = headerWrapper.getBoundingClientRect();
+      const headerBottom = headerRect.bottom;
+
+      // 页面逻辑统一为两类.
+      // - 首页: 中间菜单需要等到 header 下拉超过 action 区或进入每日论语区后才出现
+      // - 其他页: 中间菜单始终显示
+      const isHomePage =
+        document.body.classList.contains('page-home') ||
+        !!document.getElementById('header-sentinel') ||
+        !!document.getElementById('hero-actions');
+
+      let shouldShow = !isHomePage;
+
+
+      if (!shouldShow && actionNav) {
+        const a = actionNav.getBoundingClientRect();
+        if (a.bottom <= headerBottom + OFFSET) shouldShow = true;
+      }
+
+      if (!shouldShow && todaySection) {
+        const t = todaySection.getBoundingClientRect();
+        if (t.top <= headerBottom + OFFSET) shouldShow = true;
+      }
+      // 当中间导航在当前断点被隐藏时. 自动注入到右侧下拉菜单
+      const dropdownNavMount = headerWrapper.querySelector('[data-mobile-nav]');
+      const canUseDropdownNav = !!dropdownNavMount;
+
+      let navHidden = false;
+      try {
+        navHidden = window.getComputedStyle(centerNav).display === 'none';
+      } catch (e) {
+        navHidden = false;
+      }
+
+      const shouldMoveToDropdown = navHidden && canUseDropdownNav;
+
+      headerWrapper.classList.toggle('nav-in-dropdown', shouldMoveToDropdown);
+
+      // center-nav-visible 仅代表“逻辑上应该显示导航”. 不要因为断点变化而移除.
+      // 这样可以保证页头背景, 分隔线等状态在移动端与桌面端一致.
+      headerWrapper.classList.toggle('center-nav-visible', shouldShow);
+
+      if (shouldMoveToDropdown) {
+        this._syncHeaderNavIntoDropdown(centerNav, dropdownNavMount, shouldShow);
+      } else {
+        this._syncHeaderNavIntoDropdown(centerNav, dropdownNavMount, false);
+      }
+
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
+    };
+
+    this._centerNavVisibilityHandler = onScroll;
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('orientationchange', onScroll);
+
+    // 首次计算
+    update();
+  }
+
+  _syncHeaderNavIntoDropdown(centerNav, mountEl, shouldShow) {
+    if (!mountEl) return;
+
+    if (!shouldShow) {
+      mountEl.innerHTML = '';
+      mountEl.style.display = 'none';
+      return;
+    }
+
+  if (!centerNav) {
+    mountEl.innerHTML = '';
+    mountEl.style.display = 'none';
+    return;
+  }
+
+  const links = Array.from(centerNav.querySelectorAll('a.header-anchor'))
+    .map((a) => {
+      const href = a.getAttribute('href') || '#';
+      const text = (a.textContent || '').trim();
+      return { href, text };
+    })
+    .filter((x) => x.text);
+
+  if (!links.length) {
+    mountEl.innerHTML = '';
+    mountEl.style.display = 'none';
+    return;
+  }
+
+  mountEl.style.display = 'block';
+  mountEl.innerHTML = `
+    <div class="dropdown-divider"></div>
+    ${links
+      .map(
+        (l) => `<a class="dropdown-item" href="${this.escapeHtml(l.href)}"><i data-lucide="chevron-right"></i><span>${this.escapeHtml(l.text)}</span></a>`
+      )
+      .join('')}
+  `;
+
+  // 确保图标刷新
+  if (window.lucide && window.lucide.createIcons) {
+    try { window.lucide.createIcons(); } catch (e) {}
+  }
+}
+
+  _wireEmbedCodeModal() {
+    const trigger = document.querySelector('[data-embed-code-trigger]');
+    const modal = document.getElementById('embed-code-modal');
+    if (!trigger || !modal) return;
+
+    const codeEl = modal.querySelector('#embed-code-content');
+    const copyBtn = modal.querySelector('[data-copy-code]');
+    const closeEls = modal.querySelectorAll('[data-modal-close]');
+
+    const open = () => {
+      if (codeEl) codeEl.textContent = this._getDailyEmbedSnippet();
+      modal.hidden = false;
+      document.body.classList.add('modal-open');
+
+      if (window.lucide && window.lucide.createIcons) {
+        try { window.lucide.createIcons(); } catch (e) {}
+      }
+    };
+
+    const close = () => {
+      modal.hidden = true;
+      document.body.classList.remove('modal-open');
+    };
+
+    if (!trigger.dataset.bound) {
+      trigger.dataset.bound = '1';
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        open();
+      });
+    }
+
+    closeEls.forEach((el) => {
+      if (el.dataset.bound) return;
+      el.dataset.bound = '1';
+      el.addEventListener('click', close);
+    });
+
+    if (!modal.dataset.bound) {
+      modal.dataset.bound = '1';
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) close();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!modal.hidden && e.key === 'Escape') close();
+      });
+    }
+
+    if (copyBtn && codeEl && !copyBtn.dataset.bound) {
+      copyBtn.dataset.bound = '1';
+      copyBtn.addEventListener('click', async () => {
+        const text = codeEl.textContent || '';
+        const restore = () => setTimeout(() => { copyBtn.textContent = '复制代码'; }, 1200);
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            // 兼容旧浏览器
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+          }
+          copyBtn.textContent = '已复制';
+          restore();
+        } catch (err) {
+          copyBtn.textContent = '复制失败';
+          restore();
+        }
+      });
+    }
+  }
+
+  _getDailyEmbedSnippet() {
+    const origin =
+      (typeof window !== 'undefined' && window.location && window.location.origin)
+        ? window.location.origin
+        : '';
+
+    const cssUrl = `${origin}/v2/analects.css`;
+    const jsUrl = `${origin}/v2/analects.js`;
+
+    return `
+<link rel="stylesheet" href="https://www.lunyu.xyz/v1/analects.css">
+<script defer src="https://www.lunyu.xyz/v1/analects.js"></script>
+
+<div id="daily-analect-embed" style="background-color:#f9fafb; padding:1rem; border-radius:0.5rem; min-height:100px;">
+<div class="daily-analect-skeleton">
+<div style="height: 30px; width: 40%; margin: 0 auto 16px; background-color: #e2e8f0; border-radius: 4px;"></div>
+<div style="height: 20px; width: 60%; margin: 0 auto 48px; background-color: #e2e8f0; border-radius: 4px;"></div>
+<div style="height: 80px; width: 100%; margin-bottom: 16px; background-color: #e2e8f0; border-radius: 4px;"></div>
+<div style="height: 50px; width: 80%; margin: 0 auto; background-color: #e2e8f0; border-radius: 4px;"></div>
+</div></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async function() {
+    const sdk = new AnalectsSDK({ supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co', supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet' });
+    await sdk.init();
+    sdk.renderDailyAnalect(document.getElementById('daily-analect-embed'));
+  });
+</script>
+    `;
+  }
 
 // [最终版] 渲染“我的笔记”页面，并实现完整的“对照模式”和“多彩徽章”功能
 async renderMyNotesPage(container) {
@@ -2316,6 +2707,7 @@ async loadMoreNotes() {
     }
 }
 
+
 }
 
 // 全局复制方法
@@ -2373,6 +2765,11 @@ if (typeof document !== 'undefined') {
       
       document.querySelectorAll('[data-analects-daily]')
         .forEach(container => sdk.renderDailyAnalect(container));
+
+      // 初始化页头动效与中间导航显示逻辑（不依赖登录态）
+      try { sdk._initializeHeaderAnimation(); } catch (e) {}
+      try { sdk._initializeHeaderCenterNavVisibility(); } catch (e) {}
+      try { sdk.renderGlobalHeader(); } catch (e) {}
     }
   });
 }

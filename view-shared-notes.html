@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>查看共享 - 论语SDK</title>
+  <title>查看共享 - 论语XYZ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/v2/analects.css">
   <script defer src="https://unpkg.com/lucide@latest"></script>
@@ -10,11 +10,44 @@
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
     h1, h2, h3 { font-family: 'Noto Serif SC', serif; }
   </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.lunyu.xyz/" },
+    { "@type": "ListItem", "position": 2, "name": "查看共享", "item": "https://www.lunyu.xyz/view-shared-notes.html" }
+  ]
+}
+</script>
 </head>
-<body class="page-with-sticky-header text-gray-800 antialiased">
-  <header id="global-header-wrapper"></header>
+<body class="page-with-sticky-header page-fixed-nav text-gray-800 antialiased">
+  <header id="global-header-wrapper">
+  <div class="global-header-inner">
+    <div class="header-left-area">
+      <a class="header-brand" href="/">論語XYZ</a>
+      <span class="header-welcome-message" aria-live="polite"></span>
+    </div>
+
+    <nav class="header-center-nav" aria-label="站点导航">
+        <a class="header-anchor" href="/chapters/index.html">论语二十篇</a>
+        <a class="header-anchor" href="/people/index.html">论语人物</a>
+        <a class="header-anchor" href="/topics/index.html">论语主题</a>
+        <a class="header-anchor" href="/proverbs/index.html">论语成语</a>
+      </nav>
+    <div class="header-right-area">
+  <div class="header-skeleton avatar" aria-hidden="true"></div>
+  <noscript><a class="header-login-btn" href="/login.html">登录 / 注册</a></noscript>
+</div>
+  </div>
+</header>
   
-  <div class="container mx-auto max-w-3xl px-4 py-8">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="面包屑">
+    <a href="/">首页</a>
+    <span class="sep">/</span>
+    <span aria-current="page">查看共享</span>
+    </nav>
     <header id="page-header" class="text-center mb-8 border-b pb-4"></header>
 
     <main id="notebook-view-container" class="space-y-8">
@@ -29,7 +62,7 @@
 
   <footer class="mt-10 md:mt-12 pt-10 border-t border-gray-200">
     <div class="text-center text-sm text-gray-500 max-w-3xl mx-auto px-4">
-        <p>&copy; <span id="year"></span> 论语SDK. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
+        <p>&copy; <span id="year"></span> 论语XYZ. Made with ❤️ by <a href="https://lehua.li" class="text-blue-600 hover:underline">lehua.li</a></p>
     </div>
   </footer>
 
@@ -43,9 +76,8 @@
           supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
         });
 
-        // [优化] 在 init() 之前调用，立刻渲染出页头骨架屏
-        sdk.renderGlobalHeader();
         await sdk.init();
+        sdk.renderGlobalHeader();
 
         const urlParams = new URLSearchParams(window.location.search);
         const lenderId = urlParams.get('lender_id');
@@ -60,7 +92,6 @@
         pageHeader.innerHTML = `
           <h1 class="text-3xl md:text-4xl font-bold text-gray-900">查看共享</h1>
           <p class="text-lg text-gray-500 mt-2">来自 <strong>${escapedEmail}</strong> 的笔记</p>
-          <a href="/shared-with-me.html" class="text-blue-600 hover:underline mt-4 inline-block">&larr; 返回共享空间</a>
         `;
 
         const container = document.getElementById('notebook-view-container');
