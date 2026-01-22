@@ -1985,17 +1985,9 @@ async toggleFavorite(entryId, targetButton) {
                 }
             }, 500);
         }
-    } else if (currentPagePath.includes('/view-shared-notes.html')) {
-        // [新增] 在共享页面，刷新整个容器来保证状态绝对正确
-        const container = document.getElementById('notebook-view-container');
-        const urlParams = new URLSearchParams(window.location.search);
-        const lenderId = urlParams.get('lender_id');
-        if (container && lenderId) {
-            await this.renderSharedNotebook(container, lenderId);
-        }
     } else {
-        await this._refreshCardUI(entryId);
-    }
+  await this._refreshCardUI(entryId);
+}
 
   } catch (error) {
     console.error('收藏操作失败:', error);
@@ -2008,28 +2000,57 @@ async toggleFavorite(entryId, targetButton) {
   }
 }
 	
-	// [最终修复版 V3] 统一的、智能的卡片UI刷新函数 (兼容每日论语)
-	async _refreshCardUI(entryId) {
-	  const card = document.querySelector(`.verse-card[data-entry-id="${entryId}"], .analects-result-card[data-entry-id="${entryId}"]`);
-  
-	  if (card) {
-	    const fullEntryData = await this._getEntryDataForHydration(entryId);
-	    if (!fullEntryData) return;
-        
-        const isSearchResult = card.closest('#analects-results-container');
-	    card.innerHTML = this.generateResultCardHTML(fullEntryData, { showTags: !!isSearchResult });
+async _refreshCardUI(entryId) {
+  const card = document.querySelector(
+    `.verse-card[data-entry-id="${entryId}"], .analects-result-card[data-entry-id="${entryId}"]`
+  );
 
-	  } else {
-	    const dailyFavoriteBtn = document.querySelector(`.analects-daily .favorite-btn[data-entry-id="${entryId}"]`);
-	    if (dailyFavoriteBtn) {
-	      const isFavorited = this.favoriteIds.has(entryId);
-	      dailyFavoriteBtn.classList.toggle('favorited', isFavorited);
-	      dailyFavoriteBtn.title = isFavorited ? '取消收藏' : '收藏此条';
-	    }
-	  }
-  
-	  this._ensureIconsRendered();
-	}
+  if (card) {
+    // 1) 重新取一次条目数据. 用于刷新正文区域与状态
+    const fullEntryData = await this._getEntryDataForHydration(entryId);
+    if (!fullEntryData) return;
+
+    // 2) 取“我的笔记/收藏数据”. 用于稳定渲染“我的笔记”区块
+    const myFavoriteData = this.favoritesDataCache?.get(entryId) || null;
+
+    // 3) 取“分享者笔记数据”. 这是共享页必须稳定保留的关键
+    const sharerFavoriteData =
+      (this.sharedSharerFavoritesCache && this.sharedSharerFavoritesCache.get(entryId)) || null;
+
+    // 4) 双保险. 即使 generateResultCardHTML 内部未来改用 entry.sharer_favorite_data 也不丢
+    if (sharerFavoriteData) {
+      fullEntryData.sharer_favorite_data = sharerFavoriteData;
+    }
+
+    // 5) 保持你原来的 showTags 逻辑
+    const isSearchResult = !!card.closest('#analects-results-container');
+
+    // 6) 关键改动. 重渲染时显式传入 sharerFavoriteData
+    // generateResultCardHTML(entry, options, myFavoriteData, sharerFavoriteData, ...)
+    card.innerHTML = this.generateResultCardHTML(
+      fullEntryData,
+      { showTags: isSearchResult },
+      myFavoriteData,
+      sharerFavoriteData
+    );
+
+    // 7) 重新绑定当前卡片内的交互
+    this._attachCardActionListeners(card);
+  } else {
+    // 兼容每日论语按钮
+    const dailyFavoriteBtn = document.querySelector(
+      `.analects-daily .favorite-btn[data-entry-id="${entryId}"]`
+    );
+    if (dailyFavoriteBtn) {
+      const isFavorited = this.favoriteIds.has(entryId);
+      dailyFavoriteBtn.classList.toggle('favorited', isFavorited);
+      dailyFavoriteBtn.title = isFavorited ? '取消收藏' : '收藏此条';
+    }
+  }
+
+  this._ensureIconsRendered();
+}
+
 	
 	// [最终正确版] 更新收藏条目的心得笔记
   async updateFavoriteInsight(entryId, insightText) {
@@ -2122,19 +2143,7 @@ async toggleFavorite(entryId, targetButton) {
 	        });
 	    }
         
-        // [核心修改] 根据页面决定刷新策略
-        if (window.location.pathname.includes('/view-shared-notes.html')) {
-            // 在共享页面，刷新整个容器以保证状态绝对正确
-            const container = document.getElementById('notebook-view-container');
-            const urlParams = new URLSearchParams(window.location.search);
-            const lenderId = urlParams.get('lender_id');
-            if (container && lenderId) {
-                await this.renderSharedNotebook(container, lenderId);
-            }
-        } else {
-            // 在其他页面，只刷新当前卡片
-            await this._refreshCardUI(entryId);
-        }
+  await this._refreshCardUI(entryId);
     
 	    if (window.showToast) window.showToast('笔记已保存！');
 	    this.closeNoteEditorModal();
@@ -2486,6 +2495,109 @@ initializeNotesSearch(inputElement, containerElement) {
     }
   }
 
+async getSharedNotesCountV2(lenderId, chapterIndex = null) {
+  if (!this.currentUser || !lenderId) return 0;
+
+  const { data, error } = await this.supabase.rpc('get_shared_notes_count_v2', {
+    p_lender_id: lenderId,
+    p_chapter_index: chapterIndex
+  });
+
+  if (error) throw error;
+  return data || 0;
+}
+
+async getSharedNotesPageV2(lenderId, pageSize, startOffset, chapterIndex = null) {
+  if (!this.currentUser || !lenderId) return [];
+
+  const { data, error } = await this.supabase.rpc('get_shared_notes_v2', {
+    p_lender_id: lenderId,
+    page_size: pageSize,
+    start_offset: startOffset,
+    p_chapter_index: chapterIndex
+  });
+
+  if (error) throw error;
+  return data || [];
+}
+
+async loadMoreSharedNotes(container) {
+  if (!this.sharedNotesPagination) return;
+  if (this.sharedNotesPagination.isLoading || !this.sharedNotesPagination.hasMore) return;
+
+  this.sharedNotesPagination.isLoading = true;
+
+  const loadingMoreDiv = document.getElementById('shared-loading-more');
+  if (loadingMoreDiv) {
+    loadingMoreDiv.textContent = '加载中.';
+    loadingMoreDiv.style.display = 'block';
+  }
+
+  try {
+    const { pageSize, currentPage, lenderId, chapterIndex } = this.sharedNotesPagination;
+    const startOffset = currentPage * pageSize;
+
+    const rows = await this.getSharedNotesPageV2(lenderId, pageSize, startOffset, chapterIndex);
+
+    // 首屏时移除 skeleton
+    const skeleton = container.querySelector('.verse-card-skeleton');
+    if (skeleton && currentPage === 0) {
+      container.innerHTML = '';
+    }
+
+    rows.forEach(row => {
+      const entryData = row.entry;
+      const sharerFavoriteData = row.sharer_favorite_data || null;
+
+      // 当前用户对该条目的收藏数据. 用于卡片按钮状态展示
+      const myFavoriteData = this.favoritesDataCache?.get(entryData.id) || null;
+
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'verse-card';
+      cardWrapper.setAttribute('data-entry-id', entryData.id);
+
+      // 你确认“前端改一行”. 这里直接传 row.sharer_favorite_data
+      cardWrapper.innerHTML = this.generateResultCardHTML(
+        entryData,
+        { showTags: true },
+        myFavoriteData,
+        sharerFavoriteData
+      );
+
+      container.appendChild(cardWrapper);
+    });
+
+    this._attachCardActionListeners(container);
+    this._ensureIconsRendered();
+
+    // 更新分页状态
+    this.sharedNotesPagination.currentPage += 1;
+    this.sharedNotesPagination.hasMore =
+      (this.sharedNotesPagination.currentPage * this.sharedNotesPagination.pageSize) < this.sharedNotesPagination.totalCount;
+
+    if (!this.sharedNotesPagination.hasMore) {
+      const done = document.createElement('div');
+      done.className = 'analects-load-complete';
+      done.style.display = 'block';
+      done.textContent = '已全部显示完毕';
+      container.appendChild(done);
+    }
+
+  } catch (e) {
+    console.error('加载更多共享笔记失败:', e);
+    if (loadingMoreDiv) {
+      loadingMoreDiv.textContent = '加载失败，请刷新重试。';
+      loadingMoreDiv.style.display = 'block';
+    }
+  } finally {
+    this.sharedNotesPagination.isLoading = false;
+    if (loadingMoreDiv && loadingMoreDiv.textContent === '加载中.') {
+      loadingMoreDiv.style.display = 'none';
+    }
+  }
+}
+
+
   // [最终健壮版] 获取某个特定用户的全部收藏 (只读) - [修改]
   async getLenderNotebook(lenderId) {
     // 1. 检查当前用户是否登录，以及是否传入了目标用户ID
@@ -2567,48 +2679,302 @@ async renderSharedWithMeList(container) {
 }
 
 // [重构版] 渲染共享笔记页面
-async renderSharedNotebook(container, lenderId) {
-    if (!container || !lenderId) return;
+async renderSharedNotebook(container, lenderId, opts = {}) {
+  if (!container) return;
 
-    // 1. 获取经过处理的、包含 sharer_favorite_data 的笔记数据
-    const notebook = await this.getLenderNotebook(lenderId);
+  // 未登录处理
+  if (!this.currentUser) {
+    container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>请先登录查看共享笔记。</p></div>`;
+    return;
+  }
 
-    if (notebook.length === 0) {
+  const chapterIndex = (opts.chapterIndex === null || opts.chapterIndex === undefined)
+    ? null
+    : Number(opts.chapterIndex);
+
+  // 清理旧的滚动监听. 避免重复绑定
+  if (this._sharedNotesScrollHandler) {
+    window.removeEventListener('scroll', this._sharedNotesScrollHandler);
+    this._sharedNotesScrollHandler = null;
+  }
+
+  // 初始化分页状态
+  this.sharedNotesPagination = {
+    pageSize: 10,
+    currentPage: 0,
+    isLoading: false,
+    hasMore: true,
+    totalCount: 0,
+    lenderId,
+    chapterIndex
+  };
+
+  // 首屏 skeleton
+  container.innerHTML = `
+    <div class="verse-card-skeleton">
+      <div class="skeleton-block" style="height: 150px; width: 100%;"></div>
+    </div>
+  `;
+
+  try {
+    const total = await this.getSharedNotesCountV2(lenderId, chapterIndex);
+    this.sharedNotesPagination.totalCount = total;
+
+    if (!total || total <= 0) {
+      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>没有可显示的共享笔记，或分享已失效。</p></div>`;
+      return;
+    }
+
+    // 首屏加载
+    await this.loadMoreSharedNotes(container);
+
+    // 绑定滚动监听. 接近底部触发加载
+    this._sharedNotesScrollHandler = () => {
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 400;
+      if (nearBottom) this.loadMoreSharedNotes(container);
+    };
+
+    window.addEventListener('scroll', this._sharedNotesScrollHandler, { passive: true });
+
+  } catch (e) {
+    console.error('初始化共享笔记失败:', e);
+    container.innerHTML = `<div class="text-center text-red-500 py-8"><p>加载失败，请稍后重试。</p></div>`;
+  }
+}
+
+async renderSharedNotebookV3(container, lenderId, opts = {}) {
+  if (!container || !lenderId) return;
+
+  const { reset = false } = opts;
+  const chapterIndex = (opts.chapterIndex === undefined) ? null : opts.chapterIndex;
+  const sort = opts.sort || 'favorited_at_desc';
+
+  // 初始化分页状态
+  if (!this.sharedPagination) {
+    this.sharedPagination = {
+      pageSize: 10,
+      currentPage: 0,
+      totalCount: 0,
+      isLoading: false,
+      hasMore: true,
+      lenderId: null,
+      chapterIndex: null,
+      sort: 'favorited_at_desc',
+      observer: null
+    };
+  }
+
+  const state = this.sharedPagination;
+
+  const shouldReset =
+    reset ||
+    state.lenderId !== lenderId ||
+    state.chapterIndex !== chapterIndex ||
+    state.sort !== sort;
+
+  if (shouldReset) {
+    // 停止旧 observer. 防止重复绑定
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+
+    // [关键] 清空 sharer 缓存. 防止切换 lender 或筛选后串数据
+    this.sharedSharerFavoritesCache = new Map();
+
+    state.lenderId = lenderId;
+    state.chapterIndex = chapterIndex;
+    state.sort = sort;
+    state.currentPage = 0;
+    state.totalCount = 0;
+    state.isLoading = false;
+    state.hasMore = true;
+
+    // 重置容器. 骨架屏 + 加载中 + sentinel
+    container.innerHTML = `
+      <div class="verse-card-skeleton">
+        <div class="skeleton-block" style="height: 150px; width: 100%;"></div>
+      </div>
+
+      <div id="shared-notes-loading-more" class="analects-loading-more" style="display:none;">
+        <span class="analects-loading-text">加载中...</span>
+      </div>
+
+      <div id="shared-notes-scroll-sentinel" style="height:1px;"></div>
+    `;
+  }
+
+  // 首次加载 count
+  if (state.totalCount === 0) {
+    const { data: totalCount, error: countError } = await this.supabase
+      .rpc('get_shared_notes_count_v3', {
+        p_lender_id: lenderId,
+        p_chapter_index: chapterIndex
+      });
+
+    if (countError) {
+      console.error('get_shared_notes_count_v3 failed:', countError);
       container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>无法加载笔记，可能分享已被收回或内容为空。</p></div>`;
       return;
     }
 
-    // 2. 清空容器，准备渲染
-    container.innerHTML = '';
+    state.totalCount = totalCount || 0;
 
-    // 3. 遍历分享的笔记，为每一条生成卡片
-    notebook.forEach(entry => {
-      // 3.1 获取当前用户自己的收藏数据（如果有的话）
-      const myFavoriteData = this.favoritesDataCache.get(entry.id);
+    if (state.totalCount === 0) {
+      container.innerHTML = `<div class="text-center text-gray-500 py-8"><p>暂无可查看的共享笔记。</p></div>`;
+      return;
+    }
+  }
+
+  // 首屏加载
+  if (state.currentPage === 0 && !container.querySelector('.verse-card')) {
+    await this._loadMoreSharedNotesV3(container);
+  }
+
+  // 绑定 observer
+  const sentinel = container.querySelector('#shared-notes-scroll-sentinel');
+  if (sentinel && !state.observer) {
+    state.observer = new IntersectionObserver(async (entries) => {
+      if (!entries[0].isIntersecting) return;
+      await this._loadMoreSharedNotesV3(container);
+    }, { rootMargin: '600px' });
+
+    state.observer.observe(sentinel);
+  }
+}
+
+
+async _loadMoreSharedNotesV3(container) {
+  const state = this.sharedPagination;
+  if (!state || state.isLoading || !state.hasMore) return;
+
+  const loadingMoreDiv = container.querySelector('#shared-notes-loading-more');
+
+  // 是否首屏加载. 首屏只显示骨架屏. 不显示“加载中...”
+  const isFirstPage = state.currentPage === 0;
+
+  try {
+    state.isLoading = true;
+
+    // 新请求开始前. 移除旧的“已加载完毕”提示
+    const oldDone = container.querySelector('.analects-load-complete');
+    if (oldDone) oldDone.remove();
+
+    // 仅非首屏请求期间显示“加载中...”
+    if (!isFirstPage && loadingMoreDiv) {
+      delete loadingMoreDiv.dataset.state;
+      loadingMoreDiv.innerHTML = `<span class="analects-loading-text">加载中...</span>`;
+      loadingMoreDiv.style.display = 'block';
+    }
+
+    const startOffset = state.currentPage * state.pageSize;
+
+    const { data, error } = await this.supabase.rpc('get_shared_notes_v3', {
+      p_lender_id: state.lenderId,
+      page_size: state.pageSize,
+      start_offset: startOffset,
+      p_chapter_index: state.chapterIndex,
+      p_sort: state.sort
+    });
+
+    if (error) throw error;
+
+    // 首屏返回后. 移除骨架屏
+    if (isFirstPage) {
+      const skeleton = container.querySelector('.verse-card-skeleton');
+      if (skeleton) skeleton.remove();
+    }
+
+    // 保证新卡片插入在 loadingMoreDiv 之前. 这样 loading 永远在底部
+    const insertBeforeEl =
+      loadingMoreDiv ||
+      container.querySelector('#shared-notes-scroll-sentinel') ||
+      null;
+
+    (data || []).forEach(row => {
+      const entryData = row.entry;
+      entryData.sharer_favorite_data = row.sharer_favorite_data;
+
+      // 缓存分享者笔记. 供 _refreshCardUI 回填使用
+      if (!this.sharedSharerFavoritesCache) this.sharedSharerFavoritesCache = new Map();
+      this.sharedSharerFavoritesCache.set(entryData.id, entryData.sharer_favorite_data);
+
+      const myFavoriteData = this.favoritesDataCache?.get(entryData.id) || null;
 
       const cardWrapper = document.createElement('div');
       cardWrapper.className = 'verse-card';
-      cardWrapper.setAttribute('data-entry-id', entry.id);
+      cardWrapper.setAttribute('data-entry-id', entryData.id);
 
-      // 3.2 调用核心渲染函数，传入原文数据、我自己的收藏数据、分享者的收藏数据
-      cardWrapper.innerHTML = this.generateResultCardHTML(entry, { 
-        showTags: false 
-      }, myFavoriteData, entry.sharer_favorite_data);
+      cardWrapper.innerHTML = this.generateResultCardHTML(
+        entryData,
+        { showTags: false },
+        myFavoriteData,
+        entryData.sharer_favorite_data
+      );
 
-      container.appendChild(cardWrapper);
+      if (insertBeforeEl) container.insertBefore(cardWrapper, insertBeforeEl);
+      else container.appendChild(cardWrapper);
     });
 
-    // 4. 添加“已全部显示完毕”的提示
-    const allDisplayedMessage = document.createElement('div');
-    allDisplayedMessage.className = 'analects-load-complete';
-    allDisplayedMessage.style.display = 'block';
-    allDisplayedMessage.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
-    container.appendChild(allDisplayedMessage);
-    
-    // 5. [新增] 确保图标渲染并为新卡片绑定事件
     this._attachCardActionListeners(container);
     this._ensureIconsRendered();
+
+    // 更新分页状态
+    state.currentPage += 1;
+    state.hasMore = (state.currentPage * state.pageSize) < state.totalCount;
+
+    // 请求成功后. 隐藏“加载中...”
+    if (loadingMoreDiv && loadingMoreDiv.dataset.state !== 'error') {
+      loadingMoreDiv.style.display = 'none';
+    }
+
+    // 全部加载完毕
+    if (!state.hasMore) {
+      if (state.observer) {
+        state.observer.disconnect();
+        state.observer = null;
+      }
+
+      const done = document.createElement('div');
+      done.className = 'analects-load-complete';
+      done.innerHTML = '<span class="analects-load-complete-text">—— ✨ 已全部显示完毕 ✨ ——</span>';
+
+      const sentinel = container.querySelector('#shared-notes-scroll-sentinel');
+      if (sentinel) {
+        container.insertBefore(done, sentinel);
+        sentinel.remove();
+      } else {
+        container.appendChild(done);
+      }
+    }
+  } catch (err) {
+    console.error('加载更多共享笔记失败:', err);
+
+    // 非首屏失败. 用 loadingMoreDiv 显示错误提示
+    if (!isFirstPage && loadingMoreDiv) {
+      loadingMoreDiv.dataset.state = 'error';
+      loadingMoreDiv.style.display = 'block';
+      loadingMoreDiv.innerHTML = `<span class="analects-loading-text">加载失败，请刷新重试。</span>`;
+    } else {
+      // 首屏失败. 用骨架屏区域后面补一条错误信息
+      const skeleton = container.querySelector('.verse-card-skeleton');
+      if (skeleton && !container.querySelector('.shared-firstload-error')) {
+        const errDiv = document.createElement('div');
+        errDiv.className = 'shared-firstload-error text-center text-gray-500 py-6';
+        errDiv.innerHTML = '<p>加载失败，请刷新重试。</p>';
+        skeleton.insertAdjacentElement('afterend', errDiv);
+      }
+    }
+  } finally {
+    state.isLoading = false;
+
+    // 首屏不显示 loadingMoreDiv. 非首屏成功则隐藏. 失败则保留错误提示
+    if (!isFirstPage && loadingMoreDiv && loadingMoreDiv.dataset.state !== 'error') {
+      loadingMoreDiv.style.display = 'none';
+    }
+  }
 }
+
 
 // [新增] 为卡片操作（如下拉菜单）绑定专属的、独立的事件监听器
   _attachCardActionListeners(container) {
@@ -2616,6 +2982,8 @@ async renderSharedNotebook(container, lenderId) {
 
     const moreOptionsButtons = container.querySelectorAll('.more-options-btn');
     moreOptionsButtons.forEach(button => {
+          if (button.dataset.bound === '1') return;
+  button.dataset.bound = '1';
         // [核心] 为每个按钮添加独立的监听器，避免在全局函数中产生冲突
         button.addEventListener('click', (event) => {
             event.stopPropagation();

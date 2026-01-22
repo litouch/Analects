@@ -3888,3 +3888,94 @@ body:not(.page-home) #global-header-wrapper:not(.is-scrolled) .user-menu-button:
 }
 
 html { scrollbar-gutter: stable; }
+
+
+/* 分页加载中提示 */
+.analects-loading-more {
+  margin: 16px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 已全部显示完毕 */
+.analects-load-complete {
+  margin: 18px 0 6px;
+  text-align: center;
+}
+
+.analects-load-complete-text {
+  font-size: 14px;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
+/* ================================ */
+/* Notes toolbar (shared by 我的笔记 / 查看共享) */
+/* ================================ */
+
+.notes-toolbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+}
+
+.notes-toolbar-left{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 0;
+}
+
+.notes-toolbar-right{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.notes-control{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notes-control-label{
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.notes-control-input{
+  min-width: 220px;
+}
+
+/* Mobile */
+@media (max-width: 640px){
+  .notes-toolbar{
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .notes-toolbar-right{
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .notes-control-input{
+    min-width: 0;
+    width: 100%;
+  }
+  .notes-toolbar-left{
+    width: 100%;
+  }
+  .notes-control{
+    width: 100%;
+  }
+  .notes-toolbar-action{
+    width: 100%;
+    justify-content: center;
+  }
+}

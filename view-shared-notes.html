@@ -46,15 +46,60 @@
     <nav class="breadcrumb" aria-label="面包屑">
     <a href="/">首页</a>
     <span class="sep">/</span>
+    <a href="/shared-with-me.html">共享空间</a>
+    <span class="sep">/</span>
     <span aria-current="page">查看共享</span>
     </nav>
-    <header id="page-header" class="text-center mb-8 border-b pb-4"></header>
+    <header id="page-header" class="text-center mb-8 border-b pb-4">
+  <h1 class="text-3xl md:text-4xl font-bold text-gray-900">查看共享</h1>
+  <p class="text-lg text-gray-500 mt-2">
+    来自 <strong id="shared-lender-name">...</strong> 的笔记
+  </p>
+</header>
+
+    <section class="mt-6 mb-6">
+  <div class="card notes-toolbar">
+    <div class="notes-toolbar-left">
+      <div class="notes-control">
+        <span class="notes-control-label">篇目</span>
+        <select id="shared-chapter-select" class="analects-input notes-control-input">
+          <option value="">全部篇目</option>
+        </select>
+      </div>
+
+      <div class="notes-control">
+        <span class="notes-control-label">排序</span>
+        <select id="shared-sort-select" class="analects-input notes-control-input">
+          <option value="favorited_at_desc">按收藏时间</option>
+          <option value="section_order_asc">按章节顺序</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="notes-toolbar-right">
+      <button id="print-pdf-btn" class="analects-btn secondary notes-toolbar-action" type="button">
+        打印 / 保存为PDF
+      </button>
+    </div>
+  </div>
+</section>
+
 
     <main id="notebook-view-container" class="space-y-8">
-      <div class="verse-card-skeleton">
-        <div class="skeleton-block" style="height: 150px; width: 100%;"></div>
-      </div>
-    </main>
+  <!-- 骨架屏. 只用于首屏加载或筛选重置后的首屏 -->
+  <div class="verse-card-skeleton">
+    <div class="skeleton-block" style="height: 150px; width: 100%;"></div>
+  </div>
+
+  <!-- “加载更多”提示. 仅在加载更多时显示 -->
+  <div id="shared-notes-loading-more" class="analects-loading-more" style="display:none;">
+    <span class="analects-loading-text">加载中...</span>
+  </div>
+
+  <!-- 触底 sentinel. 永远存在, IntersectionObserver 观察它 -->
+  <div id="shared-notes-scroll-sentinel" style="height:1px;"></div>
+</main>
+    
   </div>
   
   <div id="analects-global-widget-container"></div>
@@ -68,41 +113,93 @@
 
   <script type="module" src="/v2/analects.js"></script>
   <script type="module">
-    (async () => {
-      let sdk;
-      try {
-        sdk = new AnalectsSDK({
-          supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
-          supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
-        });
+  (async () => {
+    let sdk;
+    try {
+      sdk = new AnalectsSDK({
+        supabaseUrl: 'https://btqbtibvevglwcpiewyu.supabase.co',
+        supabaseKey: 'sb_publishable_Kl_dygwfqk0Uey1G-0rj3A_4sbCgnet'
+      });
 
-        await sdk.init();
-        sdk.renderGlobalHeader();
+      await sdk.init();
+      sdk.renderGlobalHeader();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const lenderId = urlParams.get('lender_id');
-        const lenderEmail = urlParams.get('email');
-        
-        if (!lenderId || !lenderEmail) throw new Error('链接无效：缺少分享者信息');
-        
-        const pageHeader = document.getElementById('page-header');
-        const escapedEmail = sdk.escapeHtml(lenderEmail);
-        
-        // [最终方案] 实现“大标题固定，小标题动态”
-        pageHeader.innerHTML = `
-          <h1 class="text-3xl md:text-4xl font-bold text-gray-900">查看共享</h1>
-          <p class="text-lg text-gray-500 mt-2">来自 <strong>${escapedEmail}</strong> 的笔记</p>
-        `;
+      const urlParams = new URLSearchParams(window.location.search);
+      const lenderId = urlParams.get('lender_id');
+      const lenderEmail = urlParams.get('email');
+      if (!lenderId || !lenderEmail) throw new Error('链接无效：缺少分享者信息');
 
-        const container = document.getElementById('notebook-view-container');
-        await sdk.renderSharedNotebook(container, lenderId);
+      const lenderNameEl = document.getElementById('shared-lender-name');
+      if (lenderNameEl) lenderNameEl.textContent = lenderEmail;
 
-      } catch (e) {
-        console.error("查看共享页面渲染失败:", e);
-        document.getElementById('notebook-view-container').innerHTML = '<div class="analects-error text-center py-8">加载共享笔记失败，可能分享已被收回或链接无效。</div>';
+      // 退出登录后立即回首页（你已加过，可保留）
+      sdk.supabase.auth.onAuthStateChange((_event, session) => {
+        if (!session) window.location.href = '/';
+      });
+
+      // 工具条
+      const chapterSelect = document.getElementById('shared-chapter-select');
+      const sortSelect = document.getElementById('shared-sort-select');
+      const printBtn = document.getElementById('print-pdf-btn');
+
+      if (printBtn) printBtn.addEventListener('click', () => window.print());
+
+      // 20 篇名映射。chapter_index 从 1 开始
+      const chapters = [
+        '学而篇 第一','为政篇 第二','八佾篇 第三','里仁篇 第四','公冶长篇 第五',
+        '雍也篇 第六','述而篇 第七','泰伯篇 第八','子罕篇 第九','乡党篇 第十',
+        '先进篇 第十一','颜渊篇 第十二','子路篇 第十三','宪问篇 第十四','卫灵公篇 第十五',
+        '季氏篇 第十六','阳货篇 第十七','微子篇 第十八','子张篇 第十九','尧曰篇 第二十'
+      ];
+
+      if (chapterSelect) {
+        chapterSelect.innerHTML = ['<option value="">全部篇目</option>']
+          .concat(chapters.map((name, i) => `<option value="${i + 1}">${sdk.escapeHtml(name)}</option>`))
+          .join('');
       }
+
+      // 从 URL 回填筛选与排序（可选，但体验更好）
+      const initialChapter = urlParams.get('chapter_index') || '';
+      const initialSort = urlParams.get('sort') || 'favorited_at_desc';
+      if (chapterSelect) chapterSelect.value = initialChapter;
+      if (sortSelect) sortSelect.value = initialSort;
+
+      const container = document.getElementById('notebook-view-container');
+
+      // 初始化共享页渲染（v3 分页版）
+      await sdk.renderSharedNotebookV3(container, lenderId, {
+        chapterIndex: initialChapter ? parseInt(initialChapter, 10) : null,
+        sort: initialSort
+      });
+
+      // 筛选或排序改变时。把条件传给后端并重置分页
+      async function applyAndReload() {
+        const chapterIndex = chapterSelect && chapterSelect.value ? parseInt(chapterSelect.value, 10) : null;
+        const sort = sortSelect ? sortSelect.value : 'favorited_at_desc';
+
+        // 同步到 URL，方便刷新后保持状态
+        const next = new URLSearchParams(window.location.search);
+        if (chapterIndex) next.set('chapter_index', String(chapterIndex)); else next.delete('chapter_index');
+        if (sort) next.set('sort', sort); else next.delete('sort');
+        window.history.replaceState({}, '', `${window.location.pathname}?${next.toString()}`);
+
+        await sdk.renderSharedNotebookV3(container, lenderId, { chapterIndex, sort, reset: true });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (chapterSelect) chapterSelect.addEventListener('change', applyAndReload);
+      if (sortSelect) sortSelect.addEventListener('change', applyAndReload);
+
       document.getElementById('year').textContent = new Date().getFullYear();
-    })();
-  </script>
+    } catch (e) {
+      console.error('查看共享页面渲染失败:', e);
+      document.getElementById('notebook-view-container').innerHTML =
+        '<div class="analects-error text-center py-8">加载共享笔记失败，可能分享已被收回或链接无效。</div>';
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    }
+  })();
+</script>
+
 </body>
 </html>
