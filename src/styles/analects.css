@@ -305,7 +305,7 @@ body {
   padding: 16px 20px;
   border: 2px solid var(--border);
   border-radius: var(--radius);
-  font-size: 16px;
+  font-size: 13px;
   background: var(--bg);
   transition: all 0.2s ease;
   font-family: inherit;
@@ -1188,11 +1188,11 @@ body {
 
   .analects-input {
     padding: 12px 16px;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .analects-keyword-label {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .analects-advanced-title {
@@ -1200,7 +1200,7 @@ body {
   }
 
   .analects-filter-title {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
@@ -3937,6 +3937,46 @@ html { scrollbar-gutter: stable; }
   flex-shrink: 0;
 }
 
+/* 右侧控制区更精致的布局, 兼容“对照开关 + 打印” */
+.notes-toolbar{
+  align-items: stretch;
+}
+
+.notes-toolbar-right{
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* 对照开关胶囊 */
+.notes-toolbar-toggle{
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.notes-toolbar-toggle-label{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+/* 搜索提示 */
+.notes-search-hint{
+  margin-top: 10px;
+  font-size: 13px;
+  color: #64748b;
+}
+
 .notes-control{
   display: flex;
   align-items: center;
@@ -3977,5 +4017,185 @@ html { scrollbar-gutter: stable; }
   .notes-toolbar-action{
     width: 100%;
     justify-content: center;
+  }
+}
+
+
+
+/* ================================ */
+/* Notes toolbar alignment tweak (v3.2) */
+/* 目标: 筛选/排序/对照/打印在同一高度体系内对齐 */
+/* ================================ */
+
+.notes-toolbar{
+  align-items: center;
+}
+
+.notes-toolbar-toggle{
+  height: 52px;
+  padding: 0 18px;
+}
+
+.notes-toolbar-toggle-label{
+  height: 100%;
+}
+
+.notes-toolbar-action{
+  height: 52px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================= */
+/* My Notes toolbar final polish */
+/* Append to the END of analects.css */
+/* ============================= */
+
+/* 工具条整体不再拉伸。保持一排对齐 */
+.notes-toolbar{
+  align-items: center !important;
+}
+
+.notes-toolbar-right{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 左侧下拉框更矮更精致。仅作用于工具条内，不影响搜索框 */
+.notes-toolbar .notes-control-label{
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.notes-toolbar .notes-control-input.analects-input{
+  padding: 10px 14px;
+  font-size: 13px;
+  min-height: 42px;
+  line-height: 20px;
+  border-radius: 14px;
+}
+
+/* 让 select 内文字更贴合 */
+.notes-toolbar .notes-control-input.analects-input{
+  appearance: none;
+  background-position: right 14px center;
+  background-repeat: no-repeat;
+}
+
+/* 右侧对照开关外框。纤细胶囊风格 */
+.notes-toolbar-toggle{
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.notes-toolbar-toggle-label{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+#global-comparison-toggle{
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.45);
+  position: relative;
+  outline: none;
+  border: 0;
+  transition: background 160ms ease;
+}
+
+#global-comparison-toggle::after{
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
+  transition: transform 160ms ease;
+}
+
+#global-comparison-toggle:checked{
+  background: rgba(49, 130, 206, 0.85);
+}
+
+#global-comparison-toggle:checked::after{
+  transform: translateX(16px);
+}
+
+/* 只保留 ::after 这一个球，避免别的规则又画一个 */
+#global-comparison-toggle::before{
+  content: none !important;
+}
+
+
+/* 打印按钮改回“轻薄 outline”风格。使用你现有 HTML 的 secondary class */
+.analects-btn.secondary{
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #334155;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* hover 更克制 */
+.analects-btn.secondary:hover{
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(148, 163, 184, 0.75);
+  transform: none;
+}
+
+/* 给打印按钮加一个“细线条打印机”图标。无需改 HTML */
+#print-pdf-btn.analects-btn.secondary{
+  gap: 10px;
+}
+
+#print-pdf-btn.analects-btn.secondary::before{
+  content: "";
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V2h12v7'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 14h12v8H6z'/%3E%3Cpath d='M6 12h.01'/%3E%3Cpath d='M18 12h.01'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V2h12v7'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 14h12v8H6z'/%3E%3Cpath d='M6 12h.01'/%3E%3Cpath d='M18 12h.01'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.85;
+}
+
+/* 小屏时允许换行，但仍保持同一行风格，不做“竖排卡片” */
+@media (max-width: 640px){
+  .notes-toolbar{
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .notes-toolbar-right{
+    width: 100%;
+    justify-content: space-between;
   }
 }

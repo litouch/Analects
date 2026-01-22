@@ -37,7 +37,7 @@
         <a class="header-anchor" href="/chapters/index.html">论语二十篇</a>
         <a class="header-anchor" href="/people/index.html">论语人物</a>
         <a class="header-anchor" href="/topics/index.html">论语主题</a>
-        <a class="header-anchor" href="/proverbs/index.html">论语成语</a>
+        <a class="header-anchor" href="/idioms/index.html">论语成语</a>
       </nav>
 
     <div class="header-right-area">
@@ -74,38 +74,62 @@
 	                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
 	                 placeholder="在您的笔记中搜索...">
 	        </div>
-	      </div>
+	      
 
-        <div id="global-comparison-controls" class="mt-4 text-center" style="display: none;">
-         <label for="global-comparison-toggle" class="flex items-center justify-center cursor-pointer text-sm text-gray-600">
-          <input type="checkbox" id="global-comparison-toggle" class="mr-2">
-          <span>显示全部对照笔记</span>
-         </label>
-        </div>
-
+      <div id="notes-search-hint" class="notes-search-hint" style="display:none;">
+        <span id="notes-search-hint-text"></span>
+      </div>
+</div>
 	</header>
 
-        <button id="print-pdf-btn" class="print-button">
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-  <span>打印 / 保存为PDF</span>
-        </button>
+<section class="mt-6 mb-6">
+  <div class="card notes-toolbar">
+    <div class="notes-toolbar-left">
+      <div class="notes-control">
+        <span class="notes-control-label">篇目</span>
+        <select id="my-chapter-select" class="analects-input notes-control-input">
+          <option value="">全部篇目</option>
+        </select>
+      </div>
 
-	<main id="notes-list-container" class="space-y-8">
-	    <div class="verse-card-skeleton">
-            <div class="skeleton-block" style="height: 32px; width: 80%; margin-bottom: 24px;"></div>
-            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 12px;"></div>
-            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 24px;"></div>
-            <div class="skeleton-block" style="height: 40px; width: 100%;"></div>
-        </div>
-        <div class="verse-card-skeleton">
-            <div class="skeleton-block" style="height: 32px; width: 70%; margin-bottom: 24px;"></div>
-            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 12px;"></div>
-            <div class="skeleton-block" style="height: 24px; width: 100%; margin-bottom: 24px;"></div>
-            <div class="skeleton-block" style="height: 40px; width: 100%;"></div>
-        </div>
+      <div class="notes-control">
+        <span class="notes-control-label">排序</span>
+        <select id="my-sort-select" class="analects-input notes-control-input">
+          <option value="favorited_at_desc">按收藏时间</option>
+          <option value="section_order_asc">按章节顺序</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="notes-toolbar-right">
+      <div id="global-comparison-controls" class="notes-toolbar-toggle" style="display:none;">
+        <label for="global-comparison-toggle" class="notes-toolbar-toggle-label">
+          <input type="checkbox" id="global-comparison-toggle">
+          <span>显示全部对照笔记</span>
+        </label>
+      </div>
+
+      <button id="print-pdf-btn" class="analects-btn secondary notes-toolbar-action" type="button">
+        打印 / 保存为PDF
+      </button>
+    </div>
+  </div>
+</section>
+
+		<main id="notes-list-container" class="space-y-8">
+	  <!-- 骨架屏. 只用于首屏加载或筛选重置后的首屏 -->
+	  <div class="verse-card-skeleton">
+	    <div class="skeleton-block" style="height: 150px; width: 100%;"></div>
+	  </div>
+
+	  <!-- “加载更多”提示. 仅在加载更多时显示 -->
+	  <div id="my-notes-loading-more" class="analects-loading-more" style="display:none;">
+	    <span class="analects-loading-text">加载中...</span>
+	  </div>
+
+	  <!-- 触底 sentinel. IntersectionObserver 观察它 -->
+	  <div id="my-notes-scroll-sentinel" style="height:1px;"></div>
 	</main>
-
-    <div id="notes-loading-more" class="analects-loading" style="display:none;">加载中...</div>
 
   </div>
 
@@ -118,6 +142,7 @@
   <div id="analects-global-widget-container"></div>
 
   <script type="module" src="/v2/analects.js"></script>
+
 <script type="module">
  (async () => {
   let sdk;
@@ -130,34 +155,107 @@
     await sdk.init();
     sdk.renderGlobalHeader();
 
-    // [修改] 调用更新后的函数名和容器ID
-    await sdk.renderMyNotesPage(document.getElementById('notes-list-container'));
-    // [新增] 为打印按钮绑定点击事件
-    const printBtn = document.getElementById('print-pdf-btn');
-     if (printBtn) {
-       printBtn.addEventListener('click', () => {
-         window.print();
-         });
+    const container = document.getElementById('notes-list-container');
+    const chapterSelect = document.getElementById('my-chapter-select');
+    const sortSelect = document.getElementById('my-sort-select');
+    const searchInput = document.getElementById('notes-search-input');
+
+    // 篇目选项
+    const chapters = [
+      '学而篇 第一','为政篇 第二','八佾篇 第三','里仁篇 第四','公冶长篇 第五',
+      '雍也篇 第六','述而篇 第七','泰伯篇 第八','子罕篇 第九','乡党篇 第十',
+      '先进篇 第十一','颜渊篇 第十二','子路篇 第十三','宪问篇 第十四','卫灵公篇 第十五',
+      '季氏篇 第十六','阳货篇 第十七','微子篇 第十八','子张篇 第十九','尧曰篇 第二十'
+    ];
+
+    if (chapterSelect) {
+      chapterSelect.innerHTML = ['<option value="">全部篇目</option>']
+        .concat(chapters.map((name, i) => `<option value="${i + 1}">${sdk.escapeHtml(name)}</option>`))
+        .join('');
     }
-    // [修改] 调用更新后的函数名和元素ID
-    sdk.initializeNotesSearch(
-      document.getElementById('notes-search-input'),
-      document.getElementById('notes-list-container')
-    );
+
+    // URL 回填
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialChapter = urlParams.get('chapter_index') || '';
+    const initialSort = urlParams.get('sort') || 'favorited_at_desc';
+    const initialKeyword = urlParams.get('q') || '';
+
+    if (chapterSelect) chapterSelect.value = initialChapter;
+    if (sortSelect) sortSelect.value = initialSort;
+    if (searchInput) searchInput.value = initialKeyword;
+
+    // 初次渲染
+    await sdk.renderMyNotesPageV3(container, {
+      chapterIndex: initialChapter ? parseInt(initialChapter, 10) : null,
+      sort: initialSort,
+      keyword: initialKeyword
+    });
+    // 搜索策略（v3.2）
+    // 统一为“全量搜索”. 输入后 debounce 触发 RPC. 可搜索所有笔记, 不限已显示
+    // 回车立即搜索. Esc 清空并恢复全量列表
+
+    let searchDebounceTimer = null;
+
+    async function applyAndReload({ scrollTop = true } = {}) {
+      const chapterIndex = chapterSelect && chapterSelect.value ? parseInt(chapterSelect.value, 10) : null;
+      const sort = sortSelect ? sortSelect.value : 'favorited_at_desc';
+      const keyword = searchInput ? searchInput.value.trim() : '';
+
+      // 同步到 URL, 便于刷新保持状态
+      const next = new URLSearchParams(window.location.search);
+      if (chapterIndex) next.set('chapter_index', String(chapterIndex)); else next.delete('chapter_index');
+      if (sort) next.set('sort', sort); else next.delete('sort');
+      if (keyword) next.set('q', keyword); else next.delete('q');
+      const qs = next.toString();
+      window.history.replaceState({}, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+
+      await sdk.renderMyNotesPageV3(container, { chapterIndex, sort, keyword, reset: true });
+
+      if (scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (chapterSelect) chapterSelect.addEventListener('change', () => applyAndReload());
+    if (sortSelect) sortSelect.addEventListener('change', () => applyAndReload());
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+          applyAndReload({ scrollTop: false });
+        }, 350);
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+          applyAndReload({ scrollTop: false });
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+          searchInput.value = '';
+          applyAndReload({ scrollTop: false });
+        }
+      });
+    }
+
+    // 打印 / 保存为 PDF
+    const printBtn = document.getElementById('print-pdf-btn');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => window.print());
+    }
 
     const yearEl = document.getElementById('year');
-    if (yearEl) {
-      yearEl.textContent = new Date().getFullYear();
-    }
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   } catch (e) {
     console.error("AnalectsSDK failed to initialize.", e);
-    // [修改] 更新容器ID
-    document.getElementById('notes-list-container').innerHTML = '<div class="text-center text-red-500 py-8">SDK 初始化失败，请检查配置。</div>';
+    const c = document.getElementById('notes-list-container');
+    if (c) c.innerHTML = '<div class="text-center text-red-500 py-8">SDK 初始化失败，请检查配置。</div>';
   }
-
-  })();
+ })();
 </script>
 
 </body>
+
 </html>
