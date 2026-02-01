@@ -1740,39 +1740,53 @@ filterRenderedMyNotes(container, keyword) {
 
 
 // [最终重构版] 初始化章节页，采用并行获取、同步渲染的稳定模式
-	async initializeChapterPage() {
-	  const verseCards = document.querySelectorAll('.verse-card');
-	  if (verseCards.length === 0) return;
+async initializeChapterPage() {
+  // 0) 仍然保留早退判断. 只是更精确一点
+  const verseCards = document.querySelectorAll('.verse-card[data-entry-id]');
+  if (verseCards.length === 0) return;
 
-	  try {
-	    // 1. 一次性收集所有需要获取数据的卡片ID
-	    const entryIds = Array.from(verseCards).map(card => parseInt(card.dataset.entryId, 10)).filter(id => !isNaN(id));
+  // 0.5) 如果页面已经是静态预渲染过的. 只做事件绑定和图标渲染. 不再请求 Supabase
+  const prerendered = document.documentElement.getAttribute('data-chapter-prerendered') === '1';
+  if (prerendered) {
+    // 这里用 document 绑定也可以. 取决于你 SDK 的实现
+    this._attachCardActionListeners(document);
+    this._ensureIconsRendered();
+    return;
+  }
 
-	    // 2. 并行地、一次性地获取所有卡片所需的数据
-	    const entriesData = await Promise.all(
-	      entryIds.map(id => this._getEntryDataForHydration(id))
-	    );
-	    
-	    // 将数据整理成一个 Map，方便快速查找
-	    const entriesMap = new Map(entriesData.filter(e => e).map(e => [e.id, e]));
+  // 下面保持你原来的补水逻辑不变
+  try {
+    // 1. 一次性收集所有需要获取数据的卡片ID
+    const entryIds = Array.from(verseCards)
+      .map(card => parseInt(card.dataset.entryId, 10))
+      .filter(id => !isNaN(id));
 
-	    // 3. 同步地、快速地渲染所有卡片
-	    verseCards.forEach(card => {
-	      const entryId = parseInt(card.dataset.entryId, 10);
-	      const entry = entriesMap.get(entryId);
-	      if (entry) {
-	        card.innerHTML = this.generateResultCardHTML(entry, { showTags: false });
-	      }
-	    });
+    // 2. 并行地、一次性地获取所有卡片所需的数据
+    const entriesData = await Promise.all(
+      entryIds.map(id => this._getEntryDataForHydration(id))
+    );
 
-	    // 4. 在所有卡片都稳定渲染后，再统一绑定事件
-	    this._attachCardActionListeners(document);
-	    this._ensureIconsRendered();
+    // 将数据整理成一个 Map，方便快速查找
+    const entriesMap = new Map(entriesData.filter(e => e).map(e => [e.id, e]));
 
-	  } catch (error) {
-	    console.error('初始化章节页失败:', error);
-	  }
-	}
+    // 3. 同步地、快速地渲染所有卡片
+    verseCards.forEach(card => {
+      const entryId = parseInt(card.dataset.entryId, 10);
+      const entry = entriesMap.get(entryId);
+      if (entry) {
+        card.innerHTML = this.generateResultCardHTML(entry, { showTags: false });
+      }
+    });
+
+    // 4. 在所有卡片都稳定渲染后，再统一绑定事件
+    this._attachCardActionListeners(document);
+    this._ensureIconsRendered();
+
+  } catch (error) {
+    console.error('初始化章节页失败:', error);
+  }
+}
+
 	
 // [最终完整版] 生成卡片页脚
 _generateCardFooterHTML(entry, myFavoriteData, sharerFavoriteData, hasLenders = false, comparisonEntryIds = new Set()) {

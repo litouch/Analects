@@ -18,7 +18,7 @@
     "clean": "rm -rf dist/",
     "lint": "eslint src/",
     "test": "jest",
-	"generate-pages": "node generate-chapters.js",
+    "generate-pages": "node generate-chapters.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -63,7 +63,8 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.2",
+    "@supabase/supabase-js": "^2.93.3",
+    "jsdom": "^27.4.0",
     "node-fetch": "^3.3.2"
   },
   "browserslist": [

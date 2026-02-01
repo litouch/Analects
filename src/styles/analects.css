@@ -2620,7 +2620,7 @@ body.page-home #global-header-wrapper:not(.is-scrolled) .header-welcome-message 
 /* --- 2. Notion 风格元数据 --- */
 .metadata-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem 1.5rem;
   margin-bottom: 3rem;
   padding: 1.5rem;
