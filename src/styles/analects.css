@@ -2011,11 +2011,16 @@ body {
 
 /* 未登录状态下的 "登录" 按钮样式 */
 #analects-global-widget-container.logged-out .app-footer-action.login {
-  background-color: var(--blue);
-  color: white;
+  background-color: rgba(49, 130, 206, 0.10);
+  color: #2c5aa0;
+  border: 1px solid rgba(49, 130, 206, 0.22);
+  box-shadow: none;
 }
+
 #analects-global-widget-container.logged-out .app-footer-action.login:hover {
-  background-color: #2c5aa0;
+  background-color: rgba(49, 130, 206, 0.14);
+  border-color: rgba(49, 130, 206, 0.30);
+  box-shadow: none;
 }
 
 /* 为激活状态(active)和悬停状态(hover)同时应用蓝色光晕效果 */
