@@ -4204,3 +4204,15 @@ html { scrollbar-gutter: stable; }
     justify-content: space-between;
   }
 }
+
+/* 移动端隐藏底部 floating bar */
+@media (max-width: 768px){
+  #analects-global-widget-container{
+    display: none !important;
+  }
+
+  /* 可选. 如果你之前给 body 留了底部安全区空间, 一并取消 */
+  body{
+    padding-bottom: 0 !important;
+  }
+}
